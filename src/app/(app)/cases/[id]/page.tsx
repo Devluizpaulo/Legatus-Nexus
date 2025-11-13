@@ -1,17 +1,24 @@
-import { MOCK_CASES, MOCK_CLIENTS, MOCK_USERS } from "@/lib/mock-data";
+"use client";
+
+import { useAuth } from "@/contexts/auth-context";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import AISummarizer from "@/components/cases/ai-summarizer";
-import { notFound } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
 
-export default function CaseDetailPage({ params }: { params: { id: string } }) {
-    const caseData = MOCK_CASES.find(c => c.id === params.id);
+export default function CaseDetailPage() {
+    const { id } = useParams();
+    const { tenantData } = useAuth();
+    
+    if (!tenantData) return <div>Carregando...</div>
+
+    const caseData = tenantData.cases.find(c => c.id === id);
     if (!caseData) {
         notFound();
     }
-    const clientData = MOCK_CLIENTS.find(c => c.id === caseData.clientId);
-    const responsibleUsers = MOCK_USERS.filter(u => caseData.responsible.includes(u.id));
+    const clientData = tenantData.clients.find(c => c.id === caseData.clientId);
+    const responsibleUsers = tenantData.users.filter(u => caseData.responsible.includes(u.id));
     
     const getInitials = (name: string) => {
         const names = name.split(' ');
