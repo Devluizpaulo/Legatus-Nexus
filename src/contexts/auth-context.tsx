@@ -1,10 +1,11 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { User, Tenant, Client, Case, Appointment, Deadline, TimeEntry, FinancialTransaction, Refund } from '@/lib/types';
-import { MOCK_USERS, MOCK_TENANTS, MOCK_CLIENTS, MOCK_CASES, MOCK_APPOINTMENTS, MOCK_DEADLINES, MOCK_TIME_ENTRIES, MOCK_FINANCIAL_TRANSACTIONS, MOCK_REFUNDS } from '@/lib/mock-data';
+import { User, Tenant, Client, Case, Appointment, Deadline, TimeEntry, FinancialTransaction, Refund, Invoice } from '@/lib/types';
+import { MOCK_USERS, MOCK_TENANTS, MOCK_CLIENTS, MOCK_CASES, MOCK_APPOINTMENTS, MOCK_DEADLINES, MOCK_TIME_ENTRIES, MOCK_FINANCIAL_TRANSACTIONS, MOCK_REFUNDS, MOCK_INVOICES } from '@/lib/mock-data';
 import { useRouter } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
+import { format } from 'date-fns';
 
 interface AuthContextType {
   currentUser: User | null;
@@ -18,6 +19,7 @@ interface AuthContextType {
     timeEntries: TimeEntry[];
     financialTransactions: FinancialTransaction[];
     refunds: Refund[];
+    invoices: Invoice[];
   } | null;
   isAuthenticated: boolean;
   login: (email: string, pass: string) => boolean;
@@ -41,6 +43,7 @@ interface AuthContextType {
   addRefund: (newRefund: Omit<Refund, 'id' | 'tenantId'>) => void;
   updateRefund: (updatedRefund: Refund) => void;
   deleteRefund: (refundId: string) => void;
+  updateInvoice: (updatedInvoice: Invoice) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -70,6 +73,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 timeEntries: MOCK_TIME_ENTRIES.filter(te => te.tenantId === tenant.id),
                 financialTransactions: MOCK_FINANCIAL_TRANSACTIONS.filter(ft => ft.tenantId === tenant.id),
                 refunds: MOCK_REFUNDS.filter(r => r.tenantId === tenant.id),
+                invoices: MOCK_INVOICES.filter(i => i.tenantId === tenant.id),
             });
         }
       }
@@ -279,6 +283,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const updateInvoice = (updatedInvoice: Invoice) => {
+    if (tenantData) {
+      setTenantData({
+        ...tenantData,
+        invoices: tenantData.invoices.map(i => i.id === updatedInvoice.id ? updatedInvoice : i),
+      });
+    }
+  };
+
   return (
     <AuthContext.Provider value={{ 
         currentUser, 
@@ -306,6 +319,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         addRefund,
         updateRefund,
         deleteRefund,
+        updateInvoice,
     }}>
       {children}
     </AuthContext.Provider>

@@ -1,4 +1,4 @@
-import { Tenant, User, Client, Case, CaseStatus, UserRole, Appointment, Deadline, TimeEntry, FinancialTransaction, Refund, RefundStatus } from "./types";
+import { Tenant, User, Client, Case, CaseStatus, UserRole, Appointment, Deadline, TimeEntry, FinancialTransaction, Refund, RefundStatus, Invoice, InvoiceStatus, TimeEntryStatus, TransactionStatus, TransactionType, AppointmentStatus, AppointmentType } from "./types";
 import { PlaceHolderImages } from "./placeholder-images";
 import { format, addDays, subDays } from 'date-fns';
 
@@ -58,6 +58,49 @@ const refunds: Refund[] = [
     { id: 'ref-4', tenantId: 'tenant-1', userId: 'user-1', description: 'Jantar com cliente potencial', amount: 250.00, date: format(subDays(today, 3), 'yyyy-MM-dd'), status: 'Reprovado', approverId: 'user-1' },
 ];
 
+const invoices: Invoice[] = [
+    { 
+        id: 'inv-001', 
+        tenantId: 'tenant-1', 
+        clientId: 'client-1', 
+        caseId: 'case-1', 
+        issueDate: format(subDays(today, 10), 'yyyy-MM-dd'), 
+        dueDate: format(addDays(subDays(today, 10), 30), 'yyyy-MM-dd'), 
+        status: 'Pendente',
+        items: [
+            { id: 'item-1', description: 'Horas de consultoria - Análise Contratual', quantity: 10, unitPrice: 350, total: 3500 },
+            { id: 'item-2', description: 'Reembolso de despesa - Táxi Fórum', quantity: 1, unitPrice: 45.50, total: 45.50 }
+        ],
+        totalAmount: 3545.50,
+    },
+    { 
+        id: 'inv-002', 
+        tenantId: 'tenant-1', 
+        clientId: 'client-2', 
+        caseId: 'case-3', 
+        issueDate: format(subDays(today, 45), 'yyyy-MM-dd'), 
+        dueDate: format(subDays(today, 15), 'yyyy-MM-dd'), 
+        status: 'Pendente',
+        items: [
+            { id: 'item-3', description: 'Elaboração de parecer - Propriedade Intelectual', quantity: 1, unitPrice: 5000, total: 5000 },
+        ],
+        totalAmount: 5000,
+    },
+    { 
+        id: 'inv-003', 
+        tenantId: 'tenant-1', 
+        clientId: 'client-1', 
+        caseId: 'case-2', 
+        issueDate: format(subDays(today, 60), 'yyyy-MM-dd'), 
+        dueDate: format(subDays(today, 30), 'yyyy-MM-dd'), 
+        paidDate: format(subDays(today, 25), 'yyyy-MM-dd'),
+        status: 'Paga',
+        items: [
+            { id: 'item-4', description: 'Consultoria Tributária - Reunião Inicial', quantity: 3, unitPrice: 400, total: 1200 },
+        ],
+        totalAmount: 1200,
+    }
+];
 
 const tenants: Tenant[] = [
   {
@@ -72,6 +115,7 @@ const tenants: Tenant[] = [
     timeEntries: timeEntries.filter(te => te.tenantId === 'tenant-1'),
     financialTransactions: financialTransactions.filter(ft => ft.tenantId === 'tenant-1'),
     refunds: refunds.filter(r => r.tenantId === 'tenant-1'),
+    invoices: invoices.filter(i => i.tenantId === 'tenant-1'),
   },
   {
     id: "tenant-2",
@@ -85,6 +129,7 @@ const tenants: Tenant[] = [
     timeEntries: [],
     financialTransactions: [],
     refunds: [],
+    invoices: [],
   },
 ];
 
@@ -97,12 +142,14 @@ export const MOCK_DEADLINES: Deadline[] = deadlines;
 export const MOCK_TIME_ENTRIES: TimeEntry[] = timeEntries;
 export const MOCK_FINANCIAL_TRANSACTIONS: FinancialTransaction[] = financialTransactions;
 export const MOCK_REFUNDS: Refund[] = refunds;
+export const MOCK_INVOICES: Invoice[] = invoices;
 
 export const ALL_CASE_STATUSES: CaseStatus[] = ["Análise Inicial", "Fase de Instrução", "Recursos", "Finalizado"];
 export const ALL_APPOINTMENT_TYPES: AppointmentType[] = ['Atendimento', 'Reunião', 'Audiência'];
-export const ALL_APPOINTMENT_STATUSES: AppointmentStatus[] = ['Agendado', 'Confirmado', 'Cancelado', 'Realizado'];
+export const ALL_APPOINTED_STATUSES: AppointmentStatus[] = ['Agendado', 'Confirmado', 'Cancelado', 'Realizado'];
 export const ALL_DEADLINE_STATUSES: DeadlineStatus[] = ['Pendente', 'Cumprido'];
 export const ALL_TIME_ENTRY_STATUSES: TimeEntryStatus[] = ['Pendente', 'Faturado'];
 export const ALL_TRANSACTION_TYPES: TransactionType[] = ['Ganho', 'Despesa'];
 export const ALL_TRANSACTION_STATUSES: TransactionStatus[] = ['Pendente', 'Aprovada', 'Liquidada', 'Reprovada'];
 export const ALL_REFUND_STATUSES: RefundStatus[] = ['Pendente', 'Aprovado', 'Reprovado', 'Pago'];
+export const ALL_INVOICE_STATUSES: InvoiceStatus[] = ['Pendente', 'Paga'];

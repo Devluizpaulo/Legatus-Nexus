@@ -12,7 +12,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import type { Appointment, AppointmentStatus, AppointmentType, User, Client } from '@/lib/types';
-import { ALL_APPOINTMENT_TYPES, ALL_APPOINTMENT_STATUSES } from '@/lib/mock-data';
+import { ALL_APPOINTMENT_TYPES, ALL_APPOINTED_STATUSES } from '@/lib/mock-data';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { CalendarIcon, Trash } from 'lucide-react';
@@ -36,7 +36,7 @@ const appointmentSchema = z.object({
   time: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, { message: "Formato de hora inválido (HH:mm)." }),
   location: z.string().optional(),
   type: z.enum(ALL_APPOINTMENT_TYPES as [AppointmentType, ...AppointmentType[]]),
-  status: z.enum(ALL_APPOINTMENT_STATUSES as [AppointmentStatus, ...AppointmentStatus[]]),
+  status: z.enum(ALL_APPOINTED_STATUSES as [AppointmentStatus, ...AppointmentStatus[]]),
   responsible: z.array(z.string()).min(1, { message: "Selecione ao menos um responsável." }),
   clientId: z.string().min(1, { message: "O cliente é obrigatório." }),
 });
@@ -220,7 +220,7 @@ export default function AppointmentForm({ isOpen, onClose, onSave, onDelete, app
                             </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                            {ALL_APPOINTMENT_STATUSES.map(status => (
+                            {ALL_APPOINTED_STATUSES.map(status => (
                                 <SelectItem key={status} value={status}>{status}</SelectItem>
                             ))}
                             </SelectContent>

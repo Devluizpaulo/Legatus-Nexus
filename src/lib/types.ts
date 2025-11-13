@@ -10,6 +10,7 @@ export type Tenant = {
   timeEntries: TimeEntry[];
   financialTransactions: FinancialTransaction[];
   refunds: Refund[];
+  invoices: Invoice[];
 };
 
 export type UserRole = "Master" | "Advogado" | "Financeiro" | "SuperAdmin";
@@ -129,4 +130,27 @@ export type Refund = {
   clientId?: string; // Optional: for billing the client
   caseId?: string; // Optional: for billing the client
   approverId?: string; // User who approved/rejected
+};
+
+export type InvoiceStatus = 'Pendente' | 'Paga'; // "Atrasada" is a computed status in the UI
+
+export type InvoiceItem = {
+  id: string;
+  description: string;
+  quantity: number;
+  unitPrice: number;
+  total: number;
+};
+
+export type Invoice = {
+  id: string;
+  tenantId: string;
+  clientId: string;
+  caseId: string;
+  issueDate: string; // ISO date string
+  dueDate: string; // ISO date string
+  paidDate?: string; // ISO date string
+  status: InvoiceStatus;
+  items: InvoiceItem[];
+  totalAmount: number;
 };
