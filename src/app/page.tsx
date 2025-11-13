@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, Scale, Users, Briefcase, BarChart, ShieldCheck, Calendar, Wallet, AreaChart, Award } from "lucide-react";
+import { CheckCircle, Scale, Users, Briefcase, BarChart, ShieldCheck, Calendar, Wallet, AreaChart, Award, FileText, GanttChartSquare, Landmark, Clock, Settings, User, LayoutDashboard, BadgeHelp, LogOut, BrainCircuit, Key, Handshake } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
@@ -10,32 +10,32 @@ const features = [
   {
     icon: <Calendar className="w-8 h-8 text-primary" />,
     title: "Agenda Inteligente",
-    description: "Subdividida em Prazos, Audiências e Atendimentos, com visual de calendário e sincronização entre usuários.",
+    description: "Prazos, audiências e atendimentos com visual de calendário e sincronização.",
   },
   {
     icon: <Briefcase className="w-8 h-8 text-primary" />,
-    title: "Gestão de Processos e Clientes",
-    description: "Organize casos, documentos, comentários e atualizações em um ambiente colaborativo.",
+    title: "Gestão de Processos",
+    description: "Organize casos, documentos e atualizações em um ambiente colaborativo.",
   },
   {
     icon: <Wallet className="w-8 h-8 text-primary" />,
     title: "Financeiro e Reembolsos",
-    description: "Controle total sobre despesas, lançamentos e solicitações de reembolso com fluxo de aprovação.",
+    description: "Controle total sobre despesas, lançamentos e solicitações com fluxo de aprovação.",
   },
   {
     icon: <AreaChart className="w-8 h-8 text-primary" />,
     title: "Controle de Despesas e Ganhos",
-    description: "Visualize relatórios, histórico financeiro e dashboards dinâmicos com gráficos interativos.",
+    description: "Visualize relatórios, histórico e dashboards dinâmicos com gráficos.",
   },
   {
-    icon: <Users className="w-8 h-8 text-primary" />,
+    icon: <FileText className="w-8 h-8 text-primary" />,
     title: "Plano e Assinaturas",
-    description: "Gerencie o plano do escritório, histórico de pagamentos e upgrades diretamente no painel Master.",
+    description: "Gerencie o plano do escritório e histórico de pagamentos no painel Master.",
   },
   {
     icon: <Award className="w-8 h-8 text-primary" />,
-    title: "Sistema de Auditoria e Gamificação",
-    description: "Monitore ações, conquistas e métricas de desempenho da equipe.",
+    title: "Auditoria e Gamificação",
+    description: "Monitore ações, conquistas e métricas de desempenho da sua equipe.",
   }
 ];
 
@@ -43,12 +43,14 @@ const plans = [
     {
         name: "Solo",
         price: "R$129",
+        description: "Ideal para advogados autônomos.",
         features: ["1 advogado", "Gestão de Clientes e Processos", "Agenda e Prazos", "Suporte por Email"],
         cta: "Começar Agora"
     },
     {
         name: "Profissional",
         price: "R$399",
+        description: "Para equipes em crescimento.",
         features: ["Até 5 usuários", "Tudo do Solo", "Módulo Financeiro", "Relatórios Básicos", "Suporte Prioritário"],
         cta: "Contratar Plano",
         popular: true,
@@ -56,6 +58,7 @@ const plans = [
     {
         name: "Enterprise",
         price: "Customizado",
+        description: "Soluções avançadas para grandes escritórios.",
         features: ["Usuários ilimitados", "Tudo do Profissional", "Módulos Avançados de IA", "Suporte Dedicado", "White Label opcional"],
         cta: "Entre em Contato"
     }
@@ -84,12 +87,17 @@ export default function HomePage() {
       <header className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-sm">
         <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
           <Logo />
-          <nav className="flex items-center space-x-4">
+          <nav className="hidden md:flex items-center space-x-4">
+            <Button variant="ghost" asChild><Link href="#about">Sobre</Link></Button>
+            <Button variant="ghost" asChild><Link href="#modules">Módulos</Link></Button>
+            <Button variant="ghost" asChild><Link href="#pricing">Planos</Link></Button>
+          </nav>
+          <nav className="flex items-center space-x-2">
             <Button variant="outline" asChild>
-              <Link href="/login">Acessar Plataforma</Link>
+              <Link href="/login">Acessar</Link>
             </Button>
             <Button asChild>
-              <Link href="/register">Solicitar Demonstração</Link>
+              <Link href="/register">Solicitar Demo</Link>
             </Button>
           </nav>
         </div>
@@ -107,10 +115,16 @@ export default function HomePage() {
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
               <Button size="lg" asChild>
-                <Link href="/register">💼 Solicitar Demonstração</Link>
+                <Link href="/register">
+                  <Handshake />
+                  Solicitar Demonstração
+                </Link>
               </Button>
                <Button size="lg" variant="secondary" asChild>
-                <Link href="/login">🔑 Acessar Plataforma</Link>
+                <Link href="/login">
+                  <Key />
+                  Acessar Plataforma
+                </Link>
               </Button>
             </div>
           </div>
@@ -134,33 +148,33 @@ export default function HomePage() {
             <div className="text-center">
               <h2 className="font-headline text-3xl md:text-4xl font-bold">O futuro da advocacia é digital.</h2>
               <p className="mt-4 max-w-3xl mx-auto text-lg text-muted-foreground">
-                O **Legatus Nexus** é uma plataforma completa de **gestão jurídica e administrativa** para escritórios de advocacia. Cada advogado, assistente e gestor tem seu próprio ambiente, com permissões personalizadas, garantindo produtividade e controle absoluto.
+                O **Legatus Nexus** é uma plataforma completa de **gestão jurídica e administrativa**. Cada profissional tem seu próprio ambiente com permissões personalizadas, garantindo produtividade e controle.
               </p>
             </div>
-            <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3 text-center md:text-left">
-              <div className="space-y-1">
-                <h3 className="font-semibold text-lg">Multiusuário e Multi-escritório</h3>
-                <p className="text-muted-foreground">Arquitetura SaaS completa para atender diversas estruturas.</p>
+            <div className="mt-12 grid gap-x-8 gap-y-4 md:grid-cols-2 lg:grid-cols-3">
+              <div className="flex items-center gap-3">
+                <CheckCircle className="h-5 w-5 text-primary shrink-0"/>
+                <p>Multiusuário e Multi-escritório</p>
               </div>
-               <div className="space-y-1">
-                <h3 className="font-semibold text-lg">Painéis Seguros e Independentes</h3>
-                <p className="text-muted-foreground">Dados isolados com permissões granulares por perfil.</p>
+               <div className="flex items-center gap-3">
+                <CheckCircle className="h-5 w-5 text-primary shrink-0"/>
+                <p>Painéis seguros e independentes</p>
               </div>
-               <div className="space-y-1">
-                <h3 className="font-semibold text-lg">Controle e Automação</h3>
-                <p className="text-muted-foreground">Gestão de prazos, audiências e fluxo de tarefas.</p>
+               <div className="flex items-center gap-3">
+                <CheckCircle className="h-5 w-5 text-primary shrink-0"/>
+                <p>Controle de prazos e audiências</p>
               </div>
-               <div className="space-y-1">
-                <h3 className="font-semibold text-lg">Gestão Financeira Integrada</h3>
-                <p className="text-muted-foreground">Módulos de reembolso, despesas e receitas.</p>
+               <div className="flex items-center gap-3">
+                <CheckCircle className="h-5 w-5 text-primary shrink-0"/>
+                <p>Gestão financeira integrada</p>
               </div>
-               <div className="space-y-1">
-                <h3 className="font-semibold text-lg">Relatórios em Tempo Real</h3>
-                <p className="text-muted-foreground">Gráficos, auditoria e métricas para tomada de decisão.</p>
+               <div className="flex items-center gap-3">
+                <CheckCircle className="h-5 w-5 text-primary shrink-0"/>
+                <p>Relatórios em tempo real</p>
               </div>
-               <div className="space-y-1">
-                <h3 className="font-semibold text-lg">Interface Moderna e Intuitiva</h3>
-                <p className="text-muted-foreground">Experiência de uso fluida em qualquer dispositivo.</p>
+               <div className="flex items-center gap-3">
+                <CheckCircle className="h-5 w-5 text-primary shrink-0"/>
+                <p>Interface moderna e intuitiva</p>
               </div>
             </div>
           </div>
@@ -175,11 +189,11 @@ export default function HomePage() {
                 </div>
                 <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {features.map((feature) => (
-                        <div key={feature.title} className="flex flex-col items-center text-center p-4 rounded-lg transition-all hover:bg-secondary/50">
-                            {feature.icon}
+                        <Card key={feature.title} className="flex flex-col text-center p-6 rounded-lg transition-all hover:shadow-lg hover:-translate-y-1 border-transparent hover:border-primary/20 bg-secondary/30 dark:bg-card">
+                            <div className="flex-shrink-0">{feature.icon}</div>
                             <h3 className="mt-4 text-xl font-semibold">{feature.title}</h3>
-                            <p className="mt-2 text-muted-foreground">{feature.description}</p>
-                        </div>
+                            <p className="mt-2 text-muted-foreground flex-grow">{feature.description}</p>
+                        </Card>
                     ))}
                 </div>
             </div>
@@ -194,17 +208,18 @@ export default function HomePage() {
                 </div>
                 <div className="mt-12 grid gap-8 md:grid-cols-3 items-end">
                     {plans.map((plan) => (
-                        <Card key={plan.name} className={`flex flex-col ${plan.popular ? 'border-primary border-2 shadow-2xl -translate-y-4' : 'shadow-lg'}`}>
+                        <Card key={plan.name} className={`flex flex-col rounded-xl transition-all ${plan.popular ? 'border-primary border-2 shadow-2xl -translate-y-4' : 'shadow-lg hover:shadow-xl'}`}>
                             {plan.popular && <div className="text-center py-2 bg-primary text-primary-foreground font-semibold rounded-t-lg text-sm">Mais Popular</div>}
-                            <CardHeader className="text-center">
+                            <CardHeader className="items-center text-center">
                                 <CardTitle className="font-headline text-2xl">{plan.name}</CardTitle>
+                                <p className="text-muted-foreground text-sm">{plan.description}</p>
                                 {plan.price.startsWith("R$") ? (
-                                    <p className="text-4xl font-bold">{plan.price}<span className="text-sm font-normal text-muted-foreground">/mês</span></p>
+                                    <p className="text-4xl font-bold pt-4">{plan.price}<span className="text-sm font-normal text-muted-foreground">/mês</span></p>
                                 ) : (
-                                     <p className="text-4xl font-bold">{plan.price}</p>
+                                     <p className="text-4xl font-bold pt-4">{plan.price}</p>
                                 )}
                             </CardHeader>
-                            <CardContent className="flex flex-col flex-grow p-6">
+                            <CardContent className="flex flex-col flex-grow p-6 pt-0">
                                 <ul className="space-y-3 flex-grow mb-6">
                                     {plan.features.map(feature => (
                                         <li key={feature} className="flex items-start gap-3">
@@ -213,15 +228,13 @@ export default function HomePage() {
                                         </li>
                                     ))}
                                 </ul>
-                                <Button className="w-full" variant={plan.popular ? 'default' : 'outline'}>{plan.cta}</Button>
+                                <Button className="w-full mt-auto" variant={plan.popular ? 'default' : 'outline'}>{plan.cta}</Button>
                             </CardContent>
                         </Card>
                     ))}
                 </div>
                 <div className="text-center mt-12">
-                   <Button variant="link" asChild>
-                       <Link href="/compare-plans">📈 Comparar Planos</Link>
-                   </Button>
+                   <p className="text-muted-foreground">Precisa de uma solução totalmente personalizada? <Button variant="link" className="p-0 h-auto" asChild><Link href="/contact">Entre em contato</Link></Button></p>
                 </div>
             </div>
         </section>
@@ -277,3 +290,5 @@ export default function HomePage() {
     </div>
   );
 }
+
+    
