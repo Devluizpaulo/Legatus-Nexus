@@ -44,7 +44,6 @@ const masterMenu = [
   { href: '/financial', label: 'Financeiro', icon: Landmark },
   { href: '/refunds', label: 'Reembolsos', icon: Receipt },
   { href: '/billing', label: 'Faturamento', icon: FileText },
-  { href: '/subscription', label: 'Assinatura', icon: FileSignature },
   { href: '/reports', label: 'Relatórios', icon: BarChart3 },
   { href: '/team', label: 'Equipe', icon: Users },
   { href: '/audit', label: 'Auditoria', icon: History },

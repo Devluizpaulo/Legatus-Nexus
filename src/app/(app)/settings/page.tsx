@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useAuth } from '@/contexts/auth-context';
-import { User, Building, Palette, Star, Users } from 'lucide-react';
+import { User, Building, Palette, Star, Users, FileSignature } from 'lucide-react';
 import MeuPerfilTab from '@/components/settings/meu-perfil-tab';
 import AparenciaTab from '@/components/settings/aparencia-tab';
 import PerfilEscritorioTab from '@/components/settings/perfil-escritorio-tab';
@@ -10,8 +10,9 @@ import EquipeTab from '@/components/settings/equipe-tab';
 import AvaliarTab from '@/components/settings/avaliar-tab';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
+import AssinaturaTab from '@/components/settings/assinatura-tab';
 
-type TabId = 'perfil' | 'aparencia' | 'escritorio' | 'equipe' | 'avaliar';
+type TabId = 'perfil' | 'aparencia' | 'escritorio' | 'equipe' | 'assinatura' |'avaliar';
 
 export default function SettingsPage() {
     const { currentUser } = useAuth();
@@ -27,6 +28,7 @@ export default function SettingsPage() {
     }
     
     const isMaster = currentUser.role === 'Master';
+    const isFinanceiro = currentUser.role === 'Financeiro';
     const isSuperAdmin = currentUser.role === 'SuperAdmin';
 
     const tabs = [
@@ -34,6 +36,7 @@ export default function SettingsPage() {
         { id: 'aparencia', label: 'Aparência', icon: Palette },
         isMaster && { id: 'escritorio', label: 'Perfil do Escritório', icon: Building },
         isMaster && { id: 'equipe', label: 'Equipe', icon: Users },
+        (isMaster || isFinanceiro) && { id: 'assinatura', label: 'Assinatura', icon: FileSignature },
         !isSuperAdmin && { id: 'avaliar', label: 'Avaliar Sistema', icon: Star },
     ].filter(Boolean) as { id: TabId; label: string; icon: React.ElementType }[];
     
@@ -52,6 +55,8 @@ export default function SettingsPage() {
                 return isMaster ? <PerfilEscritorioTab /> : null;
             case 'equipe':
                 return isMaster ? <EquipeTab /> : null;
+            case 'assinatura':
+                return (isMaster || isFinanceiro) ? <AssinaturaTab /> : null;
             case 'avaliar':
                 return <AvaliarTab />;
             default:
