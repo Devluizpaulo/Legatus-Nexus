@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, Scale, Users, Briefcase, BarChart, ShieldCheck, Calendar, Wallet, AreaChart, Award, FileText, GanttChartSquare, Landmark, Clock, Settings, User, LayoutDashboard, BadgeHelp, LogOut, BrainCircuit, Key, Handshake } from "lucide-react";
+import { CheckCircle, Calendar, Briefcase, Wallet, AreaChart, FileText, Award, Handshake, Key } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
@@ -10,32 +10,32 @@ const features = [
   {
     icon: <Calendar className="w-8 h-8 text-primary" />,
     title: "Agenda Inteligente",
-    description: "Prazos, audiências e atendimentos com visual de calendário e sincronização.",
+    description: "Prazos, audiências e atendimentos com visual de calendário e sincronização entre usuários.",
   },
   {
     icon: <Briefcase className="w-8 h-8 text-primary" />,
-    title: "Gestão de Processos",
-    description: "Organize casos, documentos e atualizações em um ambiente colaborativo.",
+    title: "Gestão de Processos e Clientes",
+    description: "Organize casos, documentos, comentários e atualizações em um ambiente colaborativo.",
   },
   {
     icon: <Wallet className="w-8 h-8 text-primary" />,
     title: "Financeiro e Reembolsos",
-    description: "Controle total sobre despesas, lançamentos e solicitações com fluxo de aprovação.",
+    description: "Controle total sobre despesas, lançamentos e solicitações de reembolso com fluxo de aprovação.",
   },
   {
     icon: <AreaChart className="w-8 h-8 text-primary" />,
     title: "Controle de Despesas e Ganhos",
-    description: "Visualize relatórios, histórico e dashboards dinâmicos com gráficos.",
+    description: "Visualize relatórios, histórico financeiro e dashboards dinâmicos com gráficos interativos.",
   },
   {
     icon: <FileText className="w-8 h-8 text-primary" />,
     title: "Plano e Assinaturas",
-    description: "Gerencie o plano do escritório e histórico de pagamentos no painel Master.",
+    description: "Gerencie o plano do escritório, histórico de pagamentos e upgrades diretamente no painel Master.",
   },
   {
     icon: <Award className="w-8 h-8 text-primary" />,
     title: "Auditoria e Gamificação",
-    description: "Monitore ações, conquistas e métricas de desempenho da sua equipe.",
+    description: "Monitore ações, conquistas e métricas de desempenho da equipe.",
   }
 ];
 
@@ -116,7 +116,7 @@ export default function HomePage() {
             <div className="mt-8 flex flex-wrap justify-center gap-4">
               <Button size="lg" asChild>
                 <Link href="/register">
-                  <Handshake />
+                  <Briefcase />
                   Solicitar Demonstração
                 </Link>
               </Button>
@@ -148,7 +148,7 @@ export default function HomePage() {
             <div className="text-center">
               <h2 className="font-headline text-3xl md:text-4xl font-bold">O futuro da advocacia é digital.</h2>
               <p className="mt-4 max-w-3xl mx-auto text-lg text-muted-foreground">
-                O **Legatus Nexus** é uma plataforma completa de **gestão jurídica e administrativa**. Cada profissional tem seu próprio ambiente com permissões personalizadas, garantindo produtividade e controle.
+                O **Legatus Nexus** é uma plataforma completa de **gestão jurídica e administrativa** para escritórios de advocacia. Cada profissional tem seu próprio ambiente com permissões personalizadas, garantindo produtividade e controle.
               </p>
             </div>
             <div className="mt-12 grid gap-x-8 gap-y-4 md:grid-cols-2 lg:grid-cols-3">
@@ -158,7 +158,7 @@ export default function HomePage() {
               </div>
                <div className="flex items-center gap-3">
                 <CheckCircle className="h-5 w-5 text-primary shrink-0"/>
-                <p>Painéis seguros e independentes</p>
+                <p>Painéis independentes e seguros</p>
               </div>
                <div className="flex items-center gap-3">
                 <CheckCircle className="h-5 w-5 text-primary shrink-0"/>
@@ -189,7 +189,7 @@ export default function HomePage() {
                 </div>
                 <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {features.map((feature) => (
-                        <Card key={feature.title} className="flex flex-col text-center p-6 rounded-lg transition-all hover:shadow-lg hover:-translate-y-1 border-transparent hover:border-primary/20 bg-secondary/30 dark:bg-card">
+                        <Card key={feature.title} className="flex flex-col text-center items-center p-6 rounded-lg transition-all hover:shadow-lg hover:-translate-y-1 border-transparent hover:border-primary/20 bg-secondary/30 dark:bg-card">
                             <div className="flex-shrink-0">{feature.icon}</div>
                             <h3 className="mt-4 text-xl font-semibold">{feature.title}</h3>
                             <p className="mt-2 text-muted-foreground flex-grow">{feature.description}</p>
@@ -249,7 +249,7 @@ export default function HomePage() {
                     {testimonials.map((testimonial, index) => (
                         <Card key={index} className="p-6 bg-secondary/30 dark:bg-card">
                             <CardContent className="p-0">
-                                <p className="italic text-lg">"{testimonial.quote}"</p>
+                                <blockquote className="italic text-lg border-l-4 border-primary pl-4">"{testimonial.quote}"</blockquote>
                                 <div className="mt-4 flex items-center gap-4">
                                   {testimonial.image && (
                                      <Image src={testimonial.image.imageUrl} alt={testimonial.name} width={48} height={48} className="rounded-full object-cover" data-ai-hint={testimonial.image.imageHint} />
@@ -271,14 +271,14 @@ export default function HomePage() {
       <footer className="bg-primary text-primary-foreground">
         <div className="container mx-auto py-8 px-4 md:px-6 text-center md:text-left">
             <div className="flex flex-col md:flex-row justify-between items-center">
-                <div className="flex items-center gap-2 mb-4 md:mb-0">
+                <div className="mb-4 md:mb-0">
                     <Logo />
                 </div>
                 <p className="text-sm text-primary-foreground/80">&copy; {new Date().getFullYear()} Legatus Nexus — Solução Jurídica Integrada</p>
             </div>
             <div className="mt-6 text-center text-xs text-primary-foreground/60 space-y-1">
                 <p>Desenvolvido por **Nexus Studio SP**</p>
-                <p>Rua Contos Guachescos, 165 — Vila Santa Catarina — São Paulo/SP</p>
+                <p>Rua Contos Gauchescos, 165 — Vila Santa Catarina — São Paulo/SP</p>
                 <p>
                     <a href="mailto:contato@nexusstudiosp.com.br" className="hover:underline">contato@nexusstudiosp.com.br</a>
                     <span className="mx-2">|</span>
