@@ -98,12 +98,12 @@ export default function AppSidebar() {
         <SidebarMenu>
           {menuItems.map((item) => (
             <SidebarMenuItem key={item.href}>
-              <Link href={item.href} legacyBehavior passHref>
+              <Link href={item.href}>
                 <SidebarMenuButton asChild isActive={pathname.startsWith(item.href)}>
-                  <a>
+                  <span>
                     <item.icon />
                     <span>{item.label}</span>
-                  </a>
+                  </span>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
@@ -114,9 +114,9 @@ export default function AppSidebar() {
       <SidebarFooter className='p-2'>
          <SidebarMenu>
             <SidebarMenuItem>
-              <Link href="/settings" legacyBehavior passHref>
+              <Link href="/settings">
                   <SidebarMenuButton asChild isActive={pathname.startsWith('/settings')}>
-                      <a><Settings /><span>Configurações</span></a>
+                      <span><Settings /><span>Configurações</span></span>
                   </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
