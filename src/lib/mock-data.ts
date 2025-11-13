@@ -1,4 +1,4 @@
-import { Tenant, User, Client, Case, CaseStatus, UserRole, Appointment, Deadline, TimeEntry, FinancialTransaction } from "./types";
+import { Tenant, User, Client, Case, CaseStatus, UserRole, Appointment, Deadline, TimeEntry, FinancialTransaction, Refund, RefundStatus } from "./types";
 import { PlaceHolderImages } from "./placeholder-images";
 import { format, addDays, subDays } from 'date-fns';
 
@@ -51,6 +51,13 @@ const financialTransactions: FinancialTransaction[] = [
     { id: 'ft-5', tenantId: 'tenant-1', type: 'Despesa', description: 'Almoço com cliente', amount: 180.50, date: format(subDays(today, 1), 'yyyy-MM-dd'), userId: 'user-2', status: 'Reprovada', approverId: 'user-1', notes: 'Política não cobre despesas de alimentação.' },
 ];
 
+const refunds: Refund[] = [
+    { id: 'ref-1', tenantId: 'tenant-1', userId: 'user-2', description: 'Táxi para o fórum', amount: 45.50, date: format(subDays(today, 2), 'yyyy-MM-dd'), status: 'Pendente', clientId: 'client-1', caseId: 'case-1' },
+    { id: 'ref-2', tenantId: 'tenant-1', userId: 'user-1', description: 'Cópia de processo', amount: 120.00, date: format(subDays(today, 5), 'yyyy-MM-dd'), status: 'Aprovado', approverId: 'user-1', clientId: 'client-2', caseId: 'case-3' },
+    { id: 'ref-3', tenantId: 'tenant-1', userId: 'user-2', description: 'Estacionamento audiência', amount: 30.00, date: format(subDays(today, 7), 'yyyy-MM-dd'), status: 'Pago', approverId: 'user-3', clientId: 'client-1', caseId: 'case-2' },
+    { id: 'ref-4', tenantId: 'tenant-1', userId: 'user-1', description: 'Jantar com cliente potencial', amount: 250.00, date: format(subDays(today, 3), 'yyyy-MM-dd'), status: 'Reprovado', approverId: 'user-1' },
+];
+
 
 const tenants: Tenant[] = [
   {
@@ -64,6 +71,7 @@ const tenants: Tenant[] = [
     deadlines: deadlines.filter(d => d.tenantId === 'tenant-1'),
     timeEntries: timeEntries.filter(te => te.tenantId === 'tenant-1'),
     financialTransactions: financialTransactions.filter(ft => ft.tenantId === 'tenant-1'),
+    refunds: refunds.filter(r => r.tenantId === 'tenant-1'),
   },
   {
     id: "tenant-2",
@@ -76,6 +84,7 @@ const tenants: Tenant[] = [
     deadlines: [],
     timeEntries: [],
     financialTransactions: [],
+    refunds: [],
   },
 ];
 
@@ -87,6 +96,7 @@ export const MOCK_APPOINTMENTS: Appointment[] = appointments;
 export const MOCK_DEADLINES: Deadline[] = deadlines;
 export const MOCK_TIME_ENTRIES: TimeEntry[] = timeEntries;
 export const MOCK_FINANCIAL_TRANSACTIONS: FinancialTransaction[] = financialTransactions;
+export const MOCK_REFUNDS: Refund[] = refunds;
 
 export const ALL_CASE_STATUSES: CaseStatus[] = ["Análise Inicial", "Fase de Instrução", "Recursos", "Finalizado"];
 export const ALL_APPOINTMENT_TYPES: AppointmentType[] = ['Atendimento', 'Reunião', 'Audiência'];
@@ -95,3 +105,4 @@ export const ALL_DEADLINE_STATUSES: DeadlineStatus[] = ['Pendente', 'Cumprido'];
 export const ALL_TIME_ENTRY_STATUSES: TimeEntryStatus[] = ['Pendente', 'Faturado'];
 export const ALL_TRANSACTION_TYPES: TransactionType[] = ['Ganho', 'Despesa'];
 export const ALL_TRANSACTION_STATUSES: TransactionStatus[] = ['Pendente', 'Aprovada', 'Liquidada', 'Reprovada'];
+export const ALL_REFUND_STATUSES: RefundStatus[] = ['Pendente', 'Aprovado', 'Reprovado', 'Pago'];

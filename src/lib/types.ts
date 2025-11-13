@@ -9,6 +9,7 @@ export type Tenant = {
   deadlines: Deadline[];
   timeEntries: TimeEntry[];
   financialTransactions: FinancialTransaction[];
+  refunds: Refund[];
 };
 
 export type UserRole = "Master" | "Advogado" | "Financeiro" | "SuperAdmin";
@@ -112,4 +113,20 @@ export type FinancialTransaction = {
   status: TransactionStatus;
   approverId?: string; // User who approved/rejected
   notes?: string;
+};
+
+export type RefundStatus = 'Pendente' | 'Aprovado' | 'Reprovado' | 'Pago';
+
+export type Refund = {
+  id: string;
+  tenantId: string;
+  userId: string; // User who requested
+  description: string;
+  amount: number;
+  date: string; // Date of the expense
+  status: RefundStatus;
+  attachmentUrl?: string; // URL to the receipt
+  clientId?: string; // Optional: for billing the client
+  caseId?: string; // Optional: for billing the client
+  approverId?: string; // User who approved/rejected
 };

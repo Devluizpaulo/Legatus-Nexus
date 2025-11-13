@@ -1,8 +1,8 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { User, Tenant, Client, Case, Appointment, Deadline, TimeEntry, FinancialTransaction } from '@/lib/types';
-import { MOCK_USERS, MOCK_TENANTS, MOCK_CLIENTS, MOCK_CASES, MOCK_APPOINTMENTS, MOCK_DEADLINES, MOCK_TIME_ENTRIES, MOCK_FINANCIAL_TRANSACTIONS } from '@/lib/mock-data';
+import { User, Tenant, Client, Case, Appointment, Deadline, TimeEntry, FinancialTransaction, Refund } from '@/lib/types';
+import { MOCK_USERS, MOCK_TENANTS, MOCK_CLIENTS, MOCK_CASES, MOCK_APPOINTMENTS, MOCK_DEADLINES, MOCK_TIME_ENTRIES, MOCK_FINANCIAL_TRANSACTIONS, MOCK_REFUNDS } from '@/lib/mock-data';
 import { useRouter } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -17,6 +17,7 @@ interface AuthContextType {
     deadlines: Deadline[];
     timeEntries: TimeEntry[];
     financialTransactions: FinancialTransaction[];
+    refunds: Refund[];
   } | null;
   isAuthenticated: boolean;
   login: (email: string, pass: string) => boolean;
@@ -37,6 +38,9 @@ interface AuthContextType {
   addFinancialTransaction: (newTransaction: Omit<FinancialTransaction, 'id' | 'tenantId'>) => void;
   updateFinancialTransaction: (updatedTransaction: FinancialTransaction) => void;
   deleteFinancialTransaction: (transactionId: string) => void;
+  addRefund: (newRefund: Omit<Refund, 'id' | 'tenantId'>) => void;
+  updateRefund: (updatedRefund: Refund) => void;
+  deleteRefund: (refundId: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -65,6 +69,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 deadlines: MOCK_DEADLINES.filter(d => d.tenantId === tenant.id),
                 timeEntries: MOCK_TIME_ENTRIES.filter(te => te.tenantId === tenant.id),
                 financialTransactions: MOCK_FINANCIAL_TRANSACTIONS.filter(ft => ft.tenantId === tenant.id),
+                refunds: MOCK_REFUNDS.filter(r => r.tenantId === tenant.id),
             });
         }
       }
@@ -245,6 +250,35 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
   };
 
+  const addRefund = (newRefund: Omit<Refund, 'id' | 'tenantId'>) => {
+    if (tenantData && currentTenant) {
+      const fullRefund: Refund = {
+        ...newRefund,
+        id: `ref-${uuidv4()}`,
+        tenantId: currentTenant.id,
+      };
+      setTenantData({ ...tenantData, refunds: [...tenantData.refunds, fullRefund] });
+    }
+  };
+
+  const updateRefund = (updatedRefund: Refund) => {
+    if (tenantData) {
+      setTenantData({
+        ...tenantData,
+        refunds: tenantData.refunds.map(r => r.id === updatedRefund.id ? updatedRefund : r),
+      });
+    }
+  };
+
+  const deleteRefund = (refundId: string) => {
+    if (tenantData) {
+      setTenantData({
+        ...tenantData,
+        refunds: tenantData.refunds.filter(r => r.id !== refundId),
+      });
+    }
+  };
+
   return (
     <AuthContext.Provider value={{ 
         currentUser, 
@@ -268,7 +302,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         deleteTimeEntry,
         addFinancialTransaction,
         updateFinancialTransaction,
-        deleteFinancialTransaction
+        deleteFinancialTransaction,
+        addRefund,
+        updateRefund,
+        deleteRefund,
     }}>
       {children}
     </AuthContext.Provider>
