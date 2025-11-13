@@ -5,6 +5,7 @@ export type Tenant = {
   users: User[];
   clients: Client[];
   cases: Case[];
+  appointments: Appointment[];
 };
 
 export type UserRole = "Master" | "Advogado" | "Financeiro" | "SuperAdmin";
@@ -38,4 +39,21 @@ export type Case = {
   status: CaseStatus;
   responsible: string[]; // User IDs
   deadline?: string; // ISO date string
+};
+
+export type AppointmentType = 'Atendimento' | 'Reunião' | 'Audiência';
+export type AppointmentStatus = 'Agendado' | 'Confirmado' | 'Cancelado' | 'Realizado';
+
+export type Appointment = {
+  id: string;
+  tenantId: string;
+  title: string;
+  description?: string;
+  date: string; // ISO date string (YYYY-MM-DD)
+  time: string; // HH:mm
+  type: AppointmentType;
+  status: AppointmentStatus;
+  location?: string;
+  responsible: string[]; // User IDs
+  clientId: string;
 };
