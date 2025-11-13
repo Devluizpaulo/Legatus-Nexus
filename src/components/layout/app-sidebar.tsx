@@ -23,7 +23,11 @@ import {
   User,
   GanttChartSquare,
   BadgeHelp,
-  BarChart3
+  BarChart3,
+  Receipt,
+  FileSignature,
+  History,
+  Info
 } from 'lucide-react';
 import { Logo } from './logo';
 import { usePathname } from 'next/navigation';
@@ -33,14 +37,18 @@ import { Separator } from '@/components/ui/separator';
 
 const masterMenu = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/cases', label: 'Processos', icon: Briefcase },
-  { href: '/clients', label: 'Clientes', icon: Users },
   { href: '/agenda', label: 'Agenda', icon: Calendar },
   { href: '/deadlines', label: 'Prazos', icon: GanttChartSquare },
+  { href: '/clients', label: 'Clientes', icon: Users },
+  { href: '/cases', label: 'Processos', icon: Briefcase },
   { href: '/financial', label: 'Financeiro', icon: Landmark },
+  { href: '/refunds', label: 'Reembolsos', icon: Receipt },
+  { href: '/billing', label: 'Faturamento', icon: FileText },
+  { href: '/subscription', label: 'Assinatura', icon: FileSignature },
   { href: '/reports', label: 'Relatórios', icon: BarChart3 },
   { href: '/team', label: 'Equipe', icon: Users },
-  { href: '/settings', label: 'Configurações', icon: Settings },
+  { href: '/audit', label: 'Auditoria', icon: History },
+  { href: '/support', label: 'Suporte', icon: Info },
 ];
 
 const advogadoMenu = [
@@ -106,13 +114,13 @@ export default function AppSidebar() {
       <SidebarFooter className='p-2'>
          <SidebarMenu>
             <SidebarMenuItem>
-                <Link href="/help" legacyBehavior passHref>
-                    <SidebarMenuButton asChild isActive={pathname.startsWith('/help')}>
-                        <a><BadgeHelp /><span>Ajuda & Suporte</span></a>
-                    </SidebarMenuButton>
-                </Link>
+              <Link href="/settings" legacyBehavior passHref>
+                  <SidebarMenuButton asChild isActive={pathname.startsWith('/settings')}>
+                      <a><Settings /><span>Configurações</span></a>
+                  </SidebarMenuButton>
+              </Link>
             </SidebarMenuItem>
-             <SidebarMenuItem>
+            <SidebarMenuItem>
                 <SidebarMenuButton onClick={logout} >
                     <LogOut/>
                     <span>Sair</span>
