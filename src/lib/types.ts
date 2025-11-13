@@ -6,6 +6,7 @@ export type Tenant = {
   clients: Client[];
   cases: Case[];
   appointments: Appointment[];
+  deadlines: Deadline[];
 };
 
 export type UserRole = "Master" | "Advogado" | "Financeiro" | "SuperAdmin";
@@ -56,4 +57,24 @@ export type Appointment = {
   location?: string;
   responsible: string[]; // User IDs
   clientId: string;
+};
+
+export type DeadlineStatus = 'Pendente' | 'Cumprido';
+
+export type ChecklistItem = {
+  id: string;
+  text: string;
+  completed: boolean;
+};
+
+export type Deadline = {
+  id: string;
+  tenantId: string;
+  title: string;
+  caseNumber: string;
+  dueDate: string; // ISO date string
+  status: DeadlineStatus;
+  responsibleId: string;
+  clientId: string;
+  checklist: ChecklistItem[];
 };

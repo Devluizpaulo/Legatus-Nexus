@@ -1,6 +1,6 @@
-import { Tenant, User, Client, Case, CaseStatus, UserRole, Appointment } from "./types";
+import { Tenant, User, Client, Case, CaseStatus, UserRole, Appointment, Deadline } from "./types";
 import { PlaceHolderImages } from "./placeholder-images";
-import { format } from 'date-fns';
+import { format, addDays, subDays } from 'date-fns';
 
 const users: User[] = [
   { id: "user-1", tenantId: "tenant-1", name: "Artur Morgan", email: "artur.morgan@example.com", password: "password", role: "Master", avatarUrl: PlaceHolderImages.find(p => p.id === 'avatar1')?.imageUrl || '' },
@@ -29,6 +29,14 @@ const appointments: Appointment[] = [
   { id: 'apt-3', tenantId: 'tenant-1', title: 'Atendimento Sr. Wayne', description: 'Chamada para atualização semanal.', date: format(today, 'yyyy-MM-dd'), time: '16:00', type: 'Atendimento', status: 'Agendado', location: 'Google Meet', responsible: ['user-2'], clientId: 'client-2' },
 ];
 
+const deadlines: Deadline[] = [
+    { id: 'dl-1', tenantId: 'tenant-1', title: 'Contestação', caseNumber: '0012345-67.2023.8.26.0100', dueDate: format(addDays(today, 2), 'yyyy-MM-dd'), status: 'Pendente', responsibleId: 'user-2', clientId: 'client-1', checklist: [{id: 't1', text: 'Analisar petição inicial', completed: true}, {id: 't2', text: 'Coletar documentos', completed: false}] },
+    { id: 'dl-2', tenantId: 'tenant-1', title: 'Recurso de Apelação', caseNumber: '0054321-98.2022.8.26.0500', dueDate: format(addDays(today, 6), 'yyyy-MM-dd'), status: 'Pendente', responsibleId: 'user-1', clientId: 'client-2', checklist: [] },
+    { id: 'dl-3', tenantId: 'tenant-1', title: 'Pagamento de Guia', caseNumber: '0098765-43.2023.8.26.0001', dueDate: format(addDays(today, 15), 'yyyy-MM-dd'), status: 'Pendente', responsibleId: 'user-3', clientId: 'client-1', checklist: [{id: 't3', text: 'Emitir guia', completed: true}, {id: 't4', text: 'Realizar pagamento', completed: true}] },
+    { id: 'dl-4', tenantId: 'tenant-1', title: 'Entrega de Memorial', caseNumber: '0011223-34.2021.8.26.0100', dueDate: format(subDays(today, 5), 'yyyy-MM-dd'), status: 'Cumprido', responsibleId: 'user-2', clientId: 'client-1', checklist: [{id: 't5', text: 'Finalizar redação', completed: true}, {id: 't6', text: 'Protocolar', completed: true}] },
+    { id: 'dl-5', tenantId: 'tenant-1', title: 'Agravo de Instrumento', caseNumber: '0033445-56.2023.8.26.0100', dueDate: format(subDays(today, 1), 'yyyy-MM-dd'), status: 'Pendente', responsibleId: 'user-1', clientId: 'client-2', checklist: [{id: 't7', text: 'Analisar decisão', completed: true}, {id: 't8', text: 'Minutar peça', completed: false}] },
+];
+
 const tenants: Tenant[] = [
   {
     id: "tenant-1",
@@ -38,6 +46,7 @@ const tenants: Tenant[] = [
     clients: clients.filter(c => c.tenantId === "tenant-1"),
     cases: cases.filter(c => c.tenantId === "tenant-1"),
     appointments: appointments.filter(a => a.tenantId === "tenant-1"),
+    deadlines: deadlines.filter(d => d.tenantId === 'tenant-1'),
   },
   {
     id: "tenant-2",
@@ -47,6 +56,7 @@ const tenants: Tenant[] = [
     clients: [],
     cases: [],
     appointments: [],
+    deadlines: [],
   },
 ];
 
@@ -55,8 +65,10 @@ export const MOCK_TENANTS: Tenant[] = tenants;
 export const MOCK_CLIENTS: Client[] = clients;
 export const MOCK_CASES: Case[] = cases;
 export const MOCK_APPOINTMENTS: Appointment[] = appointments;
+export const MOCK_DEADLINES: Deadline[] = deadlines;
 
 
 export const ALL_CASE_STATUSES: CaseStatus[] = ["Análise Inicial", "Fase de Instrução", "Recursos", "Finalizado"];
 export const ALL_APPOINTMENT_TYPES: AppointmentType[] = ['Atendimento', 'Reunião', 'Audiência'];
 export const ALL_APPOINTMENT_STATUSES: AppointmentStatus[] = ['Agendado', 'Confirmado', 'Cancelado', 'Realizado'];
+export const ALL_DEADLINE_STATUSES: DeadlineStatus[] = ['Pendente', 'Cumprido'];

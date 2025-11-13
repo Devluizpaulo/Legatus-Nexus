@@ -1,8 +1,8 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { User, Tenant, Client, Case, Appointment } from '@/lib/types';
-import { MOCK_USERS, MOCK_TENANTS, MOCK_CLIENTS, MOCK_CASES, MOCK_APPOINTMENTS } from '@/lib/mock-data';
+import { User, Tenant, Client, Case, Appointment, Deadline } from '@/lib/types';
+import { MOCK_USERS, MOCK_TENANTS, MOCK_CLIENTS, MOCK_CASES, MOCK_APPOINTMENTS, MOCK_DEADLINES } from '@/lib/mock-data';
 import { useRouter } from 'next/navigation';
 
 interface AuthContextType {
@@ -13,6 +13,7 @@ interface AuthContextType {
     cases: Case[];
     users: User[];
     appointments: Appointment[];
+    deadlines: Deadline[];
   } | null;
   isAuthenticated: boolean;
   login: (email: string, pass: string) => boolean;
@@ -21,6 +22,9 @@ interface AuthContextType {
   addAppointment: (newAppointment: Omit<Appointment, 'id' | 'tenantId'>) => void;
   updateAppointment: (updatedAppointment: Appointment) => void;
   deleteAppointment: (appointmentId: string) => void;
+  addDeadline: (newDeadline: Omit<Deadline, 'id' | 'tenantId'>) => void;
+  updateDeadline: (updatedDeadline: Deadline) => void;
+  deleteDeadline: (deadlineId: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -28,7 +32,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [currentTenant, setCurrentTenant] = useState<Tenant | null>(null);
-  const [tenantData, setTenantData] = useState<{ clients: Client[]; cases: Case[]; users: User[], appointments: Appointment[] } | null>(null);
+  const [tenantData, setTenantData] = useState<{ clients: Client[]; cases: Case[]; users: User[], appointments: Appointment[], deadlines: Deadline[] } | null>(null);
   const router = useRouter();
   
   const isAuthenticated = !!currentUser;
@@ -46,6 +50,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 cases: MOCK_CASES.filter(c => c.tenantId === tenant.id),
                 users: MOCK_USERS.filter(u => u.tenantId === tenant.id),
                 appointments: MOCK_APPOINTMENTS.filter(a => a.tenantId === tenant.id),
+                deadlines: MOCK_DEADLINES.filter(d => d.tenantId === tenant.id),
             });
         }
       }
@@ -97,10 +102,41 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
     }
   };
+  
+  const addDeadline = (newDeadline: Omit<Deadline, 'id' | 'tenantId'>) => {
+    if (tenantData && currentTenant) {
+      const fullDeadline: Deadline = {
+        ...newDeadline,
+        id: `dl-${Date.now()}`,
+        tenantId: currentTenant.id,
+      };
+      setTenantData({ ...tenantData, deadlines: [...tenantData.deadlines, fullDeadline] });
+    }
+  };
+
+  const updateDeadline = (updatedDeadline: Deadline) => {
+    if (tenantData) {
+      setTenantData({
+        ...tenantData,
+        deadlines: tenantData.deadlines.map(dl => 
+          dl.id === updatedDeadline.id ? updatedDeadline : dl
+        ),
+      });
+    }
+  };
+  
+  const deleteDeadline = (deadlineId: string) => {
+    if (tenantData) {
+      setTenantData({
+        ...tenantData,
+        deadlines: tenantData.deadlines.filter(dl => dl.id !== deadlineId),
+      });
+    }
+  };
 
 
   return (
-    <AuthContext.Provider value={{ currentUser, currentTenant, tenantData, isAuthenticated, login, logout, updateCases, addAppointment, updateAppointment, deleteAppointment }}>
+    <AuthContext.Provider value={{ currentUser, currentTenant, tenantData, isAuthenticated, login, logout, updateCases, addAppointment, updateAppointment, deleteAppointment, addDeadline, updateDeadline, deleteDeadline }}>
       {children}
     </AuthContext.Provider>
   );
