@@ -7,6 +7,8 @@ export type Tenant = {
   cases: Case[];
   appointments: Appointment[];
   deadlines: Deadline[];
+  timeEntries: TimeEntry[];
+  financialTransactions: FinancialTransaction[];
 };
 
 export type UserRole = "Master" | "Advogado" | "Financeiro" | "SuperAdmin";
@@ -79,4 +81,35 @@ export type Deadline = {
   responsibleId: string;
   clientId: string;
   checklist: ChecklistItem[];
+};
+
+export type TimeEntryStatus = 'Pendente' | 'Faturado';
+
+export type TimeEntry = {
+  id: string;
+  tenantId: string;
+  userId: string;
+  clientId: string;
+  caseId: string;
+  date: string; // ISO Date String
+  hours: number;
+  description: string;
+  status: TimeEntryStatus;
+  invoiceId?: string;
+};
+
+export type TransactionType = 'Ganho' | 'Despesa';
+export type TransactionStatus = 'Pendente' | 'Aprovada' | 'Liquidada' | 'Reprovada';
+
+export type FinancialTransaction = {
+  id: string;
+  tenantId: string;
+  type: TransactionType;
+  description: string;
+  amount: number;
+  date: string; // ISO Date String
+  userId: string; // User who registered
+  status: TransactionStatus;
+  approverId?: string; // User who approved/rejected
+  notes?: string;
 };

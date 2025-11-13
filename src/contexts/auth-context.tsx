@@ -1,8 +1,8 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { User, Tenant, Client, Case, Appointment, Deadline } from '@/lib/types';
-import { MOCK_USERS, MOCK_TENANTS, MOCK_CLIENTS, MOCK_CASES, MOCK_APPOINTMENTS, MOCK_DEADLINES } from '@/lib/mock-data';
+import { User, Tenant, Client, Case, Appointment, Deadline, TimeEntry, FinancialTransaction } from '@/lib/types';
+import { MOCK_USERS, MOCK_TENANTS, MOCK_CLIENTS, MOCK_CASES, MOCK_APPOINTMENTS, MOCK_DEADLINES, MOCK_TIME_ENTRIES, MOCK_FINANCIAL_TRANSACTIONS } from '@/lib/mock-data';
 import { useRouter } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -15,6 +15,8 @@ interface AuthContextType {
     users: User[];
     appointments: Appointment[];
     deadlines: Deadline[];
+    timeEntries: TimeEntry[];
+    financialTransactions: FinancialTransaction[];
   } | null;
   isAuthenticated: boolean;
   login: (email: string, pass: string) => boolean;
@@ -29,6 +31,12 @@ interface AuthContextType {
   addClient: (newClient: Omit<Client, 'id' | 'tenantId' | 'caseIds'>) => void;
   updateClient: (updatedClient: Client) => void;
   deleteClient: (clientId: string) => void;
+  addTimeEntry: (newTimeEntry: Omit<TimeEntry, 'id' | 'tenantId'>) => void;
+  updateTimeEntry: (updatedTimeEntry: TimeEntry) => void;
+  deleteTimeEntry: (timeEntryId: string) => void;
+  addFinancialTransaction: (newTransaction: Omit<FinancialTransaction, 'id' | 'tenantId'>) => void;
+  updateFinancialTransaction: (updatedTransaction: FinancialTransaction) => void;
+  deleteFinancialTransaction: (transactionId: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -36,7 +44,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [currentTenant, setCurrentTenant] = useState<Tenant | null>(null);
-  const [tenantData, setTenantData] = useState<{ clients: Client[]; cases: Case[]; users: User[], appointments: Appointment[], deadlines: Deadline[] } | null>(null);
+  const [tenantData, setTenantData] = useState<AuthContextType['tenantData']>(null);
   const router = useRouter();
   
   const isAuthenticated = !!currentUser;
@@ -55,6 +63,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 users: MOCK_USERS.filter(u => u.tenantId === tenant.id),
                 appointments: MOCK_APPOINTMENTS.filter(a => a.tenantId === tenant.id),
                 deadlines: MOCK_DEADLINES.filter(d => d.tenantId === tenant.id),
+                timeEntries: MOCK_TIME_ENTRIES.filter(te => te.tenantId === tenant.id),
+                financialTransactions: MOCK_FINANCIAL_TRANSACTIONS.filter(ft => ft.tenantId === tenant.id),
             });
         }
       }
@@ -177,9 +187,89 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const addTimeEntry = (newTimeEntry: Omit<TimeEntry, 'id' | 'tenantId'>) => {
+    if (tenantData && currentTenant) {
+        const fullTimeEntry: TimeEntry = {
+            ...newTimeEntry,
+            id: `te-${uuidv4()}`,
+            tenantId: currentTenant.id,
+        };
+        setTenantData({ ...tenantData, timeEntries: [...tenantData.timeEntries, fullTimeEntry] });
+    }
+  };
+
+  const updateTimeEntry = (updatedTimeEntry: TimeEntry) => {
+      if (tenantData) {
+          setTenantData({
+              ...tenantData,
+              timeEntries: tenantData.timeEntries.map(te => te.id === updatedTimeEntry.id ? updatedTimeEntry : te),
+          });
+      }
+  };
+
+  const deleteTimeEntry = (timeEntryId: string) => {
+      if (tenantData) {
+          setTenantData({
+              ...tenantData,
+              timeEntries: tenantData.timeEntries.filter(te => te.id !== timeEntryId),
+          });
+      }
+  };
+
+  const addFinancialTransaction = (newTransaction: Omit<FinancialTransaction, 'id' | 'tenantId'>) => {
+      if (tenantData && currentTenant) {
+          const fullTransaction: FinancialTransaction = {
+              ...newTransaction,
+              id: `ft-${uuidv4()}`,
+              tenantId: currentTenant.id,
+          };
+          setTenantData({ ...tenantData, financialTransactions: [...tenantData.financialTransactions, fullTransaction] });
+      }
+  };
+
+  const updateFinancialTransaction = (updatedTransaction: FinancialTransaction) => {
+      if (tenantData) {
+          setTenantData({
+              ...tenantData,
+              financialTransactions: tenantData.financialTransactions.map(ft => ft.id === updatedTransaction.id ? updatedTransaction : ft),
+          });
+      }
+  };
+
+  const deleteFinancialTransaction = (transactionId: string) => {
+      if (tenantData) {
+          setTenantData({
+              ...tenantData,
+              financialTransactions: tenantData.financialTransactions.filter(ft => ft.id !== transactionId),
+          });
+      }
+  };
 
   return (
-    <AuthContext.Provider value={{ currentUser, currentTenant, tenantData, isAuthenticated, login, logout, updateCases, addAppointment, updateAppointment, deleteAppointment, addDeadline, updateDeadline, deleteDeadline, addClient, updateClient, deleteClient }}>
+    <AuthContext.Provider value={{ 
+        currentUser, 
+        currentTenant, 
+        tenantData, 
+        isAuthenticated, 
+        login, 
+        logout, 
+        updateCases, 
+        addAppointment, 
+        updateAppointment, 
+        deleteAppointment, 
+        addDeadline, 
+        updateDeadline, 
+        deleteDeadline, 
+        addClient, 
+        updateClient, 
+        deleteClient,
+        addTimeEntry,
+        updateTimeEntry,
+        deleteTimeEntry,
+        addFinancialTransaction,
+        updateFinancialTransaction,
+        deleteFinancialTransaction
+    }}>
       {children}
     </AuthContext.Provider>
   );
