@@ -183,3 +183,5 @@ export type BillingHistory = {
   paymentDate?: string; // ISO date string
   status: BillingStatus;
 };
+
+export const EDITABLE_ROLES: UserRole[] = ["Advogado", "Financeiro"];

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { User, Tenant, Client, Case, Appointment, Deadline, TimeEntry, FinancialTransaction, Refund, Invoice, Subscription, Plan, BillingHistory } from '@/lib/types';
+import { User, Tenant, Client, Case, Appointment, Deadline, TimeEntry, FinancialTransaction, Refund, Invoice, Subscription, Plan, BillingHistory, UserRole } from '@/lib/types';
 import { MOCK_USERS, MOCK_TENANTS, MOCK_CLIENTS, MOCK_CASES, MOCK_APPOINTMENTS, MOCK_DEADLINES, MOCK_TIME_ENTRIES, MOCK_FINANCIAL_TRANSACTIONS, MOCK_REFUNDS, MOCK_INVOICES, MOCK_SUBSCRIPTIONS, MOCK_PLANS, MOCK_BILLING_HISTORY } from '@/lib/mock-data';
 import { useRouter } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
@@ -47,6 +47,9 @@ interface AuthContextType {
   updateRefund: (updatedRefund: Refund) => void;
   deleteRefund: (refundId: string) => void;
   updateInvoice: (updatedInvoice: Invoice) => void;
+  addUser: (newUser: Omit<User, 'id' | 'tenantId' | 'avatarUrl' | 'password'>) => void;
+  updateUser: (updatedUser: User) => void;
+  deleteUser: (userId: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -298,6 +301,37 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const addUser = (newUser: Omit<User, 'id' | 'tenantId' | 'avatarUrl' | 'password'>) => {
+    if (tenantData && currentTenant) {
+      const fullUser: User = {
+        ...newUser,
+        id: `user-${uuidv4()}`,
+        tenantId: currentTenant.id,
+        password: 'password', // Default password
+        avatarUrl: '', // Placeholder
+      };
+      setTenantData({ ...tenantData, users: [...tenantData.users, fullUser] });
+    }
+  };
+
+  const updateUser = (updatedUser: User) => {
+    if (tenantData) {
+      setTenantData({
+        ...tenantData,
+        users: tenantData.users.map(u => u.id === updatedUser.id ? { ...u, ...updatedUser} : u),
+      });
+    }
+  };
+
+  const deleteUser = (userId: string) => {
+    if (tenantData) {
+      setTenantData({
+        ...tenantData,
+        users: tenantData.users.filter(u => u.id !== userId),
+      });
+    }
+  };
+
   return (
     <AuthContext.Provider value={{ 
         currentUser, 
@@ -326,6 +360,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         updateRefund,
         deleteRefund,
         updateInvoice,
+        addUser,
+        updateUser,
+        deleteUser,
     }}>
       {children}
     </AuthContext.Provider>
