@@ -148,7 +148,7 @@ export default function HomePage() {
             <div className="text-center">
               <h2 className="font-headline text-3xl md:text-4xl font-bold">O futuro da advocacia é digital.</h2>
               <p className="mt-4 max-w-3xl mx-auto text-lg text-muted-foreground">
-                O **Legatus Nexus** é uma plataforma completa de **gestão jurídica e administrativa** para escritórios de advocacia. Cada profissional tem seu próprio ambiente com permissões personalizadas, garantindo produtividade e controle.
+                O <strong>Legatus Nexus</strong> é uma plataforma completa de <strong>gestão jurídica e administrativa</strong> para escritórios de advocacia. Cada profissional tem seu próprio ambiente com permissões personalizadas, garantindo produtividade e controle.
               </p>
             </div>
             <div className="mt-12 grid gap-x-8 gap-y-4 md:grid-cols-2 lg:grid-cols-3">
@@ -277,7 +277,7 @@ export default function HomePage() {
                 <p className="text-sm text-primary-foreground/80">&copy; {new Date().getFullYear()} Legatus Nexus — Solução Jurídica Integrada</p>
             </div>
             <div className="mt-6 text-center text-xs text-primary-foreground/60 space-y-1">
-                <p>Desenvolvido por **Nexus Studio SP**</p>
+                <p>Desenvolvido por <strong>Nexus Studio SP</strong></p>
                 <p>Rua Contos Gauchescos, 165 — Vila Santa Catarina — São Paulo/SP</p>
                 <p>
                     <a href="mailto:contato@nexusstudiosp.com.br" className="hover:underline">contato@nexusstudiosp.com.br</a>
@@ -290,5 +290,3 @@ export default function HomePage() {
     </div>
   );
 }
-
-    
