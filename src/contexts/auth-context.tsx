@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, ReactNode, useEffect } from
 import { User, Tenant, Client, Case, Appointment, Deadline } from '@/lib/types';
 import { MOCK_USERS, MOCK_TENANTS, MOCK_CLIENTS, MOCK_CASES, MOCK_APPOINTMENTS, MOCK_DEADLINES } from '@/lib/mock-data';
 import { useRouter } from 'next/navigation';
+import { v4 as uuidv4 } from 'uuid';
 
 interface AuthContextType {
   currentUser: User | null;
@@ -25,6 +26,9 @@ interface AuthContextType {
   addDeadline: (newDeadline: Omit<Deadline, 'id' | 'tenantId'>) => void;
   updateDeadline: (updatedDeadline: Deadline) => void;
   deleteDeadline: (deadlineId: string) => void;
+  addClient: (newClient: Omit<Client, 'id' | 'tenantId' | 'caseIds'>) => void;
+  updateClient: (updatedClient: Client) => void;
+  deleteClient: (clientId: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -76,7 +80,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (tenantData && currentTenant) {
       const fullAppointment: Appointment = {
         ...newAppointment,
-        id: `apt-${Date.now()}`,
+        id: `apt-${uuidv4()}`,
         tenantId: currentTenant.id,
       };
       setTenantData({ ...tenantData, appointments: [...tenantData.appointments, fullAppointment] });
@@ -107,7 +111,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (tenantData && currentTenant) {
       const fullDeadline: Deadline = {
         ...newDeadline,
-        id: `dl-${Date.now()}`,
+        id: `dl-${uuidv4()}`,
         tenantId: currentTenant.id,
       };
       setTenantData({ ...tenantData, deadlines: [...tenantData.deadlines, fullDeadline] });
@@ -134,9 +138,48 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const addClient = (newClient: Omit<Client, 'id' | 'tenantId' | 'caseIds'>) => {
+    if (tenantData && currentTenant) {
+        const fullClient: Client = {
+            ...newClient,
+            id: `client-${uuidv4()}`,
+            tenantId: currentTenant.id,
+            caseIds: [],
+        };
+        setTenantData({ ...tenantData, clients: [...tenantData.clients, fullClient] });
+    }
+  };
+
+  const updateClient = (updatedClient: Client) => {
+    if (tenantData) {
+        setTenantData({
+            ...tenantData,
+            clients: tenantData.clients.map(c => c.id === updatedClient.id ? { ...c, ...updatedClient} : c)
+        });
+    }
+  };
+  
+  const deleteClient = (clientId: string) => {
+    if (tenantData) {
+        // This is a cascade delete for the mock data
+        const newClients = tenantData.clients.filter(c => c.id !== clientId);
+        const newCases = tenantData.cases.filter(c => c.clientId !== clientId);
+        const newAppointments = tenantData.appointments.filter(a => a.clientId !== clientId);
+        const newDeadlines = tenantData.deadlines.filter(d => d.clientId !== clientId);
+
+        setTenantData({
+            ...tenantData,
+            clients: newClients,
+            cases: newCases,
+            appointments: newAppointments,
+            deadlines: newDeadlines,
+        });
+    }
+  };
+
 
   return (
-    <AuthContext.Provider value={{ currentUser, currentTenant, tenantData, isAuthenticated, login, logout, updateCases, addAppointment, updateAppointment, deleteAppointment, addDeadline, updateDeadline, deleteDeadline }}>
+    <AuthContext.Provider value={{ currentUser, currentTenant, tenantData, isAuthenticated, login, logout, updateCases, addAppointment, updateAppointment, deleteAppointment, addDeadline, updateDeadline, deleteDeadline, addClient, updateClient, deleteClient }}>
       {children}
     </AuthContext.Provider>
   );

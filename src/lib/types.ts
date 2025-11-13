@@ -25,9 +25,11 @@ export type Client = {
   id: string;
   tenantId: string;
   name: string;
+  document?: string;
   email: string;
   phone: string;
   caseIds: string[];
+  notes?: string;
 };
 
 export type CaseStatus = "Análise Inicial" | "Fase de Instrução" | "Recursos" | "Finalizado";

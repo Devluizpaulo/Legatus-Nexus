@@ -11,8 +11,8 @@ const users: User[] = [
 ];
 
 const clients: Client[] = [
-  { id: "client-1", tenantId: "tenant-1", name: "Indústrias Stark", email: "contato@stark.com", phone: "11 98765-4321", caseIds: ["case-1", "case-2"] },
-  { id: "client-2", tenantId: "tenant-1", name: "Wayne Enterprises", email: "financeiro@wayne.com", phone: "21 91234-5678", caseIds: ["case-3"] },
+  { id: "client-1", tenantId: "tenant-1", name: "Indústrias Stark", document: "12.345.678/0001-99", email: "contato@stark.com", phone: "11 98765-4321", caseIds: ["case-1", "case-2"], notes: "Cliente prioritário. Contato principal: Pepper Potts." },
+  { id: "client-2", tenantId: "tenant-1", name: "Wayne Enterprises", document: "98.765.432/0001-11", email: "financeiro@wayne.com", phone: "21 91234-5678", caseIds: ["case-3"] },
 ];
 
 const cases: Case[] = [
