@@ -1,8 +1,8 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { User, Tenant, Client, Case, Appointment, Deadline, TimeEntry, FinancialTransaction, Refund, Invoice, Subscription, Plan, BillingHistory, AuditLog, FaqItem, SupportTicket } from '@/lib/types';
-import { MOCK_USERS, MOCK_TENANTS, MOCK_CLIENTS, MOCK_CASES, MOCK_APPOINTMENTS, MOCK_DEADLINES, MOCK_TIME_ENTRIES, MOCK_FINANCIAL_TRANSACTIONS, MOCK_REFUNDS, MOCK_INVOICES, MOCK_SUBSCRIPTIONS, MOCK_PLANS, MOCK_BILLING_HISTORY, MOCK_AUDIT_LOGS, MOCK_FAQS, MOCK_SUPPORT_TICKETS } from '@/lib/mock-data';
+import { User, Tenant, Client, Case, Appointment, Deadline, TimeEntry, FinancialTransaction, Refund, Invoice, Subscription, Plan, BillingHistory, AuditLog, FaqItem, SupportTicket, Achievement } from '@/lib/types';
+import { MOCK_USERS, MOCK_TENANTS, MOCK_CLIENTS, MOCK_CASES, MOCK_APPOINTMENTS, MOCK_DEADLINES, MOCK_TIME_ENTRIES, MOCK_FINANCIAL_TRANSACTIONS, MOCK_REFUNDS, MOCK_INVOICES, MOCK_SUBSCRIPTIONS, MOCK_PLANS, MOCK_BILLING_HISTORY, MOCK_AUDIT_LOGS, MOCK_FAQS, MOCK_SUPPORT_TICKETS, MOCK_ACHIEVEMENTS } from '@/lib/mock-data';
 import { useRouter } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 import { format } from 'date-fns';
@@ -26,6 +26,7 @@ interface AuthContextType {
     auditLogs: AuditLog[];
     faqs: FaqItem[];
     supportTickets: SupportTicket[];
+    achievements: Achievement[];
   } | null;
   isAuthenticated: boolean;
   login: (email: string, pass: string) => boolean;
@@ -98,6 +99,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 auditLogs: MOCK_AUDIT_LOGS.filter(log => log.tenantId === tenant.id),
                 faqs: MOCK_FAQS,
                 supportTickets: MOCK_SUPPORT_TICKETS.filter(st => st.tenantId === tenant.id),
+                achievements: MOCK_ACHIEVEMENTS.filter(ach => MOCK_USERS.find(u => u.id === ach.userId && u.tenantId === tenant.id)),
             });
         }
       }

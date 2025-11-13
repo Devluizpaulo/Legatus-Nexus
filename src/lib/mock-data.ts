@@ -1,4 +1,4 @@
-import { Tenant, User, Client, Case, CaseStatus, UserRole, Appointment, Deadline, TimeEntry, FinancialTransaction, Refund, RefundStatus, Invoice, InvoiceStatus, TimeEntryStatus, TransactionStatus, TransactionType, AppointmentStatus, AppointmentType, Subscription, Plan, BillingHistory, SubscriptionStatus, BillingStatus, AuditLog, AuditEventType, FaqItem, SupportTicket, SupportTicketStatus } from "./types";
+import { Tenant, User, Client, Case, CaseStatus, UserRole, Appointment, Deadline, TimeEntry, FinancialTransaction, Refund, RefundStatus, Invoice, InvoiceStatus, TimeEntryStatus, TransactionStatus, TransactionType, AppointmentStatus, AppointmentType, Subscription, Plan, BillingHistory, SubscriptionStatus, BillingStatus, AuditLog, AuditEventType, FaqItem, SupportTicket, SupportTicketStatus, Achievement } from "./types";
 import { PlaceHolderImages } from "./placeholder-images";
 import { format, addDays, subDays } from 'date-fns';
 
@@ -140,6 +140,12 @@ const supportTickets: SupportTicket[] = [
   { id: 'ticket-2', tenantId: 'tenant-1', userId: 'user-1', subject: 'Sugestão: Integração com calendário Google', description: 'Seria muito útil se a agenda do Legatus Nexus pudesse ser sincronizada com o Google Calendar. Fica a sugestão para futuras atualizações.', status: 'Em Andamento', createdAt: subDays(today, 2).toISOString() },
 ];
 
+const achievements: Achievement[] = [
+    { id: 'ach-1', userId: 'user-2', title: 'Mestre dos Prazos', description: 'Cumpriu 10 prazos seguidos antes do vencimento.', date: format(subDays(today, 3), 'yyyy-MM-dd'), icon: 'Award' },
+    { id: 'ach-2', userId: 'user-2', title: 'Advogado(a) do Mês', description: 'Maior número de horas faturadas no mês.', date: format(subDays(today, 15), 'yyyy-MM-dd'), icon: 'Trophy' },
+    { id: 'ach-3', userId: 'user-2', title: 'Iniciante Produtivo', description: 'Completou suas 10 primeiras tarefas.', date: format(subDays(today, 20), 'yyyy-MM-dd'), icon: 'Rocket' },
+];
+
 const tenants: Tenant[] = [
   {
     id: "tenant-1",
@@ -160,6 +166,7 @@ const tenants: Tenant[] = [
     auditLogs: auditLogs.filter(log => log.tenantId === 'tenant-1'),
     faqs: faqs,
     supportTickets: supportTickets.filter(st => st.tenantId === 'tenant-1'),
+    achievements: achievements.filter(ach => users.find(u => u.id === ach.userId && u.tenantId === 'tenant-1')),
   },
   {
     id: "tenant-2",
@@ -180,6 +187,7 @@ const tenants: Tenant[] = [
     auditLogs: auditLogs.filter(log => log.tenantId === 'tenant-2'),
     faqs: faqs,
     supportTickets: [],
+    achievements: [],
   },
 ];
 
@@ -199,6 +207,7 @@ export const MOCK_BILLING_HISTORY: BillingHistory[] = billingHistory;
 export const MOCK_AUDIT_LOGS: AuditLog[] = auditLogs;
 export const MOCK_FAQS: FaqItem[] = faqs;
 export const MOCK_SUPPORT_TICKETS: SupportTicket[] = supportTickets;
+export const MOCK_ACHIEVEMENTS: Achievement[] = achievements;
 
 export const ALL_CASE_STATUSES: CaseStatus[] = ["Análise Inicial", "Fase de Instrução", "Recursos", "Finalizado"];
 export const ALL_APPOINTMENT_TYPES: AppointmentType[] = ['Atendimento', 'Reunião', 'Audiência'];

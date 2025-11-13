@@ -17,6 +17,7 @@ export type Tenant = {
   auditLogs: AuditLog[];
   faqs: FaqItem[];
   supportTickets: SupportTicket[];
+  achievements: Achievement[];
 };
 
 export type UserRole = "Master" | "Advogado" | "Financeiro" | "SuperAdmin";
@@ -216,4 +217,13 @@ export type SupportTicket = {
   description: string;
   status: SupportTicketStatus;
   createdAt: string; // ISO date string
+};
+
+export type Achievement = {
+    id: string;
+    userId: string;
+    title: string;
+    description: string;
+    date: string; // ISO date string
+    icon: string; // Lucide icon name
 };
