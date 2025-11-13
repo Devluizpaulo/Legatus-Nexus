@@ -1,4 +1,4 @@
-import { Tenant, User, Client, Case, CaseStatus, UserRole, Appointment, Deadline, TimeEntry, FinancialTransaction, Refund, RefundStatus, Invoice, InvoiceStatus, TimeEntryStatus, TransactionStatus, TransactionType, AppointmentStatus, AppointmentType, Subscription, Plan, BillingHistory, SubscriptionStatus, BillingStatus, AuditLog, AuditEventType } from "./types";
+import { Tenant, User, Client, Case, CaseStatus, UserRole, Appointment, Deadline, TimeEntry, FinancialTransaction, Refund, RefundStatus, Invoice, InvoiceStatus, TimeEntryStatus, TransactionStatus, TransactionType, AppointmentStatus, AppointmentType, Subscription, Plan, BillingHistory, SubscriptionStatus, BillingStatus, AuditLog, AuditEventType, FaqItem, SupportTicket, SupportTicketStatus } from "./types";
 import { PlaceHolderImages } from "./placeholder-images";
 import { format, addDays, subDays } from 'date-fns';
 
@@ -128,6 +128,18 @@ const auditLogs: AuditLog[] = [
   { id: 'log-6', tenantId: 'tenant-1', userId: 'user-2', eventType: 'DEADLINE_COMPLETED', timestamp: subDays(today, 5).toISOString(), details: 'Prazo "Entrega de Memorial" foi marcado como cumprido.' },
 ];
 
+const faqs: FaqItem[] = [
+  { id: 'faq-1', question: 'Como eu altero minha senha?', answer: 'Para alterar sua senha, vá para a seção "Configurações" no menu do usuário, clique em "Segurança" e siga as instruções para definir uma nova senha.' },
+  { id: 'faq-2', question: 'Posso exportar os dados de um processo?', answer: 'Sim. Na página de detalhes do processo, você encontrará um botão "Exportar" que permite gerar um PDF com todas as informações e o histórico do caso.' },
+  { id: 'faq-3', question: 'Como funciona o faturamento de horas?', answer: 'Todas as horas lançadas com status "Pendente" podem ser selecionadas ao gerar uma nova fatura para um cliente. Uma vez que a fatura é emitida, o status das horas é atualizado para "Faturado".' },
+  { id: 'faq-4', question: 'O que acontece se um prazo for perdido?', answer: 'O sistema não impede o vencimento de um prazo, mas o destaca visualmente em vermelho e envia notificações aos responsáveis para alertar sobre o risco. A responsabilidade final é sempre do usuário.' },
+];
+
+const supportTickets: SupportTicket[] = [
+  { id: 'ticket-1', tenantId: 'tenant-1', userId: 'user-2', subject: 'Dificuldade em gerar relatório financeiro', description: 'Não estou conseguindo encontrar a opção para gerar o relatório de faturamento mensal. Onde fica?', status: 'Fechado', createdAt: subDays(today, 10).toISOString() },
+  { id: 'ticket-2', tenantId: 'tenant-1', userId: 'user-1', subject: 'Sugestão: Integração com calendário Google', description: 'Seria muito útil se a agenda do Legatus Nexus pudesse ser sincronizada com o Google Calendar. Fica a sugestão para futuras atualizações.', status: 'Em Andamento', createdAt: subDays(today, 2).toISOString() },
+];
+
 const tenants: Tenant[] = [
   {
     id: "tenant-1",
@@ -146,6 +158,8 @@ const tenants: Tenant[] = [
     plan: plans.find(p => p.id === subscriptions.find(s => s.tenantId === 'tenant-1')?.planId)!,
     billingHistory: billingHistory.filter(b => b.tenantId === 'tenant-1'),
     auditLogs: auditLogs.filter(log => log.tenantId === 'tenant-1'),
+    faqs: faqs,
+    supportTickets: supportTickets.filter(st => st.tenantId === 'tenant-1'),
   },
   {
     id: "tenant-2",
@@ -164,6 +178,8 @@ const tenants: Tenant[] = [
     plan: plans.find(p => p.id === subscriptions.find(s => s.tenantId === 'tenant-2')?.planId)!,
     billingHistory: billingHistory.filter(b => b.tenantId === 'tenant-2'),
     auditLogs: auditLogs.filter(log => log.tenantId === 'tenant-2'),
+    faqs: faqs,
+    supportTickets: [],
   },
 ];
 
@@ -181,6 +197,8 @@ export const MOCK_SUBSCRIPTIONS: Subscription[] = subscriptions;
 export const MOCK_PLANS: Plan[] = plans;
 export const MOCK_BILLING_HISTORY: BillingHistory[] = billingHistory;
 export const MOCK_AUDIT_LOGS: AuditLog[] = auditLogs;
+export const MOCK_FAQS: FaqItem[] = faqs;
+export const MOCK_SUPPORT_TICKETS: SupportTicket[] = supportTickets;
 
 export const ALL_CASE_STATUSES: CaseStatus[] = ["Análise Inicial", "Fase de Instrução", "Recursos", "Finalizado"];
 export const ALL_APPOINTMENT_TYPES: AppointmentType[] = ['Atendimento', 'Reunião', 'Audiência'];
@@ -194,3 +212,4 @@ export const ALL_INVOICE_STATUSES: InvoiceStatus[] = ['Pendente', 'Paga'];
 export const ALL_SUBSCRIPTION_STATUSES: SubscriptionStatus[] = ['Ativa', 'Inativa', 'Pendente'];
 export const ALL_BILLING_STATUSES: BillingStatus[] = ['Pago', 'Pendente', 'Atrasado'];
 export const ALL_AUDIT_EVENT_TYPES: AuditEventType[] = ['USER_LOGIN', 'CLIENT_CREATED', 'CASE_STATUS_UPDATED', 'DEADLINE_COMPLETED', 'INVOICE_PAID', 'USER_DELETED'];
+export const ALL_SUPPORT_TICKET_STATUSES: SupportTicketStatus[] = ['Aberto', 'Em Andamento', 'Fechado'];

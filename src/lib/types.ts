@@ -15,6 +15,8 @@ export type Tenant = {
   plan: Plan;
   billingHistory: BillingHistory[];
   auditLogs: AuditLog[];
+  faqs: FaqItem[];
+  supportTickets: SupportTicket[];
 };
 
 export type UserRole = "Master" | "Advogado" | "Financeiro" | "SuperAdmin";
@@ -196,4 +198,22 @@ export type AuditLog = {
   eventType: AuditEventType;
   timestamp: string; // ISO date string
   details: string;
+};
+
+export type FaqItem = {
+  id: string;
+  question: string;
+  answer: string;
+};
+
+export type SupportTicketStatus = 'Aberto' | 'Em Andamento' | 'Fechado';
+
+export type SupportTicket = {
+  id: string;
+  tenantId: string;
+  userId: string;
+  subject: string;
+  description: string;
+  status: SupportTicketStatus;
+  createdAt: string; // ISO date string
 };
