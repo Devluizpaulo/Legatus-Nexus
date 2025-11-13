@@ -1,4 +1,4 @@
-import { Tenant, User, Client, Case, CaseStatus, UserRole, Appointment, Deadline, TimeEntry, FinancialTransaction, Refund, RefundStatus, Invoice, InvoiceStatus, TimeEntryStatus, TransactionStatus, TransactionType, AppointmentStatus, AppointmentType, Subscription, Plan, BillingHistory, SubscriptionStatus, BillingStatus } from "./types";
+import { Tenant, User, Client, Case, CaseStatus, UserRole, Appointment, Deadline, TimeEntry, FinancialTransaction, Refund, RefundStatus, Invoice, InvoiceStatus, TimeEntryStatus, TransactionStatus, TransactionType, AppointmentStatus, AppointmentType, Subscription, Plan, BillingHistory, SubscriptionStatus, BillingStatus, AuditLog, AuditEventType } from "./types";
 import { PlaceHolderImages } from "./placeholder-images";
 import { format, addDays, subDays } from 'date-fns';
 
@@ -119,6 +119,15 @@ const billingHistory: BillingHistory[] = [
     { id: 'bill-3', tenantId: 'tenant-1', dueDate: format(addDays(today, 30), 'yyyy-MM-dd'), amount: 399, status: 'Pendente' },
 ];
 
+const auditLogs: AuditLog[] = [
+  { id: 'log-1', tenantId: 'tenant-1', userId: 'user-1', eventType: 'USER_LOGIN', timestamp: subDays(today, 1).toISOString(), details: 'Usuário Artur Morgan fez login.' },
+  { id: 'log-2', tenantId: 'tenant-1', userId: 'user-2', eventType: 'CLIENT_CREATED', timestamp: subDays(today, 2).toISOString(), details: 'Cliente "Nova Empresa Global" foi criado por Joana Marston.' },
+  { id: 'log-3', tenantId: 'tenant-1', userId: 'user-1', eventType: 'CASE_STATUS_UPDATED', timestamp: subDays(today, 1).toISOString(), details: 'Status do processo "Defesa em Litígio Contratual" alterado para "Fase de Instrução".' },
+  { id: 'log-4', tenantId: 'tenant-1', userId: 'user-3', eventType: 'INVOICE_PAID', timestamp: today.toISOString(), details: 'Fatura "inv-003" marcada como paga por Sônia Bell.' },
+  { id: 'log-5', tenantId: 'tenant-2', userId: 'user-4', eventType: 'USER_LOGIN', timestamp: today.toISOString(), details: 'Usuário Micaías Bell fez login.' },
+  { id: 'log-6', tenantId: 'tenant-1', userId: 'user-2', eventType: 'DEADLINE_COMPLETED', timestamp: subDays(today, 5).toISOString(), details: 'Prazo "Entrega de Memorial" foi marcado como cumprido.' },
+];
+
 const tenants: Tenant[] = [
   {
     id: "tenant-1",
@@ -136,6 +145,7 @@ const tenants: Tenant[] = [
     subscription: subscriptions.find(s => s.tenantId === 'tenant-1')!,
     plan: plans.find(p => p.id === subscriptions.find(s => s.tenantId === 'tenant-1')?.planId)!,
     billingHistory: billingHistory.filter(b => b.tenantId === 'tenant-1'),
+    auditLogs: auditLogs.filter(log => log.tenantId === 'tenant-1'),
   },
   {
     id: "tenant-2",
@@ -153,6 +163,7 @@ const tenants: Tenant[] = [
     subscription: subscriptions.find(s => s.tenantId === 'tenant-2')!,
     plan: plans.find(p => p.id === subscriptions.find(s => s.tenantId === 'tenant-2')?.planId)!,
     billingHistory: billingHistory.filter(b => b.tenantId === 'tenant-2'),
+    auditLogs: auditLogs.filter(log => log.tenantId === 'tenant-2'),
   },
 ];
 
@@ -169,7 +180,7 @@ export const MOCK_INVOICES: Invoice[] = invoices;
 export const MOCK_SUBSCRIPTIONS: Subscription[] = subscriptions;
 export const MOCK_PLANS: Plan[] = plans;
 export const MOCK_BILLING_HISTORY: BillingHistory[] = billingHistory;
-
+export const MOCK_AUDIT_LOGS: AuditLog[] = auditLogs;
 
 export const ALL_CASE_STATUSES: CaseStatus[] = ["Análise Inicial", "Fase de Instrução", "Recursos", "Finalizado"];
 export const ALL_APPOINTMENT_TYPES: AppointmentType[] = ['Atendimento', 'Reunião', 'Audiência'];
@@ -182,3 +193,4 @@ export const ALL_REFUND_STATUSES: RefundStatus[] = ['Pendente', 'Aprovado', 'Rep
 export const ALL_INVOICE_STATUSES: InvoiceStatus[] = ['Pendente', 'Paga'];
 export const ALL_SUBSCRIPTION_STATUSES: SubscriptionStatus[] = ['Ativa', 'Inativa', 'Pendente'];
 export const ALL_BILLING_STATUSES: BillingStatus[] = ['Pago', 'Pendente', 'Atrasado'];
+export const ALL_AUDIT_EVENT_TYPES: AuditEventType[] = ['USER_LOGIN', 'CLIENT_CREATED', 'CASE_STATUS_UPDATED', 'DEADLINE_COMPLETED', 'INVOICE_PAID', 'USER_DELETED'];

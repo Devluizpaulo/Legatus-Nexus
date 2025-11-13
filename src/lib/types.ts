@@ -14,6 +14,7 @@ export type Tenant = {
   subscription: Subscription;
   plan: Plan;
   billingHistory: BillingHistory[];
+  auditLogs: AuditLog[];
 };
 
 export type UserRole = "Master" | "Advogado" | "Financeiro" | "SuperAdmin";
@@ -185,3 +186,14 @@ export type BillingHistory = {
 };
 
 export const EDITABLE_ROLES: UserRole[] = ["Advogado", "Financeiro"];
+
+export type AuditEventType = 'USER_LOGIN' | 'CLIENT_CREATED' | 'CASE_STATUS_UPDATED' | 'DEADLINE_COMPLETED' | 'INVOICE_PAID' | 'USER_DELETED';
+
+export type AuditLog = {
+  id: string;
+  tenantId: string;
+  userId: string;
+  eventType: AuditEventType;
+  timestamp: string; // ISO date string
+  details: string;
+};

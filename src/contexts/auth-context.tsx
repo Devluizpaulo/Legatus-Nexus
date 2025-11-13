@@ -1,8 +1,8 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { User, Tenant, Client, Case, Appointment, Deadline, TimeEntry, FinancialTransaction, Refund, Invoice, Subscription, Plan, BillingHistory, UserRole } from '@/lib/types';
-import { MOCK_USERS, MOCK_TENANTS, MOCK_CLIENTS, MOCK_CASES, MOCK_APPOINTMENTS, MOCK_DEADLINES, MOCK_TIME_ENTRIES, MOCK_FINANCIAL_TRANSACTIONS, MOCK_REFUNDS, MOCK_INVOICES, MOCK_SUBSCRIPTIONS, MOCK_PLANS, MOCK_BILLING_HISTORY } from '@/lib/mock-data';
+import { User, Tenant, Client, Case, Appointment, Deadline, TimeEntry, FinancialTransaction, Refund, Invoice, Subscription, Plan, BillingHistory, AuditLog } from '@/lib/types';
+import { MOCK_USERS, MOCK_TENANTS, MOCK_CLIENTS, MOCK_CASES, MOCK_APPOINTMENTS, MOCK_DEADLINES, MOCK_TIME_ENTRIES, MOCK_FINANCIAL_TRANSACTIONS, MOCK_REFUNDS, MOCK_INVOICES, MOCK_SUBSCRIPTIONS, MOCK_PLANS, MOCK_BILLING_HISTORY, MOCK_AUDIT_LOGS } from '@/lib/mock-data';
 import { useRouter } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 import { format } from 'date-fns';
@@ -23,6 +23,7 @@ interface AuthContextType {
     subscription: Subscription;
     plan: Plan;
     billingHistory: BillingHistory[];
+    auditLogs: AuditLog[];
   } | null;
   isAuthenticated: boolean;
   login: (email: string, pass: string) => boolean;
@@ -50,6 +51,9 @@ interface AuthContextType {
   addUser: (newUser: Omit<User, 'id' | 'tenantId' | 'avatarUrl' | 'password'>) => void;
   updateUser: (updatedUser: User) => void;
   deleteUser: (userId: string) => void;
+  allAuditLogs: AuditLog[];
+  allUsers: User[];
+  allTenants: Tenant[];
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -61,6 +65,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   
   const isAuthenticated = !!currentUser;
+
+  // Data for SuperAdmin
+  const allAuditLogs = MOCK_AUDIT_LOGS;
+  const allUsers = MOCK_USERS;
+  const allTenants = MOCK_TENANTS;
 
   const login = (email: string, pass: string): boolean => {
     const user = MOCK_USERS.find(u => u.email === email && u.password === pass);
@@ -83,6 +92,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 subscription: MOCK_SUBSCRIPTIONS.find(s => s.tenantId === tenant.id)!,
                 plan: MOCK_PLANS.find(p => p.id === MOCK_SUBSCRIPTIONS.find(s => s.tenantId === tenant.id)?.planId)!,
                 billingHistory: MOCK_BILLING_HISTORY.filter(b => b.tenantId === tenant.id),
+                auditLogs: MOCK_AUDIT_LOGS.filter(log => log.tenantId === tenant.id),
             });
         }
       }
@@ -363,6 +373,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         addUser,
         updateUser,
         deleteUser,
+        allAuditLogs,
+        allUsers,
+        allTenants,
     }}>
       {children}
     </AuthContext.Provider>
