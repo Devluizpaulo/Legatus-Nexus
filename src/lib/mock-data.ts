@@ -1,4 +1,4 @@
-import { Tenant, User, Client, Case, CaseStatus, UserRole, Appointment, Deadline, TimeEntry, FinancialTransaction, Refund, RefundStatus, Invoice, InvoiceStatus, TimeEntryStatus, TransactionStatus, TransactionType, AppointmentStatus, AppointmentType } from "./types";
+import { Tenant, User, Client, Case, CaseStatus, UserRole, Appointment, Deadline, TimeEntry, FinancialTransaction, Refund, RefundStatus, Invoice, InvoiceStatus, TimeEntryStatus, TransactionStatus, TransactionType, AppointmentStatus, AppointmentType, Subscription, Plan, BillingHistory, SubscriptionStatus, BillingStatus } from "./types";
 import { PlaceHolderImages } from "./placeholder-images";
 import { format, addDays, subDays } from 'date-fns';
 
@@ -102,6 +102,23 @@ const invoices: Invoice[] = [
     }
 ];
 
+const plans: Plan[] = [
+    { id: 'plan-1', name: 'Solo', price: 129 },
+    { id: 'plan-2', name: 'Profissional', price: 399 },
+    { id: 'plan-3', name: 'Enterprise', price: 999 },
+];
+
+const subscriptions: Subscription[] = [
+    { id: 'sub-1', tenantId: 'tenant-1', planId: 'plan-2', status: 'Ativa' },
+    { id: 'sub-2', tenantId: 'tenant-2', planId: 'plan-1', status: 'Ativa' },
+];
+
+const billingHistory: BillingHistory[] = [
+    { id: 'bill-1', tenantId: 'tenant-1', dueDate: format(subDays(today, 30), 'yyyy-MM-dd'), amount: 399, paymentDate: format(subDays(today, 28), 'yyyy-MM-dd'), status: 'Pago' },
+    { id: 'bill-2', tenantId: 'tenant-1', dueDate: format(today, 'yyyy-MM-dd'), amount: 399, status: 'Pendente' },
+    { id: 'bill-3', tenantId: 'tenant-1', dueDate: format(addDays(today, 30), 'yyyy-MM-dd'), amount: 399, status: 'Pendente' },
+];
+
 const tenants: Tenant[] = [
   {
     id: "tenant-1",
@@ -116,6 +133,9 @@ const tenants: Tenant[] = [
     financialTransactions: financialTransactions.filter(ft => ft.tenantId === 'tenant-1'),
     refunds: refunds.filter(r => r.tenantId === 'tenant-1'),
     invoices: invoices.filter(i => i.tenantId === 'tenant-1'),
+    subscription: subscriptions.find(s => s.tenantId === 'tenant-1')!,
+    plan: plans.find(p => p.id === subscriptions.find(s => s.tenantId === 'tenant-1')?.planId)!,
+    billingHistory: billingHistory.filter(b => b.tenantId === 'tenant-1'),
   },
   {
     id: "tenant-2",
@@ -130,6 +150,9 @@ const tenants: Tenant[] = [
     financialTransactions: [],
     refunds: [],
     invoices: [],
+    subscription: subscriptions.find(s => s.tenantId === 'tenant-2')!,
+    plan: plans.find(p => p.id === subscriptions.find(s => s.tenantId === 'tenant-2')?.planId)!,
+    billingHistory: billingHistory.filter(b => b.tenantId === 'tenant-2'),
   },
 ];
 
@@ -143,6 +166,10 @@ export const MOCK_TIME_ENTRIES: TimeEntry[] = timeEntries;
 export const MOCK_FINANCIAL_TRANSACTIONS: FinancialTransaction[] = financialTransactions;
 export const MOCK_REFUNDS: Refund[] = refunds;
 export const MOCK_INVOICES: Invoice[] = invoices;
+export const MOCK_SUBSCRIPTIONS: Subscription[] = subscriptions;
+export const MOCK_PLANS: Plan[] = plans;
+export const MOCK_BILLING_HISTORY: BillingHistory[] = billingHistory;
+
 
 export const ALL_CASE_STATUSES: CaseStatus[] = ["Análise Inicial", "Fase de Instrução", "Recursos", "Finalizado"];
 export const ALL_APPOINTMENT_TYPES: AppointmentType[] = ['Atendimento', 'Reunião', 'Audiência'];
@@ -153,3 +180,5 @@ export const ALL_TRANSACTION_TYPES: TransactionType[] = ['Ganho', 'Despesa'];
 export const ALL_TRANSACTION_STATUSES: TransactionStatus[] = ['Pendente', 'Aprovada', 'Liquidada', 'Reprovada'];
 export const ALL_REFUND_STATUSES: RefundStatus[] = ['Pendente', 'Aprovado', 'Reprovado', 'Pago'];
 export const ALL_INVOICE_STATUSES: InvoiceStatus[] = ['Pendente', 'Paga'];
+export const ALL_SUBSCRIPTION_STATUSES: SubscriptionStatus[] = ['Ativa', 'Inativa', 'Pendente'];
+export const ALL_BILLING_STATUSES: BillingStatus[] = ['Pago', 'Pendente', 'Atrasado'];

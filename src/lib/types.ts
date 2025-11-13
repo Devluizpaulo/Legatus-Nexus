@@ -11,6 +11,9 @@ export type Tenant = {
   financialTransactions: FinancialTransaction[];
   refunds: Refund[];
   invoices: Invoice[];
+  subscription: Subscription;
+  plan: Plan;
+  billingHistory: BillingHistory[];
 };
 
 export type UserRole = "Master" | "Advogado" | "Financeiro" | "SuperAdmin";
@@ -153,4 +156,30 @@ export type Invoice = {
   status: InvoiceStatus;
   items: InvoiceItem[];
   totalAmount: number;
+};
+
+export type SubscriptionStatus = 'Ativa' | 'Inativa' | 'Pendente';
+
+export type Subscription = {
+  id: string;
+  tenantId: string;
+  planId: string;
+  status: SubscriptionStatus;
+};
+
+export type Plan = {
+  id: string;
+  name: string;
+  price: number;
+};
+
+export type BillingStatus = 'Pago' | 'Pendente' | 'Atrasado';
+
+export type BillingHistory = {
+  id: string;
+  tenantId: string;
+  dueDate: string; // ISO date string
+  amount: number;
+  paymentDate?: string; // ISO date string
+  status: BillingStatus;
 };

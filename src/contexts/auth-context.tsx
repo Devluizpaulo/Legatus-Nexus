@@ -1,8 +1,8 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { User, Tenant, Client, Case, Appointment, Deadline, TimeEntry, FinancialTransaction, Refund, Invoice } from '@/lib/types';
-import { MOCK_USERS, MOCK_TENANTS, MOCK_CLIENTS, MOCK_CASES, MOCK_APPOINTMENTS, MOCK_DEADLINES, MOCK_TIME_ENTRIES, MOCK_FINANCIAL_TRANSACTIONS, MOCK_REFUNDS, MOCK_INVOICES } from '@/lib/mock-data';
+import { User, Tenant, Client, Case, Appointment, Deadline, TimeEntry, FinancialTransaction, Refund, Invoice, Subscription, Plan, BillingHistory } from '@/lib/types';
+import { MOCK_USERS, MOCK_TENANTS, MOCK_CLIENTS, MOCK_CASES, MOCK_APPOINTMENTS, MOCK_DEADLINES, MOCK_TIME_ENTRIES, MOCK_FINANCIAL_TRANSACTIONS, MOCK_REFUNDS, MOCK_INVOICES, MOCK_SUBSCRIPTIONS, MOCK_PLANS, MOCK_BILLING_HISTORY } from '@/lib/mock-data';
 import { useRouter } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 import { format } from 'date-fns';
@@ -20,6 +20,9 @@ interface AuthContextType {
     financialTransactions: FinancialTransaction[];
     refunds: Refund[];
     invoices: Invoice[];
+    subscription: Subscription;
+    plan: Plan;
+    billingHistory: BillingHistory[];
   } | null;
   isAuthenticated: boolean;
   login: (email: string, pass: string) => boolean;
@@ -74,6 +77,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 financialTransactions: MOCK_FINANCIAL_TRANSACTIONS.filter(ft => ft.tenantId === tenant.id),
                 refunds: MOCK_REFUNDS.filter(r => r.tenantId === tenant.id),
                 invoices: MOCK_INVOICES.filter(i => i.tenantId === tenant.id),
+                subscription: MOCK_SUBSCRIPTIONS.find(s => s.tenantId === tenant.id)!,
+                plan: MOCK_PLANS.find(p => p.id === MOCK_SUBSCRIPTIONS.find(s => s.tenantId === tenant.id)?.planId)!,
+                billingHistory: MOCK_BILLING_HISTORY.filter(b => b.tenantId === tenant.id),
             });
         }
       }
