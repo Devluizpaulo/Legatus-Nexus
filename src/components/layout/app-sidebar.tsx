@@ -43,7 +43,7 @@ import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { ALL_LEGAL_AREAS } from '@/lib/mock-data';
 
-const masterMenu = [
+const masterMenuItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/agenda', label: 'Agenda', icon: Calendar },
   { href: '/deadlines', label: 'Prazos', icon: GanttChartSquare },
@@ -53,7 +53,9 @@ const masterMenu = [
     icon: Briefcase,
     subItems: [
         { href: '/cases?phase=Prospecção', label: 'Prospecção' },
-        ...ALL_LEGAL_AREAS.map(area => ({
+        { href: '/cases?area=Cível&instance=1', label: 'Cível - 1ª Instância' },
+        { href: '/cases?area=Cível&instance=2', label: 'Cível - 2ª Instância' },
+        ...ALL_LEGAL_AREAS.filter(area => area !== "Cível").map(area => ({
              href: `/cases?area=${encodeURIComponent(area)}`,
              label: area
         }))
@@ -87,7 +89,7 @@ const financeiroMenu = [
 const getMenuItems = (role: string) => {
     switch (role) {
         case 'Master':
-            return masterMenu;
+            return masterMenuItems;
         case 'Advogado':
             return advogadoMenu;
         case 'Financeiro':
