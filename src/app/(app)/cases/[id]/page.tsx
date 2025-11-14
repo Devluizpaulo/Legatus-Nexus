@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { notFound, useParams } from "next/navigation";
 import LeadIdentificationForm from "@/components/cases/lead-identification-form";
 import CaseCharacterizationForm from "@/components/cases/case-characterization-form";
+import { Button } from "@/components/ui/button";
 
 export default function CaseDetailPage() {
     const { id } = useParams();
@@ -44,6 +45,10 @@ export default function CaseDetailPage() {
                      <LeadIdentificationForm client={clientData} onSave={updateClient} />
                    )}
                    <CaseCharacterizationForm caseData={caseData} onSave={updateCase} />
+                </div>
+                
+                <div className="flex justify-end">
+                    <Button size="lg">Salvar e Continuar para Triagem</Button>
                 </div>
 
             </div>

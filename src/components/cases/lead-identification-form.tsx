@@ -129,9 +129,6 @@ export default function LeadIdentificationForm({ client, onSave }: LeadIdentific
                 <FormMessage />
               </FormItem>
             )}/>
-            <div className="flex justify-end pt-4">
-                <Button type="submit">Salvar e Ir para Qualificação do Caso</Button>
-            </div>
           </form>
         </Form>
       </CardContent>
