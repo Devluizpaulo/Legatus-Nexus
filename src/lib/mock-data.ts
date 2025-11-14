@@ -226,6 +226,7 @@ export const ALL_CASE_STATUSES: CaseStatus[] = [
     "Preparando Inicial",
     // Jurídico
     "Análise Inicial", 
+    "Distribuição",
     "Fase de Instrução", 
     "Recursos", 
     "Finalizado"

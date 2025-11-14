@@ -56,7 +56,8 @@ export type CaseStatus =
   | "Acordo Extrajudicial"
   | "Preparando Inicial"
   // Fases Jurídicas
-  | "Análise Inicial" 
+  | "Análise Inicial"
+  | "Distribuição"
   | "Fase de Instrução" 
   | "Recursos" 
   | "Finalizado";
