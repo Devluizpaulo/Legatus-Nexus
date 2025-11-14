@@ -110,16 +110,16 @@ export default function KanbanBoard({ cases, clients, users }: KanbanBoardProps)
   };
 
   return (
-    <div className="flex gap-4 h-full pb-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 h-full pb-4">
       {columns.map(column => (
-        <div key={column.id} className="min-w-[300px] w-[300px] flex flex-col">
+        <div key={column.id} className="flex flex-col">
           <h2 className="font-semibold mb-2 px-1 text-lg">{column.title} ({column.cases.length})</h2>
           <Card 
             className="flex-1 bg-secondary/50 dark:bg-card/40 overflow-y-auto"
             onDragOver={handleDragOver}
             onDrop={(e) => handleDrop(e, column.id)}
           >
-            <CardContent className="p-2 space-y-2">
+            <CardContent className="p-2 space-y-2 min-h-[150px]">
               {column.cases.map(_case => (
                 <Card 
                     key={_case.id} 

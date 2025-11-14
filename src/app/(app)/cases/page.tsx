@@ -10,11 +10,11 @@ function CasesPageContent() {
     const { tenantData } = useAuth();
     if (!tenantData) {
         return (
-             <div className="flex gap-4 h-full pb-4">
-                {[...Array(4)].map((_, i) => (
-                    <div key={i} className="min-w-[300px] w-[300px] flex flex-col">
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 h-full pb-4">
+                {[...Array(5)].map((_, i) => (
+                    <div key={i} className="flex flex-col">
                         <Skeleton className="h-8 w-3/4 mb-2" />
-                        <Skeleton className="flex-1" />
+                        <Skeleton className="h-48" />
                     </div>
                 ))}
             </div>
@@ -22,13 +22,11 @@ function CasesPageContent() {
     }
 
     return (
-        <div className="flex-1 overflow-x-auto">
-            <KanbanBoard 
-                cases={tenantData.cases} 
-                clients={tenantData.clients} 
-                users={tenantData.users}
-            />
-        </div>
+        <KanbanBoard 
+            cases={tenantData.cases} 
+            clients={tenantData.clients} 
+            users={tenantData.users}
+        />
     );
 }
 
