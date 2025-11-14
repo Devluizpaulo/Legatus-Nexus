@@ -3,30 +3,36 @@
 import { useState } from 'react';
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isToday, isSameMonth } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import type { Appointment } from '@/lib/types';
+import type { Appointment, Deadline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { appointmentColors } from '@/lib/agenda-utils';
-import { Plus, Eye } from 'lucide-react';
+import { Plus, Eye, GanttChartSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+
+type CalendarEvent = (Appointment & { eventType: 'appointment' }) | (Deadline & { eventType: 'deadline' });
 
 interface MonthViewProps {
   currentDate: Date;
-  appointmentsByDate: Map<string, Appointment[]>;
-  onAppointmentClick: (appointment: Appointment) => void;
+  eventsByDate: Map<string, CalendarEvent[]>;
+  onEventClick: (event: CalendarEvent) => void;
   onAddAppointment: (date: Date) => void;
   onViewDay: (date: Date) => void;
 }
 
 const WEEK_DAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-const MAX_APPOINTMENTS_TO_SHOW = 2;
+const MAX_EVENTS_TO_SHOW = 2;
 
-export default function MonthView({ currentDate, appointmentsByDate, onAppointmentClick, onAddAppointment, onViewDay }: MonthViewProps) {
+export default function MonthView({ currentDate, eventsByDate, onEventClick, onAddAppointment, onViewDay }: MonthViewProps) {
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(monthStart);
   const startDate = startOfWeek(monthStart, { locale: ptBR });
   const endDate = endOfWeek(monthEnd, { locale: ptBR });
 
   const days = eachDayOfInterval({ start: startDate, end: endDate });
+
+  const isDeadline = (event: any): event is Deadline & { eventType: 'deadline' } => {
+    return event?.eventType === 'deadline';
+  }
 
   return (
     <div className="grid grid-cols-7 border-t border-l">
@@ -37,7 +43,7 @@ export default function MonthView({ currentDate, appointmentsByDate, onAppointme
       ))}
       {days.map(day => {
         const dateKey = format(day, 'yyyy-MM-dd');
-        const appointmentsForDay = appointmentsByDate.get(dateKey) || [];
+        const eventsForDay = eventsByDate.get(dateKey) || [];
         const isCurrentMonth = isSameMonth(day, monthStart);
         
         return (
@@ -66,24 +72,25 @@ export default function MonthView({ currentDate, appointmentsByDate, onAppointme
             </div>
             <div className="flex-1 overflow-y-auto -mx-1 px-1 mt-1">
                 <ul className="space-y-1">
-                    {appointmentsForDay.slice(0, MAX_APPOINTMENTS_TO_SHOW).map(apt => (
-                        <li key={apt.id}>
+                    {eventsForDay.slice(0, MAX_EVENTS_TO_SHOW).map(event => (
+                        <li key={event.id}>
                             <button 
-                                onClick={() => onAppointmentClick(apt)}
+                                onClick={() => onEventClick(event)}
                                 className={cn(
-                                    "w-full text-left p-1 rounded-md text-xs truncate",
-                                    appointmentColors[apt.type].background,
+                                    "w-full text-left p-1 rounded-md text-xs truncate flex items-center gap-1.5",
+                                    appointmentColors[event.type as keyof typeof appointmentColors].background,
                                     "border-l-2",
-                                    appointmentColors[apt.type].border
+                                    appointmentColors[event.type as keyof typeof appointmentColors].border
                                 )}
                             >
-                                {apt.title}
+                               {isDeadline(event) && <GanttChartSquare className="h-3 w-3 shrink-0" />}
+                               <span>{event.title}</span>
                             </button>
                         </li>
                     ))}
-                    {appointmentsForDay.length > MAX_APPOINTMENTS_TO_SHOW && (
+                    {eventsForDay.length > MAX_EVENTS_TO_SHOW && (
                         <li className="text-xs text-muted-foreground mt-1">
-                            + {appointmentsForDay.length - MAX_APPOINTMENTS_TO_SHOW} mais
+                            + {eventsForDay.length - MAX_EVENTS_TO_SHOW} mais
                         </li>
                     )}
                 </ul>

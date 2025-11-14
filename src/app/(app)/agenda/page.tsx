@@ -6,23 +6,25 @@ import { ptBR } from 'date-fns/locale';
 import { useAuth } from '@/contexts/auth-context';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ChevronLeft, ChevronRight, Plus, Calendar as CalendarIcon } from 'lucide-react';
-import type { Appointment, AppointmentType } from '@/lib/types';
+import { ChevronLeft, ChevronRight, Plus, Calendar as CalendarIcon, GanttChartSquare } from 'lucide-react';
+import type { Appointment, Deadline } from '@/lib/types';
 import MonthView from '@/components/agenda/month-view';
 import WeekView from '@/components/agenda/week-view';
 import DayView from '@/components/agenda/day-view';
 import AppointmentForm from '@/components/agenda/appointment-form';
-import { ALL_APPOINTMENT_TYPES } from '@/lib/mock-data';
+import DeadlineForm from '@/components/deadlines/deadline-form';
 
 type ViewMode = 'Mês' | 'Semana' | 'Dia';
+type EventTypeFilter = 'Todos' | 'Compromissos' | 'Prazos';
+type CalendarEvent = (Appointment & { eventType: 'appointment' }) | (Deadline & { eventType: 'deadline' });
 
 export default function AgendaPage() {
-  const { tenantData, addAppointment, updateAppointment, deleteAppointment, currentUser } = useAuth();
+  const { tenantData, addAppointment, updateAppointment, deleteAppointment, addDeadline, updateDeadline, deleteDeadline, currentUser } = useAuth();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [viewMode, setViewMode] = useState<ViewMode>('Mês');
-  const [typeFilter, setTypeFilter] = useState<AppointmentType | 'Todos'>('Todos');
+  const [eventFilter, setEventFilter] = useState<EventTypeFilter>('Todos');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
   const [preSelectedDate, setPreSelectedDate] = useState<Date | null>(null);
 
   const handleDateChange = (change: 'next' | 'prev') => {
@@ -31,14 +33,14 @@ export default function AgendaPage() {
     setCurrentDate(newDate);
   };
   
-  const handleOpenModal = (appointment?: Appointment) => {
-    setSelectedAppointment(appointment || null);
+  const handleOpenModal = (event?: CalendarEvent) => {
+    setSelectedEvent(event || null);
     setPreSelectedDate(null);
     setIsModalOpen(true);
   };
 
   const handleAddAppointmentOnDate = (date: Date) => {
-    setSelectedAppointment(null);
+    setSelectedEvent(null);
     setPreSelectedDate(date);
     setIsModalOpen(true);
   }
@@ -50,7 +52,7 @@ export default function AgendaPage() {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setSelectedAppointment(null);
+    setSelectedEvent(null);
     setPreSelectedDate(null);
   };
 
@@ -68,22 +70,48 @@ export default function AgendaPage() {
     handleCloseModal();
   };
 
-  const filteredAppointments = useMemo(() => {
-    if (!tenantData?.appointments) return [];
-    if (typeFilter === 'Todos') return tenantData.appointments;
-    return tenantData.appointments.filter(apt => apt.type === typeFilter);
-  }, [tenantData?.appointments, typeFilter]);
+  const handleSaveDeadline = (deadlineData: Omit<Deadline, 'id' | 'tenantId'> | Deadline) => {
+    if ('id' in deadlineData) {
+      updateDeadline(deadlineData);
+    } else {
+      addDeadline(deadlineData);
+    }
+    handleCloseModal();
+  };
+
+  const handleDeleteDeadline = (deadlineId: string) => {
+    deleteDeadline(deadlineId);
+    handleCloseModal();
+  };
+
+  const combinedEvents = useMemo((): CalendarEvent[] => {
+    if (!tenantData) return [];
+    
+    const appointments: CalendarEvent[] = (tenantData.appointments || []).map(a => ({ ...a, eventType: 'appointment' }));
+    const deadlines: CalendarEvent[] = (tenantData.deadlines || []).map(d => ({ ...d, date: d.dueDate, title: `Prazo: ${d.title}`, time: '23:59', eventType: 'deadline' as const, type: 'Prazo' as const }));
+
+    let allEvents = [...appointments, ...deadlines];
+
+    if (eventFilter === 'Compromissos') {
+        return allEvents.filter(e => e.eventType === 'appointment');
+    }
+    if (eventFilter === 'Prazos') {
+        return allEvents.filter(e => e.eventType === 'deadline');
+    }
+    
+    return allEvents;
+  }, [tenantData, eventFilter]);
   
-  const appointmentsByDate = useMemo(() => {
-    const map = new Map<string, Appointment[]>();
-    filteredAppointments.forEach(apt => {
-        const dateKey = format(new Date(apt.date), 'yyyy-MM-dd');
-        const appointmentsForDay = map.get(dateKey) || [];
-        appointmentsForDay.push(apt);
-        map.set(dateKey, appointmentsForDay.sort((a, b) => a.time.localeCompare(b.time)));
+  const eventsByDate = useMemo(() => {
+    const map = new Map<string, CalendarEvent[]>();
+    combinedEvents.forEach(event => {
+        const dateKey = format(new Date(event.date), 'yyyy-MM-dd');
+        const eventsForDay = map.get(dateKey) || [];
+        eventsForDay.push(event);
+        map.set(dateKey, eventsForDay.sort((a, b) => (a.time || '').localeCompare(b.time || '')));
     });
     return map;
-  }, [filteredAppointments]);
+  }, [combinedEvents]);
 
   const getHeaderTitle = () => {
     switch (viewMode) {
@@ -95,6 +123,14 @@ export default function AgendaPage() {
       case 'Dia': return format(currentDate, 'd MMMM yyyy', { locale: ptBR });
     }
   };
+  
+  const isAppointment = (event: any): event is Appointment & { eventType: 'appointment' } => {
+    return event?.eventType === 'appointment';
+  }
+  
+  const isDeadline = (event: any): event is Deadline & { eventType: 'deadline' } => {
+    return event?.eventType === 'deadline';
+  }
 
   return (
     <div className="flex flex-col h-full">
@@ -115,15 +151,14 @@ export default function AgendaPage() {
                   Voltar ao Calendário
               </Button>
             )}
-            <Select value={typeFilter} onValueChange={(value: AppointmentType | 'Todos') => setTypeFilter(value)}>
-                <SelectTrigger className="w-[150px]">
-                    <SelectValue placeholder="Filtrar por tipo" />
+            <Select value={eventFilter} onValueChange={(value: EventTypeFilter) => setEventFilter(value)}>
+                <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Filtrar por evento" />
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem value="Todos">Todos</SelectItem>
-                    {ALL_APPOINTMENT_TYPES.map(type => (
-                        <SelectItem key={type} value={type}>{type}</SelectItem>
-                    ))}
+                    <SelectItem value="Todos">Todos os Eventos</SelectItem>
+                    <SelectItem value="Compromissos">Compromissos</SelectItem>
+                    <SelectItem value="Prazos">Prazos</SelectItem>
                 </SelectContent>
             </Select>
             <div className="flex items-center bg-muted rounded-md p-1">
@@ -134,41 +169,66 @@ export default function AgendaPage() {
                 ))}
             </div>
         </div>
-        <Button onClick={() => handleOpenModal()}>
-          <Plus className="mr-2 h-4 w-4" /> Novo
-        </Button>
+        <div className="flex gap-2">
+            <Button onClick={() => {
+                setSelectedEvent(null);
+                setPreSelectedDate(new Date());
+                setIsModalOpen(true);
+            }}>
+              <Plus className="mr-2 h-4 w-4" /> Compromisso
+            </Button>
+             <Button variant="secondary" onClick={() => router.push('/deadlines')}>
+                <GanttChartSquare className="mr-2 h-4 w-4" /> Novo Prazo
+            </Button>
+        </div>
       </header>
 
       <div className="flex-1 mt-4">
         {viewMode === 'Mês' && (
           <MonthView 
             currentDate={currentDate} 
-            appointmentsByDate={appointmentsByDate} 
-            onAppointmentClick={handleOpenModal}
+            eventsByDate={eventsByDate} 
+            onEventClick={handleOpenModal}
             onAddAppointment={handleAddAppointmentOnDate}
             onViewDay={handleViewDay}
           />
         )}
         {viewMode === 'Semana' && (
-          <WeekView currentDate={currentDate} appointmentsByDate={appointmentsByDate} onAppointmentClick={handleOpenModal} />
+          <WeekView currentDate={currentDate} eventsByDate={eventsByDate} onEventClick={handleOpenModal} />
         )}
         {viewMode === 'Dia' && (
-          <DayView currentDate={currentDate} appointments={appointmentsByDate.get(format(currentDate, 'yyyy-M-dd')) || []} onAppointmentClick={handleOpenModal} />
+          <DayView currentDate={currentDate} events={eventsByDate.get(format(currentDate, 'yyyy-MM-dd')) || []} onEventClick={handleOpenModal} />
         )}
       </div>
 
       {isModalOpen && currentUser && tenantData && (
-        <AppointmentForm 
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-          onSave={handleSaveAppointment}
-          onDelete={handleDeleteAppointment}
-          appointment={selectedAppointment}
-          preSelectedDate={preSelectedDate}
-          currentUser={currentUser}
-          users={tenantData.users}
-          clients={tenantData.clients}
-        />
+        <>
+            {(!selectedEvent || isAppointment(selectedEvent)) && (
+                <AppointmentForm 
+                    isOpen={isModalOpen && (!selectedEvent || isAppointment(selectedEvent))}
+                    onClose={handleCloseModal}
+                    onSave={handleSaveAppointment}
+                    onDelete={handleDeleteAppointment}
+                    appointment={isAppointment(selectedEvent) ? selectedEvent : null}
+                    preSelectedDate={preSelectedDate}
+                    currentUser={currentUser}
+                    users={tenantData.users}
+                    clients={tenantData.clients}
+                />
+            )}
+             {isDeadline(selectedEvent) && (
+                <DeadlineForm
+                    isOpen={isModalOpen && isDeadline(selectedEvent)}
+                    onClose={handleCloseModal}
+                    onSave={handleSaveDeadline}
+                    onDelete={handleDeleteDeadline}
+                    deadline={selectedEvent}
+                    currentUser={currentUser}
+                    users={tenantData.users}
+                    clients={tenantData.clients}
+                />
+             )}
+        </>
       )}
     </div>
   );
