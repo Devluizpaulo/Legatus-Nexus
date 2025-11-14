@@ -1,3 +1,4 @@
+
 export type Tenant = {
   id: string;
   name: string;
@@ -44,6 +45,7 @@ export type Client = {
 };
 
 export type CaseStatus = "Prospecção" | "Negociação" | "Elaboração de Peças" | "Aguardando Protocolo" | "Análise Inicial" | "Fase de Instrução" | "Recursos" | "Finalizado";
+export type LegalArea = "Cível" | "Trabalhista" | "Tributário" | "Família e Sucessões" | "Empresarial";
 
 export type Case = {
   id: string;
@@ -52,6 +54,7 @@ export type Case = {
   caseNumber?: string;
   clientId: string;
   status: CaseStatus;
+  area: LegalArea;
   responsible: string[]; // User IDs
   deadline?: string; // ISO date string
 };

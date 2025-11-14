@@ -1,4 +1,5 @@
-import { Tenant, User, Client, Case, CaseStatus, UserRole, Appointment, Deadline, TimeEntry, FinancialTransaction, Refund, RefundStatus, Invoice, InvoiceStatus, TimeEntryStatus, TransactionStatus, TransactionType, AppointmentStatus, AppointmentType, Subscription, Plan, BillingHistory, SubscriptionStatus, BillingStatus, AuditLog, AuditEventType, FaqItem, SupportTicket, SupportTicketStatus, Achievement } from "./types";
+
+import { Tenant, User, Client, Case, CaseStatus, UserRole, Appointment, Deadline, TimeEntry, FinancialTransaction, Refund, RefundStatus, Invoice, InvoiceStatus, TimeEntryStatus, TransactionStatus, TransactionType, AppointmentStatus, AppointmentType, Subscription, Plan, BillingHistory, SubscriptionStatus, BillingStatus, AuditLog, AuditEventType, FaqItem, SupportTicket, SupportTicketStatus, Achievement, LegalArea } from "./types";
 import { PlaceHolderImages } from "./placeholder-images";
 import { format, addDays, subDays } from 'date-fns';
 
@@ -16,14 +17,14 @@ const clients: Client[] = [
 ];
 
 const cases: Case[] = [
-  { id: "case-0", tenantId: "tenant-1", title: "Análise de Viabilidade - Nova Ação", caseNumber: 'PROSP-001', clientId: "client-1", status: "Prospecção", responsible: ["user-1"], deadline: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString() },
-  { id: "case-1", tenantId: "tenant-1", title: "Defesa em Litígio Contratual", caseNumber: '0012345-67.2023.8.26.0100', clientId: "client-1", status: "Análise Inicial", responsible: ["user-1", "user-2"], deadline: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString() },
-  { id: "case-2", tenantId: "tenant-1", title: "Consultoria Tributária", caseNumber: '0098765-43.2023.8.26.0001', clientId: "client-1", status: "Fase de Instrução", responsible: ["user-2"], deadline: new Date(Date.now() + 12 * 24 * 60 * 60 * 1000).toISOString() },
-  { id: "case-3", tenantId: "tenant-1", title: "Ação de Propriedade Intelectual", caseNumber: '0054321-98.2022.8.26.0500', clientId: "client-2", status: "Recursos", responsible: ["user-1"] },
-  { id: "case-4", tenantId: "tenant-1", title: "Análise de Contrato Social", caseNumber: '0011223-34.2021.8.26.0100', clientId: "client-2", status: "Finalizado", responsible: ["user-3"] },
-  { id: "case-5", tenantId: "tenant-1", title: "Agravo de Instrumento - Stark", caseNumber: '0033445-56.2023.8.26.0100', clientId: 'client-1', status: 'Elaboração de Peças', responsible: ['user-1'], deadline: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString() },
-  { id: "case-6", tenantId: "tenant-1", title: "Acordo Extrajudicial - Wayne", caseNumber: 'NEG-002', clientId: 'client-2', status: 'Negociação', responsible: ['user-2'] },
-  { id: "case-7", tenantId: "tenant-1", title: "Inicial - Danos Morais", caseNumber: 'PEND-003', clientId: 'client-1', status: 'Aguardando Protocolo', responsible: ['user-2'] },
+  { id: "case-0", tenantId: "tenant-1", title: "Análise de Viabilidade - Nova Ação", caseNumber: 'PROSP-001', clientId: "client-1", status: "Prospecção", area: "Empresarial", responsible: ["user-1"], deadline: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString() },
+  { id: "case-1", tenantId: "tenant-1", title: "Defesa em Litígio Contratual", caseNumber: '0012345-67.2023.8.26.0100', clientId: "client-1", status: "Análise Inicial", area: "Cível", responsible: ["user-1", "user-2"], deadline: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString() },
+  { id: "case-2", tenantId: "tenant-1", title: "Consultoria Tributária", caseNumber: '0098765-43.2023.8.26.0001', clientId: "client-1", status: "Fase de Instrução", area: "Tributário", responsible: ["user-2"], deadline: new Date(Date.now() + 12 * 24 * 60 * 60 * 1000).toISOString() },
+  { id: "case-3", tenantId: "tenant-1", title: "Ação de Propriedade Intelectual", caseNumber: '0054321-98.2022.8.26.0500', clientId: "client-2", status: "Recursos", area: "Empresarial", responsible: ["user-1"] },
+  { id: "case-4", tenantId: "tenant-1", title: "Análise de Contrato Social", caseNumber: '0011223-34.2021.8.26.0100', clientId: "client-2", status: "Finalizado", area: "Empresarial", responsible: ["user-3"] },
+  { id: "case-5", tenantId: "tenant-1", title: "Agravo de Instrumento - Stark", caseNumber: '0033445-56.2023.8.26.0100', clientId: 'client-1', status: 'Elaboração de Peças', area: "Cível", responsible: ['user-1'], deadline: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString() },
+  { id: "case-6", tenantId: "tenant-1", title: "Acordo Extrajudicial - Wayne", caseNumber: 'NEG-002', clientId: 'client-2', status: 'Negociação', area: "Cível", responsible: ['user-2'] },
+  { id: "case-7", tenantId: "tenant-1", title: "Inicial - Danos Morais", caseNumber: 'PEND-003', clientId: 'client-1', status: 'Aguardando Protocolo', area: "Cível", responsible: ['user-2'] },
 ];
 
 const today = new Date();
@@ -214,6 +215,7 @@ export const MOCK_SUPPORT_TICKETS: SupportTicket[] = supportTickets;
 export const MOCK_ACHIEVEMENTS: Achievement[] = achievements;
 
 export const ALL_CASE_STATUSES: CaseStatus[] = ["Prospecção", "Negociação", "Elaboração de Peças", "Aguardando Protocolo", "Análise Inicial", "Fase de Instrução", "Recursos", "Finalizado"];
+export const ALL_LEGAL_AREAS: LegalArea[] = ["Cível", "Trabalhista", "Tributário", "Família e Sucessões", "Empresarial"];
 export const ALL_APPOINTMENT_TYPES: AppointmentType[] = ['Atendimento', 'Reunião', 'Audiência'];
 export const ALL_APPOINTED_STATUSES: AppointmentStatus[] = ['Agendado', 'Confirmado', 'Cancelado', 'Realizado'];
 export const ALL_DEADLINE_STATUSES: DeadlineStatus[] = ['Pendente', 'Cumprido'];
