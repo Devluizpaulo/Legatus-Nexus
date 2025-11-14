@@ -33,7 +33,8 @@ import {
   History,
   Info,
   FolderKanban,
-  Archive
+  Archive,
+  ChevronDown
 } from 'lucide-react';
 import { Logo } from './logo';
 import { usePathname } from 'next/navigation';
@@ -53,6 +54,7 @@ const masterMenuItems = [
   { 
     label: 'Processos', 
     icon: FolderKanban,
+    href: '/cases', // Adicionado para o estado colapsado
     subItems: [
       { href: '/cases?phase=Prospecção', label: 'Prospecção' },
       { 
@@ -153,44 +155,58 @@ const getMenuItems = (role: string) => {
     }
 }
 
-function SidebarCollapsibleItem({ item, pathname }: { item: any, pathname: string }) {
+// Componente recursivo para renderizar itens de menu aninhados
+function RecursiveMenuItem({ item, pathname, level = 0 }: { item: any; pathname: string; level?: number }) {
+  const [isOpen, setIsOpen] = useState(pathname.startsWith(item.href || item.label));
+
+  if (!item.subItems) {
+    return (
+      <SidebarMenuSubItem>
+        <Link href={item.href}>
+          <SidebarMenuSubButton asChild isActive={pathname === item.href}>
+            <div className="flex items-center gap-2">
+              {item.icon && <item.icon className="h-4 w-4" />}
+              <span className="whitespace-normal">{item.label}</span>
+            </div>
+          </SidebarMenuSubButton>
+        </Link>
+      </SidebarMenuSubItem>
+    );
+  }
+
+  return (
+    <SidebarMenuSubItem>
+      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+        <CollapsibleTrigger className="w-full">
+          <SidebarMenuSubButton>
+            <div className="flex items-center justify-between w-full">
+                <span className="whitespace-normal text-left flex-1">{item.label}</span>
+                <ChevronDown className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")} />
+            </div>
+          </SidebarMenuSubButton>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <SidebarMenuSub style={{ marginLeft: `${level > 0 ? 1 : 0}rem`}}>
+            {item.subItems.map((subItem: any) => (
+              <RecursiveMenuItem key={subItem.label} item={subItem} pathname={pathname} level={level + 1} />
+            ))}
+          </SidebarMenuSub>
+        </CollapsibleContent>
+      </Collapsible>
+    </SidebarMenuSubItem>
+  );
+}
+
+
+function SidebarProcessosItem({ item, pathname }: { item: any, pathname: string }) {
     const { state } = useSidebar();
     const [isOpen, setIsOpen] = useState(pathname.startsWith('/cases'));
 
-    const renderSubItems = (subItems: any[], level = 0) => {
-        return subItems.map((subItem) => (
-            <SidebarMenuSubItem key={subItem.label}>
-                {subItem.subItems ? (
-                     <Collapsible>
-                        <CollapsibleTrigger className="w-full">
-                             <SidebarMenuSubButton>
-                               <span className="whitespace-normal">{subItem.label}</span>
-                            </SidebarMenuSubButton>
-                        </CollapsibleTrigger>
-                        <CollapsibleContent>
-                            <SidebarMenuSub className="ml-4">
-                                {renderSubItems(subItem.subItems, level + 1)}
-                            </SidebarMenuSub>
-                        </CollapsibleContent>
-                    </Collapsible>
-                ) : (
-                    <Link href={subItem.href}>
-                        <SidebarMenuSubButton asChild isActive={pathname === subItem.href}>
-                           <div className="flex items-center gap-2">
-                             {subItem.icon && <subItem.icon className="h-4 w-4"/>}
-                             <span className="whitespace-normal">{subItem.label}</span>
-                           </div>
-                        </SidebarMenuSubButton>
-                    </Link>
-                )}
-            </SidebarMenuSubItem>
-        ));
-    };
-
+    // No modo colapsado, o ícone de Processos é um link direto para a página principal de casos.
     if (state === 'collapsed') {
       return (
-        <Link href="/cases">
-            <SidebarMenuButton asChild isActive={pathname.startsWith('/cases')} tooltip={item.label}>
+        <Link href={item.href}>
+            <SidebarMenuButton asChild isActive={pathname.startsWith(item.href)} tooltip={item.label}>
                 <span>
                     <item.icon />
                     <span>{item.label}</span>
@@ -200,19 +216,25 @@ function SidebarCollapsibleItem({ item, pathname }: { item: any, pathname: strin
       )
     }
 
+    // No modo expandido, é um menu colapsável com sub-itens.
     return (
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
             <CollapsibleTrigger asChild>
                 <SidebarMenuButton>
-                    <span>
-                        <item.icon />
-                        <span>{item.label}</span>
-                    </span>
+                    <div className="flex items-center justify-between w-full">
+                         <div className="flex items-center gap-2">
+                             <item.icon />
+                            <span>{item.label}</span>
+                         </div>
+                        <ChevronDown className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")} />
+                    </div>
                 </SidebarMenuButton>
             </CollapsibleTrigger>
             <CollapsibleContent>
                 <SidebarMenuSub>
-                    {renderSubItems(item.subItems)}
+                    {item.subItems.map((subItem: any) => (
+                        <RecursiveMenuItem key={subItem.label} item={subItem} pathname={pathname} />
+                    ))}
                 </SidebarMenuSub>
             </CollapsibleContent>
         </Collapsible>
@@ -238,8 +260,8 @@ export default function AppSidebar() {
         <SidebarMenu>
           {menuItems.map((item) => (
             <SidebarMenuItem key={item.label}>
-              {item.subItems ? (
-                  <SidebarCollapsibleItem item={item} pathname={pathname} />
+              {item.label === 'Processos' && item.subItems ? (
+                  <SidebarProcessosItem item={item} pathname={pathname} />
               ) : (
                 <Link href={item.href!}>
                   <SidebarMenuButton asChild isActive={pathname.startsWith(item.href!)} tooltip={item.label}>
