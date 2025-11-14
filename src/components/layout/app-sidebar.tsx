@@ -41,7 +41,7 @@ import { Separator } from '@/components/ui/separator';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { ALL_LEGAL_AREAS } from '@/lib/types';
+import { ALL_LEGAL_AREAS } from '@/lib/mock-data';
 
 const masterMenu = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
