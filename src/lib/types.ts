@@ -55,9 +55,24 @@ export type CaseStatus =
   | "Contrato Assinado"
   | "Acordo Extrajudicial"
   | "Preparando Inicial"
-  // Fases Jurídicas
+  // Fases Jurídicas Comuns
   | "Análise Inicial"
-  | "Distribuição";
+  | "Distribuição"
+  // Fases - Direito Civil
+  | 'Protocolo da petição inicial'
+  | 'Aditamento'
+  | 'Juntadas'
+  | 'Contestação'
+  | 'Réplica'
+  | 'Fase Saneadora'
+  | 'Instrução Processual'
+  | 'Sentença'
+  | 'Fase Recursal'
+  | 'Recursos Internos no Tribunal'
+  | 'Recursos Superiores'
+  | 'Cumprimento de Sentença / Execução'
+  | 'Encerramento / Arquivamento'
+  ;
 
 export type LegalArea = "Cível" | "Trabalhista" | "Tributário" | "Família e Sucessões" | "Empresarial";
 

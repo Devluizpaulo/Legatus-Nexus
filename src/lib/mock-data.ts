@@ -214,8 +214,7 @@ export const MOCK_FAQS: FaqItem[] = faqs;
 export const MOCK_SUPPORT_TICKETS: SupportTicket[] = supportTickets;
 export const MOCK_ACHIEVEMENTS: Achievement[] = achievements;
 
-export const ALL_CASE_STATUSES: CaseStatus[] = [
-    // Prospecção
+export const PROSPECT_STATUSES: CaseStatus[] = [
     "Novo Lead",
     "Em Atendimento",
     "Em Análise Jurídica",
@@ -224,9 +223,45 @@ export const ALL_CASE_STATUSES: CaseStatus[] = [
     "Contrato Assinado",
     "Acordo Extrajudicial",
     "Preparando Inicial",
-    // Jurídico
+];
+
+export const CIVIL_FUNNEL = {
+    '1ª INSTÂNCIA': [
+        'Protocolo da petição inicial',
+        'Aditamento',
+        'Juntadas',
+        'Contestação',
+        'Réplica',
+        'Fase Saneadora',
+        'Instrução Processual',
+        'Sentença',
+    ],
+    '2ª INSTÂNCIA (Tribunal de Justiça)': [
+        'Fase Recursal',
+        'Recursos Internos no Tribunal',
+    ],
+    'TRIBUNAIS SUPERIORES (STJ e STF)': [
+        'Recursos Superiores',
+    ],
+    'EXECUÇÃO': [
+        'Cumprimento de Sentença / Execução',
+    ],
+    'FINAL': [
+        'Encerramento / Arquivamento',
+    ]
+};
+
+export const LEGAL_FUNNELS = {
+    'Cível': CIVIL_FUNNEL,
+    // Add other legal area funnels here
+};
+
+
+export const ALL_CASE_STATUSES: CaseStatus[] = [
+    ...PROSPECT_STATUSES,
     "Análise Inicial", 
     "Distribuição",
+    ...Object.values(CIVIL_FUNNEL).flat() as CaseStatus[]
 ];
 export const ALL_LEGAL_AREAS: LegalArea[] = ["Cível", "Trabalhista", "Tributário", "Família e Sucessões", "Empresarial"];
 export const ALL_APPOINTMENT_TYPES: AppointmentType[] = ['Atendimento', 'Reunião', 'Audiência'];
