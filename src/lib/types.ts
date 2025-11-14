@@ -47,14 +47,16 @@ export type Client = {
 
 export type CaseStatus = 
   // Fases de Prospecção
-  | "Novo Lead"
-  | "Em Atendimento"
-  | "Em Análise Jurídica"
-  | "Aguardando Documentos"
-  | "Proposta Enviada"
+  | "Lead Inicial"
+  | "Qualificação do Caso"
+  | "Triagem Jurídica"
+  | "Reunião com Cliente"
+  | "Proposta Comercial"
   | "Contrato Assinado"
-  | "Acordo Extrajudicial"
-  | "Preparando Inicial"
+  | "Coleta de Documentos"
+  | "Análise Final Jurídica"
+  | "Redação da Inicial"
+  | "Distribuição (Fim da Prospecção)"
   // Fases Jurídicas Comuns
   | "Análise Inicial"
   | "Distribuição"
