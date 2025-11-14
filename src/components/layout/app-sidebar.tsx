@@ -42,7 +42,7 @@ import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible';
-import { useState } from 'react';
+import { useState, Fragment } from 'react';
 import { cn } from '@/lib/utils';
 import { ALL_LEGAL_AREAS } from '@/lib/mock-data';
 
@@ -56,6 +56,7 @@ const masterMenuItems = [
     icon: FolderKanban,
     href: '/cases', // Adicionado para o estado colapsado
     subItems: [
+      { href: '/cases/dashboard', label: 'Dashboard', icon: LayoutDashboard },
       { href: '/cases?phase=Prospecção', label: 'Prospecção' },
       { 
         label: 'Cível',
@@ -156,44 +157,43 @@ const getMenuItems = (role: string) => {
 }
 
 // Componente recursivo para renderizar itens de menu aninhados
-function RecursiveMenuItem({ item, pathname, level = 0 }: { item: any; pathname: string; level?: number }) {
-  const [isOpen, setIsOpen] = useState(pathname.startsWith(item.href || item.label));
-
-  if (!item.subItems) {
-    return (
-      <SidebarMenuSubItem>
-        <Link href={item.href}>
-          <SidebarMenuSubButton asChild isActive={pathname === item.href}>
-            <div className="flex items-center gap-2">
-              {item.icon && <item.icon className="h-4 w-4" />}
-              <span className="whitespace-normal">{item.label}</span>
-            </div>
-          </SidebarMenuSubButton>
-        </Link>
-      </SidebarMenuSubItem>
-    );
-  }
+function SidebarCollapsibleItem({ item, pathname }: { item: any; pathname: string; }) {
+  const initialOpen = item.subItems?.some((sub: any) => pathname.startsWith(sub.href || ''));
+  const [isOpen, setIsOpen] = useState(initialOpen);
 
   return (
-    <SidebarMenuSubItem>
-      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-        <CollapsibleTrigger className="w-full">
-          <SidebarMenuSubButton>
-            <div className="flex items-center justify-between w-full">
-                <span className="whitespace-normal text-left flex-1">{item.label}</span>
-                <ChevronDown className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")} />
-            </div>
-          </SidebarMenuSubButton>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          <SidebarMenuSub style={{ marginLeft: `${level > 0 ? 1 : 0}rem`}}>
-            {item.subItems.map((subItem: any) => (
-              <RecursiveMenuItem key={subItem.label} item={subItem} pathname={pathname} level={level + 1} />
-            ))}
-          </SidebarMenuSub>
-        </CollapsibleContent>
-      </Collapsible>
-    </SidebarMenuSubItem>
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <CollapsibleTrigger asChild>
+        <SidebarMenuSubButton className="w-full justify-between pr-2">
+            <span className="whitespace-normal text-left flex-1">{item.label}</span>
+            <ChevronDown className={cn("h-4 w-4 shrink-0 transition-transform", isOpen && "rotate-180")} />
+        </SidebarMenuSubButton>
+      </CollapsibleTrigger>
+      <CollapsibleContent>
+        <SidebarMenuSub>
+          {item.subItems.map((subItem: any, index: number) => (
+            <Fragment key={subItem.label + index}>
+              {subItem.subItems ? (
+                  <SidebarMenuSubItem>
+                    <SidebarCollapsibleItem item={subItem} pathname={pathname} />
+                  </SidebarMenuSubItem>
+              ) : (
+                <SidebarMenuSubItem>
+                  <Link href={subItem.href}>
+                    <SidebarMenuSubButton asChild isActive={pathname === subItem.href}>
+                      <div className="flex items-center gap-2">
+                        {subItem.icon && <subItem.icon className="h-4 w-4" />}
+                        <span className="whitespace-normal">{subItem.label}</span>
+                      </div>
+                    </SidebarMenuSubButton>
+                  </Link>
+                </SidebarMenuSubItem>
+              )}
+            </Fragment>
+          ))}
+        </SidebarMenuSub>
+      </CollapsibleContent>
+    </Collapsible>
   );
 }
 
@@ -232,8 +232,25 @@ function SidebarProcessosItem({ item, pathname }: { item: any, pathname: string 
             </CollapsibleTrigger>
             <CollapsibleContent>
                 <SidebarMenuSub>
-                    {item.subItems.map((subItem: any) => (
-                        <RecursiveMenuItem key={subItem.label} item={subItem} pathname={pathname} />
+                    {item.subItems.map((subItem: any, index: number) => (
+                       <Fragment key={subItem.label + index}>
+                         {subItem.subItems ? (
+                             <SidebarMenuSubItem>
+                               <SidebarCollapsibleItem item={subItem} pathname={pathname} />
+                             </SidebarMenuSubItem>
+                         ) : (
+                           <SidebarMenuSubItem>
+                             <Link href={subItem.href}>
+                               <SidebarMenuSubButton asChild isActive={pathname === subItem.href}>
+                                 <div className="flex items-center gap-2">
+                                   {subItem.icon && <subItem.icon className="h-4 w-4" />}
+                                   <span className="whitespace-normal">{subItem.label}</span>
+                                 </div>
+                               </SidebarMenuSubButton>
+                             </Link>
+                           </SidebarMenuSubItem>
+                         )}
+                       </Fragment>
                     ))}
                 </SidebarMenuSub>
             </CollapsibleContent>
