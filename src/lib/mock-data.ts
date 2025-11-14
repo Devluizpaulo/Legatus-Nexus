@@ -222,7 +222,7 @@ export const PROSPECT_STATUSES: CaseStatus[] = [
     "Proposta Comercial",
     "Contrato Assinado",
     "Coleta de Documentos",
-    "Análise Final Jurídica",
+    "Análise Jurídica Final",
     "Redação da Inicial",
     "Distribuição (Fim da Prospecção)",
 ];
