@@ -131,9 +131,9 @@ function SidebarCollapsibleItem({ item, pathname }: { item: any, pathname: strin
         return subItems.map((subItem) => (
             <SidebarMenuSubItem key={subItem.label}>
                 {subItem.subItems ? (
-                    <Collapsible>
+                     <Collapsible>
                         <CollapsibleTrigger className="w-full">
-                            <SidebarMenuSubButton asChild>
+                             <SidebarMenuSubButton>
                                <span>{subItem.label}</span>
                             </SidebarMenuSubButton>
                         </CollapsibleTrigger>
