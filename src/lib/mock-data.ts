@@ -16,10 +16,11 @@ const clients: Client[] = [
 ];
 
 const cases: Case[] = [
-  { id: "case-1", tenantId: "tenant-1", title: "Defesa em Litígio Contratual", clientId: "client-1", status: "Análise Inicial", responsible: ["user-1", "user-2"], deadline: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString() },
-  { id: "case-2", tenantId: "tenant-1", title: "Consultoria Tributária", clientId: "client-1", status: "Fase de Instrução", responsible: ["user-2"], deadline: new Date(Date.now() + 12 * 24 * 60 * 60 * 1000).toISOString() },
-  { id: "case-3", tenantId: "tenant-1", title: "Ação de Propriedade Intelectual", clientId: "client-2", status: "Recursos", responsible: ["user-1"] },
-  { id: "case-4", tenantId: "tenant-1", title: "Análise de Contrato Social", clientId: "client-2", status: "Finalizado", responsible: ["user-3"] }
+  { id: "case-1", tenantId: "tenant-1", title: "Defesa em Litígio Contratual", caseNumber: '0012345-67.2023.8.26.0100', clientId: "client-1", status: "Análise Inicial", responsible: ["user-1", "user-2"], deadline: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString() },
+  { id: "case-2", tenantId: "tenant-1", title: "Consultoria Tributária", caseNumber: '0098765-43.2023.8.26.0001', clientId: "client-1", status: "Fase de Instrução", responsible: ["user-2"], deadline: new Date(Date.now() + 12 * 24 * 60 * 60 * 1000).toISOString() },
+  { id: "case-3", tenantId: "tenant-1", title: "Ação de Propriedade Intelectual", caseNumber: '0054321-98.2022.8.26.0500', clientId: "client-2", status: "Recursos", responsible: ["user-1"] },
+  { id: "case-4", tenantId: "tenant-1", title: "Análise de Contrato Social", caseNumber: '0011223-34.2021.8.26.0100', clientId: "client-2", status: "Finalizado", responsible: ["user-3"] },
+  { id: "case-5", tenantId: "tenant-1", title: "Agravo de Instrumento - Stark", caseNumber: '0033445-56.2023.8.26.0100', clientId: 'client-1', status: 'Recursos', responsible: ['user-1'], deadline: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString() }
 ];
 
 const today = new Date();
@@ -31,10 +32,10 @@ const appointments: Appointment[] = [
 
 const deadlines: Deadline[] = [
     { id: 'dl-1', tenantId: 'tenant-1', title: 'Contestação', caseNumber: '0012345-67.2023.8.26.0100', dueDate: format(addDays(today, 2), 'yyyy-MM-dd'), status: 'Pendente', responsibleId: 'user-2', clientId: 'client-1', checklist: [{id: 't1', text: 'Analisar petição inicial', completed: true}, {id: 't2', text: 'Coletar documentos', completed: false}] },
-    { id: 'dl-2', tenantId: 'tenant-1', title: 'Recurso de Apelação', caseNumber: '0054321-98.2022.8.26.0500', dueDate: format(addDays(today, 6), 'yyyy-MM-dd'), status: 'Pendente', responsibleId: 'user-1', clientId: 'client-2', checklist: [] },
+    { id: 'dl-2', tenantId: 'tenant-1', title: 'Recurso de Apelação', caseNumber: '0054321-98.2022.8.26.0500', dueDate: format(addDays(today, 4), 'yyyy-MM-dd'), status: 'Pendente', responsibleId: 'user-1', clientId: 'client-2', checklist: [] },
     { id: 'dl-3', tenantId: 'tenant-1', title: 'Pagamento de Guia', caseNumber: '0098765-43.2023.8.26.0001', dueDate: format(addDays(today, 15), 'yyyy-MM-dd'), status: 'Pendente', responsibleId: 'user-3', clientId: 'client-1', checklist: [{id: 't3', text: 'Emitir guia', completed: true}, {id: 't4', text: 'Realizar pagamento', completed: true}] },
     { id: 'dl-4', tenantId: 'tenant-1', title: 'Entrega de Memorial', caseNumber: '0011223-34.2021.8.26.0100', dueDate: format(subDays(today, 5), 'yyyy-MM-dd'), status: 'Cumprido', responsibleId: 'user-2', clientId: 'client-1', checklist: [{id: 't5', text: 'Finalizar redação', completed: true}, {id: 't6', text: 'Protocolar', completed: true}] },
-    { id: 'dl-5', tenantId: 'tenant-1', title: 'Agravo de Instrumento', caseNumber: '0033445-56.2023.8.26.0100', dueDate: format(subDays(today, 1), 'yyyy-MM-dd'), status: 'Pendente', responsibleId: 'user-1', clientId: 'client-2', checklist: [{id: 't7', text: 'Analisar decisão', completed: true}, {id: 't8', text: 'Minutar peça', completed: false}] },
+    { id: 'dl-5', tenantId: 'tenant-1', title: 'Agravo de Instrumento', caseNumber: '0033445-56.2023.8.26.0100', dueDate: format(addDays(today, 1), 'yyyy-MM-dd'), status: 'Pendente', responsibleId: 'user-1', clientId: 'client-2', checklist: [{id: 't7', text: 'Analisar decisão', completed: true}, {id: 't8', text: 'Minutar peça', completed: false}] },
 ];
 
 const timeEntries: TimeEntry[] = [

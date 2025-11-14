@@ -8,34 +8,13 @@ import { DollarSign, Briefcase, Users, AlertTriangle, CheckCircle, XCircle } fro
 import { addDays, isBefore } from 'date-fns';
 import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
-import { Refund, FinancialTransaction, RefundStatus, TransactionStatus, Deadline } from '@/lib/types';
+import { Refund, FinancialTransaction, RefundStatus, TransactionStatus, Deadline, Case } from '@/lib/types';
 import Link from 'next/link';
-import DeadlineForm from '../deadlines/deadline-form';
+import { useRouter } from 'next/navigation';
 
 export default function MasterDashboard() {
-    const { tenantData, currentUser, updateRefund, updateFinancialTransaction, updateDeadline, deleteDeadline } = useAuth();
-    const [selectedDeadline, setSelectedDeadline] = useState<Deadline | null>(null);
-    const [isDeadlineModalOpen, setIsDeadlineModalOpen] = useState(false);
-
-    const handleOpenDeadlineModal = (deadline: Deadline) => {
-      setSelectedDeadline(deadline);
-      setIsDeadlineModalOpen(true);
-    }
-
-    const handleCloseDeadlineModal = () => {
-      setSelectedDeadline(null);
-      setIsDeadlineModalOpen(false);
-    }
-    
-    const handleSaveDeadline = (deadline: Deadline) => {
-        updateDeadline(deadline);
-        handleCloseDeadlineModal();
-    }
-
-    const handleDeleteDeadline = (id: string) => {
-        deleteDeadline(id);
-        handleCloseDeadlineModal();
-    }
+    const { tenantData, currentUser, updateRefund, updateFinancialTransaction } = useAuth();
+    const router = useRouter();
 
     const {
         activeCasesCount,
@@ -44,7 +23,8 @@ export default function MasterDashboard() {
         urgentDeadlines,
         workloadData,
         casesByStatus,
-        monthlyBilling
+        monthlyBilling,
+        cases,
     } = useMemo(() => {
         if (!tenantData) {
             return {
@@ -54,7 +34,8 @@ export default function MasterDashboard() {
                 urgentDeadlines: [],
                 workloadData: [],
                 casesByStatus: [],
-                monthlyBilling: 0
+                monthlyBilling: 0,
+                cases: [],
             };
         }
 
@@ -90,6 +71,7 @@ export default function MasterDashboard() {
             monthlyBilling: tenantData.invoices
                 .filter(inv => new Date(inv.issueDate).getMonth() === new Date().getMonth())
                 .reduce((sum, inv) => sum + inv.totalAmount, 0),
+            cases: tenantData.cases,
         };
     }, [tenantData]);
 
@@ -102,6 +84,13 @@ export default function MasterDashboard() {
         } else { // It's a FinancialTransaction
              updateFinancialTransaction({ ...item, status: status as TransactionStatus });
         }
+    };
+
+    const handleNavigateToCase = (deadline: Deadline) => {
+      const relatedCase = cases.find(c => c.caseNumber === deadline.caseNumber);
+      if (relatedCase) {
+        router.push(`/cases/${relatedCase.id}`);
+      }
     };
     
     const COLORS = ["hsl(var(--chart-1))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))"];
@@ -237,7 +226,7 @@ export default function MasterDashboard() {
                                 return (
                                     <button 
                                         key={deadline.id} 
-                                        onClick={() => handleOpenDeadlineModal(deadline)}
+                                        onClick={() => handleNavigateToCase(deadline)}
                                         className="w-full flex justify-between items-center text-sm p-2 rounded-md bg-secondary/50 hover:bg-secondary/80 transition-colors text-left"
                                     >
                                         <div>
@@ -255,18 +244,6 @@ export default function MasterDashboard() {
                     </CardContent>
                 </Card>
             </div>
-            {isDeadlineModalOpen && selectedDeadline && currentUser && (
-                <DeadlineForm 
-                    isOpen={isDeadlineModalOpen}
-                    onClose={handleCloseDeadlineModal}
-                    deadline={selectedDeadline}
-                    onSave={handleSaveDeadline}
-                    onDelete={handleDeleteDeadline}
-                    currentUser={currentUser}
-                    users={tenantData.users}
-                    clients={tenantData.clients}
-                />
-            )}
         </div>
     )
 }

@@ -49,6 +49,7 @@ export type Case = {
   id: string;
   tenantId:string;
   title: string;
+  caseNumber?: string;
   clientId: string;
   status: CaseStatus;
   responsible: string[]; // User IDs

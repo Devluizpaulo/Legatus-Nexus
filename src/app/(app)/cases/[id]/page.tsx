@@ -34,6 +34,7 @@ export default function CaseDetailPage() {
                 <div>
                     <Badge variant="secondary" className="mb-2">{caseData.status}</Badge>
                     <h1 className="font-headline text-3xl font-bold tracking-tight">{caseData.title}</h1>
+                    {caseData.caseNumber && <p className="text-muted-foreground">{caseData.caseNumber}</p>}
                 </div>
                 <AISummarizer />
             </div>
