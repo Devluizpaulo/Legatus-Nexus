@@ -23,6 +23,7 @@ export default function AgendaPage() {
   const [typeFilter, setTypeFilter] = useState<AppointmentType | 'Todos'>('Todos');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+  const [preSelectedDate, setPreSelectedDate] = useState<Date | null>(null);
 
   const handleDateChange = (change: 'next' | 'prev') => {
     const period = viewMode === 'Mês' ? { months: 1 } : viewMode === 'Semana' ? { weeks: 1 } : { days: 1 };
@@ -32,12 +33,25 @@ export default function AgendaPage() {
   
   const handleOpenModal = (appointment?: Appointment) => {
     setSelectedAppointment(appointment || null);
+    setPreSelectedDate(null);
     setIsModalOpen(true);
   };
+
+  const handleAddAppointmentOnDate = (date: Date) => {
+    setSelectedAppointment(null);
+    setPreSelectedDate(date);
+    setIsModalOpen(true);
+  }
+
+  const handleViewDay = (date: Date) => {
+    setCurrentDate(date);
+    setViewMode('Dia');
+  }
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedAppointment(null);
+    setPreSelectedDate(null);
   };
 
   const handleSaveAppointment = (appointmentData: Omit<Appointment, 'id' | 'tenantId'> | Appointment) => {
@@ -121,7 +135,13 @@ export default function AgendaPage() {
 
       <div className="flex-1 mt-4">
         {viewMode === 'Mês' && (
-          <MonthView currentDate={currentDate} appointmentsByDate={appointmentsByDate} onAppointmentClick={handleOpenModal} />
+          <MonthView 
+            currentDate={currentDate} 
+            appointmentsByDate={appointmentsByDate} 
+            onAppointmentClick={handleOpenModal}
+            onAddAppointment={handleAddAppointmentOnDate}
+            onViewDay={handleViewDay}
+          />
         )}
         {viewMode === 'Semana' && (
           <WeekView currentDate={currentDate} appointmentsByDate={appointmentsByDate} onAppointmentClick={handleOpenModal} />
@@ -138,6 +158,7 @@ export default function AgendaPage() {
           onSave={handleSaveAppointment}
           onDelete={handleDeleteAppointment}
           appointment={selectedAppointment}
+          preSelectedDate={preSelectedDate}
           currentUser={currentUser}
           users={tenantData.users}
           clients={tenantData.clients}

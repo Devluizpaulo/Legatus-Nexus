@@ -49,18 +49,19 @@ interface AppointmentFormProps {
   onSave: (data: any) => void;
   onDelete: (id: string) => void;
   appointment: Appointment | null;
+  preSelectedDate?: Date | null;
   currentUser: User;
   users: User[];
   clients: Client[];
 }
 
-export default function AppointmentForm({ isOpen, onClose, onSave, onDelete, appointment, currentUser, users, clients }: AppointmentFormProps) {
+export default function AppointmentForm({ isOpen, onClose, onSave, onDelete, appointment, preSelectedDate, currentUser, users, clients }: AppointmentFormProps) {
   const form = useForm<AppointmentFormData>({
     resolver: zodResolver(appointmentSchema),
     defaultValues: {
       title: appointment?.title || '',
       description: appointment?.description || '',
-      date: appointment ? new Date(appointment.date) : new Date(),
+      date: appointment ? new Date(appointment.date) : (preSelectedDate || new Date()),
       time: appointment?.time || format(new Date(), 'HH:mm'),
       location: appointment?.location || '',
       type: appointment?.type || 'Reunião',
