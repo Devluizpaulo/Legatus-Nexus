@@ -12,6 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { User, Mail, Phone, Building, Star, Target, FileText, MapPin } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { useRouter } from 'next/navigation';
 
 const leadSchema = z.object({
   name: z.string().min(1, "Nome é obrigatório"),
@@ -35,6 +36,7 @@ const originOptions = ["Indicação", "Website", "Redes Sociais", "Evento", "Out
 
 export default function LeadIdentificationForm({ client, onSave }: LeadIdentificationFormProps) {
   const { toast } = useToast();
+  const router = useRouter();
   const form = useForm<LeadFormData>({
     resolver: zodResolver(leadSchema),
     defaultValues: {
@@ -55,8 +57,7 @@ export default function LeadIdentificationForm({ client, onSave }: LeadIdentific
       title: "Lead atualizado!",
       description: "As informações do lead foram salvas com sucesso.",
     });
-    // Here you would typically navigate to the next step or update the case status
-    console.log("Proceeding to qualification step...");
+    router.push('/cases?phase=Prospecção');
   };
 
   return (
