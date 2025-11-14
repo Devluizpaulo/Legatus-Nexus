@@ -1,9 +1,11 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/auth-context';
-import type { Case, CaseStatus, Client, User } from '@/lib/types';
-import { ALL_CASE_STATUSES } from '@/lib/mock-data';
+import type { Case, CaseStatus, Client, User, LegalArea } from '@/lib/types';
+import { PROSPECT_STATUSES, CIVIL_FUNNEL, ALL_CASE_STATUSES } from '@/lib/mock-data';
 import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -34,16 +36,57 @@ const getInitials = (name: string) => {
 
 export default function KanbanBoard({ cases, clients, users }: KanbanBoardProps) {
   const { updateCases } = useAuth();
+  const searchParams = useSearchParams();
   const [columns, setColumns] = useState<KanbanColumn[]>([]);
 
   useEffect(() => {
-    const initialColumns: KanbanColumn[] = ALL_CASE_STATUSES.map(status => ({
+    const phase = searchParams.get('phase');
+    const area = searchParams.get('area');
+    const instance = searchParams.get('instance');
+    const tribunal = searchParams.get('tribunal');
+    const statusFilter = searchParams.get('status');
+
+    let relevantStatuses: CaseStatus[];
+    let filteredCases = cases;
+
+    if (phase === 'Prospecção') {
+        relevantStatuses = PROSPECT_STATUSES;
+        filteredCases = cases.filter(c => PROSPECT_STATUSES.includes(c.status));
+    } else if (area) {
+        filteredCases = cases.filter(c => c.area === area);
+        if (instance === '1') {
+            relevantStatuses = CIVIL_FUNNEL['1ª INSTÂNCIA'];
+        } else if (instance === '2') {
+            relevantStatuses = CIVIL_FUNNEL['2ª INSTÂNCIA (Tribunal de Justiça)'];
+        } else if (tribunal) {
+            relevantStatuses = CIVIL_FUNNEL['TRIBUNAIS SUPERIORES (STJ e STF)'];
+        } else if (statusFilter === 'Execução') {
+            relevantStatuses = CIVIL_FUNNEL['EXECUÇÃO'];
+        } else if (statusFilter === 'Arquivo') {
+             relevantStatuses = CIVIL_FUNNEL['FINAL'];
+        } else {
+            // Default to all statuses for the area if no specific instance/status
+             relevantStatuses = Object.values(CIVIL_FUNNEL).flat() as CaseStatus[];
+        }
+        filteredCases = filteredCases.filter(c => relevantStatuses.includes(c.status));
+    } else if (statusFilter === 'Arquivo') {
+        relevantStatuses = ['Encerramento / Arquivamento'];
+        filteredCases = cases.filter(c => c.status === 'Encerramento / Arquivamento');
+    }
+    else {
+        relevantStatuses = ALL_CASE_STATUSES;
+        filteredCases = cases;
+    }
+
+
+    const initialColumns: KanbanColumn[] = relevantStatuses.map(status => ({
       id: status,
       title: status,
-      cases: cases.filter(c => c.status === status),
+      cases: filteredCases.filter(c => c.status === status),
     }));
     setColumns(initialColumns);
-  }, [cases]);
+
+  }, [cases, searchParams]);
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, caseId: string) => {
     e.dataTransfer.setData('caseId', caseId);
@@ -89,11 +132,9 @@ export default function KanbanBoard({ cases, clients, users }: KanbanBoardProps)
                         <p className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
                            <Users className='h-3 w-3'/> {clients.find(c => c.id === _case.clientId)?.name}
                         </p>
-                        {_case.status === 'Distribuição' && (
-                            <p className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
-                               <FolderKanban className='h-3 w-3'/> {_case.area}
-                            </p>
-                        )}
+                         <p className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
+                           <FolderKanban className='h-3 w-3'/> {_case.area}
+                         </p>
                          {_case.deadline && (
                             <p className={cn("text-sm mt-2 flex items-center gap-2", new Date(_case.deadline) < new Date() ? "text-destructive" : "text-muted-foreground")}>
                                 <Clock className='h-3 w-3'/> Vence em {new Date(_case.deadline).toLocaleDateString('pt-BR')}
