@@ -13,6 +13,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { User, Mail, Phone, Building, Star, Target, FileText, MapPin } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { cn } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
 
 const leadSchema = z.object({
   name: z.string().min(1, "Nome é obrigatório"),
@@ -55,17 +57,17 @@ export default function LeadIdentificationForm({ client, onSave, isReadOnly = fa
     if(isReadOnly) return;
     onSave({ ...client, ...data });
     toast({
-      title: "Lead atualizado!",
-      description: "As informações do lead foram salvas com sucesso.",
+      title: "Lead salvo!",
+      description: "As informações do lead foram salvas e o caso avançou para Qualificação.",
     });
   };
 
   return (
-    <Card>
+    <Card className={cn(isReadOnly && "bg-muted/30 border-dashed")}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardHeader>
-            <CardTitle>Identificação do Cliente (Lead)</CardTitle>
+            <CardTitle>1. Identificação do Cliente (Lead)</CardTitle>
             <CardDescription>Informações básicas sobre o cliente em potencial.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">

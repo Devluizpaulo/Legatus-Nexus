@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { ALL_LEGAL_AREAS } from '@/lib/mock-data';
 import { FileText, Gavel, DollarSign, AlertTriangle } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const caseSchema = z.object({
   area: z.string().min(1, "Área do direito é obrigatória"),
@@ -26,7 +27,7 @@ type CaseFormData = z.infer<typeof caseSchema>;
 
 interface CaseCharacterizationFormProps {
   caseData: Case;
-  onSave: (data: Case) => void;
+  onSave: (data: Partial<Case>) => void;
   isReadOnly: boolean;
 }
 
@@ -45,13 +46,11 @@ export default function CaseCharacterizationForm({ caseData, onSave, isReadOnly 
   });
 
   const onSubmit: SubmitHandler<CaseFormData> = (data) => {
-    const updatedData = { 
-        ...caseData, 
+    onSave({
         ...data,
         area: data.area as LegalArea,
         urgency: data.urgency as UrgencyLevel,
-    };
-    onSave(updatedData);
+    });
     toast({
       title: "Qualificação salva!",
       description: "O caso foi caracterizado e avançou para a Triagem Jurídica.",
@@ -59,9 +58,9 @@ export default function CaseCharacterizationForm({ caseData, onSave, isReadOnly 
   };
 
   return (
-    <Card>
+    <Card className={cn(isReadOnly && "bg-muted/30 border-dashed")}>
       <CardHeader>
-        <CardTitle>Qualificação do Caso</CardTitle>
+        <CardTitle>2. Qualificação do Caso</CardTitle>
         <CardDescription>Defina a área, urgência e detalhes financeiros para análise de viabilidade.</CardDescription>
       </CardHeader>
       <Form {...form}>

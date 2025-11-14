@@ -3,14 +3,22 @@
 
 import { useAuth } from "@/contexts/auth-context";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { notFound, useParams } from "next/navigation";
-import LeadIdentificationForm from "@/components/cases/lead-identification-form";
 import { Client, Case } from "@/lib/types";
 import { useRouter } from "next/navigation";
+
+import LeadIdentificationForm from "@/components/cases/lead-identification-form";
 import CaseCharacterizationForm from "@/components/cases/case-characterization-form";
 import LegalTriageForm from "@/components/cases/legal-triage-form";
+import MeetingForm from "@/components/cases/meeting-form";
+import ProposalForm from "@/components/cases/proposal-form";
+import DocumentCollectionForm from "@/components/cases/document-collection-form";
+import FinalAnalysisForm from "@/components/cases/final-analysis-form";
+import DraftingForm from "@/components/cases/drafting-form";
+import DistributionForm from "@/components/cases/distribution-form";
+import { PROSPECT_STATUSES } from "@/lib/mock-data";
+
 
 export default function CaseDetailPage() {
     const { id } = useParams();
@@ -34,46 +42,88 @@ export default function CaseDetailPage() {
         return name.substring(0, 2).toUpperCase();
     }
 
+    const handleNextStep = (currentStatus: string, updatedData: Partial<Case> = {}) => {
+        const currentIndex = PROSPECT_STATUSES.indexOf(currentStatus as any);
+        if (currentIndex < PROSPECT_STATUSES.length - 1) {
+            const nextStatus = PROSPECT_STATUSES[currentIndex + 1];
+            updateCase({ ...caseData, ...updatedData, status: nextStatus });
+            router.push('/cases?phase=Prospecção');
+        } else {
+            console.error("No next step defined for status:", currentStatus);
+            router.push('/cases?phase=Prospecção');
+        }
+    };
+    
+
     const handleSaveLead = (clientData: Client) => {
         updateClient(clientData);
-        updateCase({ ...caseData, status: 'Qualificação do Caso' });
-        router.push('/cases?phase=Prospecção');
+        handleNextStep("Lead Inicial");
     };
 
-    const handleSaveQualification = (caseData: Case) => {
-        updateCase({ ...caseData, status: 'Triagem Jurídica'});
-        router.push('/cases?phase=Prospecção');
+    const handleSaveQualification = (caseData: Partial<Case>) => {
+        handleNextStep("Qualificação do Caso", caseData);
     };
 
-    const handleSaveTriage = (caseData: Case) => {
-        updateCase({ ...caseData, status: 'Reunião com Cliente' });
-        router.push('/cases?phase=Prospecção');
+    const handleSaveTriage = (caseData: Partial<Case>) => {
+        handleNextStep("Triagem Jurídica", caseData);
+    };
+    
+    const handleSaveMeeting = (caseData: Partial<Case>) => {
+        handleNextStep("Reunião com Cliente", caseData);
     };
 
-    const isProspectingPhase = caseData.status === 'Lead Inicial';
-    const isQualificationPhase = caseData.status === 'Qualificação do Caso';
-    const isTriagePhase = caseData.status === 'Triagem Jurídica';
+    const handleSaveProposal = (caseData: Partial<Case>) => {
+        handleNextStep("Proposta Comercial", caseData);
+    };
+    
+    const handleSaveDocumentCollection = (caseData: Partial<Case>) => {
+        handleNextStep("Coleta de Documentos", caseData);
+    };
+
+    const handleSaveFinalAnalysis = (caseData: Partial<Case>) => {
+        handleNextStep("Análise Jurídica Final", caseData);
+    };
+
+    const handleSaveDrafting = (caseData: Partial<Case>) => {
+        handleNextStep("Redação da Inicial", caseData);
+    };
+
+    const handleSaveDistribution = (caseData: Partial<Case>) => {
+        handleNextStep("Distribuição (Fim da Prospecção)", caseData);
+    };
+
+
+    const statusIndex = PROSPECT_STATUSES.indexOf(caseData.status as any);
 
     return (
         <div className="grid gap-8 md:grid-cols-3">
             <div className="md:col-span-2 space-y-8">
                 <div>
-                    <Badge variant="secondary" className="mb-2">{caseData.status}</Badge>
+                    <p className="text-sm font-semibold text-primary">Funil de Prospecção</p>
                     <h1 className="font-headline text-3xl font-bold tracking-tight">{caseData.title}</h1>
                     {caseData.caseNumber && <p className="text-muted-foreground">{caseData.caseNumber}</p>}
                 </div>
                 
                 {clientData && (
                     <>
-                        <LeadIdentificationForm client={clientData} onSave={handleSaveLead} isReadOnly={!isProspectingPhase} />
-                        {isQualificationPhase && <CaseCharacterizationForm caseData={caseData} onSave={handleSaveQualification} isReadOnly={false} />}
-                        {isTriagePhase && (
-                            <>
-                                <LeadIdentificationForm client={clientData} onSave={() => {}} isReadOnly={true} />
-                                <CaseCharacterizationForm caseData={caseData} onSave={() => {}} isReadOnly={true} />
-                                <LegalTriageForm caseData={caseData} onSave={handleSaveTriage} />
-                            </>
-                        )}
+                        <LeadIdentificationForm client={clientData} onSave={handleSaveLead} isReadOnly={statusIndex > 0} />
+                        
+                        {statusIndex >= 1 && <CaseCharacterizationForm caseData={caseData} onSave={handleSaveQualification} isReadOnly={statusIndex > 1} />}
+                        
+                        {statusIndex >= 2 && <LegalTriageForm caseData={caseData} onSave={handleSaveTriage} isReadOnly={statusIndex > 2} />}
+
+                        {statusIndex >= 3 && <MeetingForm caseData={caseData} onSave={handleSaveMeeting} isReadOnly={statusIndex > 3} />}
+
+                        {statusIndex >= 4 && <ProposalForm caseData={caseData} onSave={handleSaveProposal} isReadOnly={statusIndex > 4} />}
+
+                        {statusIndex >= 5 && <DocumentCollectionForm caseData={caseData} onSave={handleSaveDocumentCollection} isReadOnly={statusIndex > 5} />}
+
+                        {statusIndex >= 6 && <FinalAnalysisForm caseData={caseData} onSave={handleSaveFinalAnalysis} isReadOnly={statusIndex > 6} />}
+                        
+                        {statusIndex >= 7 && <DraftingForm caseData={caseData} onSave={handleSaveDrafting} isReadOnly={statusIndex > 7} />}
+                        
+                        {statusIndex >= 8 && <DistributionForm caseData={caseData} onSave={handleSaveDistribution} isReadOnly={statusIndex > 8} />}
+
                     </>
                 )}
 
@@ -104,8 +154,8 @@ export default function CaseDetailPage() {
                     </CardHeader>
                     <CardContent className="space-y-4 text-sm">
                         <div>
-                            <p className="font-semibold">Status</p>
-                            <p className="text-muted-foreground">{caseData.status}</p>
+                            <p className="font-semibold">Status Atual</p>
+                            <p className="text-primary font-medium">{caseData.status}</p>
                         </div>
                          {caseData.deadline && (
                             <div>
