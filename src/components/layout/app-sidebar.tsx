@@ -41,6 +41,7 @@ import { Separator } from '@/components/ui/separator';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
+import { ALL_LEGAL_AREAS } from '@/lib/types';
 
 const masterMenu = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -51,11 +52,11 @@ const masterMenu = [
     label: 'Processos', 
     icon: Briefcase,
     subItems: [
-        { href: '/cases?phase=prospeccao', label: 'Prospecção' },
-        { href: '/cases?phase=elaboracao', label: 'Elaboração' },
-        { href: '/cases?phase=distribuicao', label: 'Distribuição' },
-        { href: '/cases?phase=1-instancia', label: '1ª Instância' },
-        { href: '/cases?phase=2-instancia', label: '2ª Instância' },
+        { href: '/cases?phase=Prospecção', label: 'Prospecção' },
+        ...ALL_LEGAL_AREAS.map(area => ({
+             href: `/cases?area=${encodeURIComponent(area)}`,
+             label: area
+        }))
     ]
   },
   { href: '/financial', label: 'Financeiro', icon: Landmark },
