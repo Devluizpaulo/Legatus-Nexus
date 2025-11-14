@@ -1,15 +1,17 @@
 "use client";
 
 import { useAuth } from "@/contexts/auth-context";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import AISummarizer from "@/components/cases/ai-summarizer";
 import { notFound, useParams } from "next/navigation";
+import LeadIdentificationForm from "@/components/cases/lead-identification-form";
+import CaseCharacterizationForm from "@/components/cases/case-characterization-form";
 
 export default function CaseDetailPage() {
     const { id } = useParams();
-    const { tenantData } = useAuth();
+    const { tenantData, updateClient, updateCase } = useAuth();
     
     if (!tenantData) return <div>Carregando...</div>
 
@@ -36,30 +38,18 @@ export default function CaseDetailPage() {
                     <h1 className="font-headline text-3xl font-bold tracking-tight">{caseData.title}</h1>
                     {caseData.caseNumber && <p className="text-muted-foreground">{caseData.caseNumber}</p>}
                 </div>
+                
+                {/* Forms for Lead and Case data */}
+                <div className="space-y-6">
+                   {clientData && (
+                     <LeadIdentificationForm client={clientData} onSave={updateClient} />
+                   )}
+                   <CaseCharacterizationForm caseData={caseData} onSave={updateCase} />
+                </div>
+
                 <AISummarizer />
             </div>
             <div className="space-y-6">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Detalhes do Processo</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4 text-sm">
-                        <div>
-                            <p className="font-semibold">Cliente</p>
-                            <p className="text-muted-foreground">{clientData?.name}</p>
-                        </div>
-                        <div>
-                            <p className="font-semibold">Status</p>
-                            <p className="text-muted-foreground">{caseData.status}</p>
-                        </div>
-                         {caseData.deadline && (
-                            <div>
-                                <p className="font-semibold">Prazo Final</p>
-                                <p className="text-muted-foreground">{new Date(caseData.deadline).toLocaleDateString('pt-BR')}</p>
-                            </div>
-                         )}
-                    </CardContent>
-                </Card>
                  <Card>
                     <CardHeader>
                         <CardTitle>Responsáveis</CardTitle>
@@ -77,6 +67,23 @@ export default function CaseDetailPage() {
                                 </div>
                             </div>
                         ))}
+                    </CardContent>
+                </Card>
+                 <Card>
+                    <CardHeader>
+                        <CardTitle>Detalhes do Processo</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4 text-sm">
+                        <div>
+                            <p className="font-semibold">Status</p>
+                            <p className="text-muted-foreground">{caseData.status}</p>
+                        </div>
+                         {caseData.deadline && (
+                            <div>
+                                <p className="font-semibold">Prazo Final</p>
+                                <p className="text-muted-foreground">{new Date(caseData.deadline).toLocaleDateString('pt-BR')}</p>
+                            </div>
+                         )}
                     </CardContent>
                 </Card>
             </div>

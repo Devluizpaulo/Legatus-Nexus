@@ -43,6 +43,7 @@ export type Client = {
   phone: string;
   caseIds: string[];
   notes?: string;
+  origin?: string; // "Como conheceu o escritório"
 };
 
 export type CaseStatus = 
@@ -78,6 +79,8 @@ export type CaseStatus =
 
 export type LegalArea = "Cível" | "Trabalhista" | "Tributário" | "Família e Sucessões" | "Empresarial";
 
+export type UrgencyLevel = "Normal" | "Alta" | "Emergência";
+
 export type Case = {
   id: string;
   tenantId:string;
@@ -90,6 +93,9 @@ export type Case = {
   area: LegalArea;
   responsible: string[]; // User IDs
   deadline?: string; // ISO date string
+  summary?: string;
+  caseValue?: number;
+  urgency?: UrgencyLevel;
 };
 
 export type AppointmentType = 'Atendimento' | 'Reunião' | 'Audiência';
