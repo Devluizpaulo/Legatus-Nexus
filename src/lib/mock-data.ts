@@ -19,9 +19,9 @@ const clients: Client[] = [
 const cases: Case[] = [
   { id: "case-0", tenantId: "tenant-1", title: "Análise de Viabilidade - Nova Ação", caseNumber: 'PROSP-001', clientId: "client-1", status: "Novo Lead", area: "Empresarial", responsible: ["user-1"], deadline: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString() },
   { id: "case-1", tenantId: "tenant-1", title: "Defesa em Litígio Contratual", caseNumber: '0012345-67.2023.8.26.0100', comarca: 'São Paulo', vara: '10ª Vara Cível', clientId: "client-1", status: "Análise Inicial", area: "Cível", responsible: ["user-1", "user-2"], deadline: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString() },
-  { id: "case-2", tenantId: "tenant-1", title: "Consultoria Tributária", caseNumber: '0098765-43.2023.8.26.0001', comarca: 'São Paulo', vara: '2ª Vara de Execuções Fiscais', clientId: "client-1", status: "Fase de Instrução", area: "Tributário", responsible: ["user-2"], deadline: new Date(Date.now() + 12 * 24 * 60 * 60 * 1000).toISOString() },
-  { id: "case-3", tenantId: "tenant-1", title: "Ação de Propriedade Intelectual", caseNumber: '0054321-98.2022.8.26.0500', comarca: 'Rio de Janeiro', vara: '5ª Vara Empresarial', clientId: "client-2", status: "Recursos", area: "Empresarial", responsible: ["user-1"] },
-  { id: "case-4", tenantId: "tenant-1", title: "Análise de Contrato Social", caseNumber: '0011223-34.2021.8.26.0100', comarca: 'São Paulo', vara: '1ª Vara Empresarial e de Conflitos de Arbitragem', clientId: "client-2", status: "Finalizado", area: "Empresarial", responsible: ["user-3"] },
+  { id: "case-2", tenantId: "tenant-1", title: "Consultoria Tributária", caseNumber: '0098765-43.2023.8.26.0001', comarca: 'São Paulo', vara: '2ª Vara de Execuções Fiscais', clientId: "client-1", status: "Análise Inicial", area: "Tributário", responsible: ["user-2"], deadline: new Date(Date.now() + 12 * 24 * 60 * 60 * 1000).toISOString() },
+  { id: "case-3", tenantId: "tenant-1", title: "Ação de Propriedade Intelectual", caseNumber: '0054321-98.2022.8.26.0500', comarca: 'Rio de Janeiro', vara: '5ª Vara Empresarial', clientId: "client-2", status: "Distribuição", area: "Empresarial", responsible: ["user-1"] },
+  { id: "case-4", tenantId: "tenant-1", title: "Análise de Contrato Social", caseNumber: '0011223-34.2021.8.26.0100', comarca: 'São Paulo', vara: '1ª Vara Empresarial e de Conflitos de Arbitragem', clientId: "client-2", status: "Acordo Extrajudicial", area: "Empresarial", responsible: ["user-3"] },
   { id: "case-5", tenantId: "tenant-1", title: "Agravo de Instrumento - Stark", caseNumber: '0033445-56.2023.8.26.0100', comarca: 'São Paulo', vara: '10ª Vara Cível', clientId: 'client-1', status: 'Análise Inicial', area: "Cível", responsible: ['user-1'], deadline: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString() },
   { id: "case-6", tenantId: "tenant-1", title: "Acordo Extrajudicial - Wayne", caseNumber: 'NEG-002', clientId: 'client-2', status: 'Contrato Assinado', area: "Cível", responsible: ['user-2'] },
   { id: "case-7", tenantId: "tenant-1", title: "Inicial - Danos Morais", caseNumber: 'PEND-003', clientId: 'client-1', status: 'Em Análise Jurídica', area: "Cível", responsible: ['user-2'] },
@@ -227,9 +227,6 @@ export const ALL_CASE_STATUSES: CaseStatus[] = [
     // Jurídico
     "Análise Inicial", 
     "Distribuição",
-    "Fase de Instrução", 
-    "Recursos", 
-    "Finalizado"
 ];
 export const ALL_LEGAL_AREAS: LegalArea[] = ["Cível", "Trabalhista", "Tributário", "Família e Sucessões", "Empresarial"];
 export const ALL_APPOINTMENT_TYPES: AppointmentType[] = ['Atendimento', 'Reunião', 'Audiência'];

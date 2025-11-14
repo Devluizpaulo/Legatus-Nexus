@@ -57,10 +57,7 @@ export type CaseStatus =
   | "Preparando Inicial"
   // Fases Jurídicas
   | "Análise Inicial"
-  | "Distribuição"
-  | "Fase de Instrução" 
-  | "Recursos" 
-  | "Finalizado";
+  | "Distribuição";
 
 export type LegalArea = "Cível" | "Trabalhista" | "Tributário" | "Família e Sucessões" | "Empresarial";
 
