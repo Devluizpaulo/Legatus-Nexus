@@ -8,7 +8,11 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarMenuSkeleton
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  SidebarMenuSkeleton,
+  useSidebar
 } from "@/components/ui/sidebar";
 import {
   LayoutDashboard,
@@ -34,13 +38,26 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible';
+import { useState } from 'react';
+import { cn } from '@/lib/utils';
 
 const masterMenu = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/agenda', label: 'Agenda', icon: Calendar },
   { href: '/deadlines', label: 'Prazos', icon: GanttChartSquare },
   { href: '/clients', label: 'Clientes', icon: Users },
-  { href: '/cases', label: 'Processos', icon: Briefcase },
+  { 
+    label: 'Processos', 
+    icon: Briefcase,
+    subItems: [
+        { href: '/cases?phase=prospeccao', label: 'Prospecção' },
+        { href: '/cases?phase=elaboracao', label: 'Elaboração' },
+        { href: '/cases?phase=distribuicao', label: 'Distribuição' },
+        { href: '/cases?phase=1-instancia', label: '1ª Instância' },
+        { href: '/cases?phase=2-instancia', label: '2ª Instância' },
+    ]
+  },
   { href: '/financial', label: 'Financeiro', icon: Landmark },
   { href: '/refunds', label: 'Reembolsos', icon: Receipt },
   { href: '/billing', label: 'Faturamento', icon: FileText },
@@ -79,6 +96,51 @@ const getMenuItems = (role: string) => {
     }
 }
 
+function SidebarCollapsibleItem({ item, pathname }: { item: any, pathname: string }) {
+    const { state } = useSidebar();
+    const [isOpen, setIsOpen] = useState(pathname.startsWith('/cases'));
+
+    if (state === 'collapsed') {
+      return (
+        <Link href="/cases">
+            <SidebarMenuButton asChild isActive={pathname.startsWith('/cases')} tooltip={item.label}>
+                <span>
+                    <item.icon />
+                    <span>{item.label}</span>
+                </span>
+            </SidebarMenuButton>
+        </Link>
+      )
+    }
+
+    return (
+        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+            <CollapsibleTrigger asChild>
+                <SidebarMenuButton>
+                    <span>
+                        <item.icon />
+                        <span>{item.label}</span>
+                    </span>
+                </SidebarMenuButton>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+                <SidebarMenuSub>
+                    {item.subItems.map((subItem: any) => (
+                        <SidebarMenuSubItem key={subItem.href}>
+                             <Link href={subItem.href}>
+                                <SidebarMenuSubButton asChild isActive={pathname === subItem.href}>
+                                   <span>{subItem.label}</span>
+                                </SidebarMenuSubButton>
+                            </Link>
+                        </SidebarMenuSubItem>
+                    ))}
+                </SidebarMenuSub>
+            </CollapsibleContent>
+        </Collapsible>
+    )
+}
+
+
 export default function AppSidebar() {
   const { currentUser, currentTenant, logout } = useAuth();
   const pathname = usePathname();
@@ -96,15 +158,19 @@ export default function AppSidebar() {
       <SidebarContent className='p-2'>
         <SidebarMenu>
           {menuItems.map((item) => (
-            <SidebarMenuItem key={item.href}>
-              <Link href={item.href}>
-                <SidebarMenuButton asChild isActive={pathname.startsWith(item.href)}>
-                  <span>
-                    <item.icon />
-                    <span>{item.label}</span>
-                  </span>
-                </SidebarMenuButton>
-              </Link>
+            <SidebarMenuItem key={item.label}>
+              {item.subItems ? (
+                  <SidebarCollapsibleItem item={item} pathname={pathname} />
+              ) : (
+                <Link href={item.href!}>
+                  <SidebarMenuButton asChild isActive={pathname.startsWith(item.href!)} tooltip={item.label}>
+                    <span>
+                      <item.icon />
+                      <span>{item.label}</span>
+                    </span>
+                  </SidebarMenuButton>
+                </Link>
+              )}
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
@@ -114,13 +180,13 @@ export default function AppSidebar() {
          <SidebarMenu>
             <SidebarMenuItem>
               <Link href="/settings">
-                  <SidebarMenuButton asChild isActive={pathname.startsWith('/settings')}>
+                  <SidebarMenuButton asChild isActive={pathname.startsWith('/settings')} tooltip="Configurações">
                       <span><Settings /><span>Configurações</span></span>
                   </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
             <SidebarMenuItem>
-                <SidebarMenuButton onClick={logout} >
+                <SidebarMenuButton onClick={logout} tooltip="Sair">
                     <LogOut/>
                     <span>Sair</span>
                 </SidebarMenuButton>
