@@ -68,6 +68,8 @@ export type Case = {
   tenantId:string;
   title: string;
   caseNumber?: string;
+  comarca?: string;
+  vara?: string;
   clientId: string;
   status: CaseStatus;
   area: LegalArea;
