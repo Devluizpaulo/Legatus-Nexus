@@ -6,7 +6,7 @@ import { ptBR } from 'date-fns/locale';
 import { useAuth } from '@/contexts/auth-context';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Calendar as CalendarIcon } from 'lucide-react';
 import type { Appointment, AppointmentType } from '@/lib/types';
 import MonthView from '@/components/agenda/month-view';
 import WeekView from '@/components/agenda/week-view';
@@ -109,6 +109,12 @@ export default function AgendaPage() {
             </Button>
         </div>
         <div className="flex items-center gap-2">
+            {viewMode === 'Dia' && (
+              <Button variant="outline" onClick={() => setViewMode('Mês')}>
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  Voltar ao Calendário
+              </Button>
+            )}
             <Select value={typeFilter} onValueChange={(value: AppointmentType | 'Todos') => setTypeFilter(value)}>
                 <SelectTrigger className="w-[150px]">
                     <SelectValue placeholder="Filtrar por tipo" />
@@ -147,7 +153,7 @@ export default function AgendaPage() {
           <WeekView currentDate={currentDate} appointmentsByDate={appointmentsByDate} onAppointmentClick={handleOpenModal} />
         )}
         {viewMode === 'Dia' && (
-          <DayView currentDate={currentDate} appointments={appointmentsByDate.get(format(currentDate, 'yyyy-MM-dd')) || []} onAppointmentClick={handleOpenModal} />
+          <DayView currentDate={currentDate} appointments={appointmentsByDate.get(format(currentDate, 'yyyy-M-dd')) || []} onAppointmentClick={handleOpenModal} />
         )}
       </div>
 

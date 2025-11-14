@@ -6,6 +6,7 @@ import { appointmentColors } from '@/lib/agenda-utils';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MapPin } from 'lucide-react';
+import { format, parseISO } from 'date-fns';
 
 interface DayViewProps {
   currentDate: Date;
