@@ -27,11 +27,12 @@ type CaseFormData = z.infer<typeof caseSchema>;
 interface CaseCharacterizationFormProps {
   caseData: Case;
   onSave: (data: Case) => void;
+  isReadOnly: boolean;
 }
 
 const urgencyLevels: UrgencyLevel[] = ["Normal", "Alta", "Emergência"];
 
-export default function CaseCharacterizationForm({ caseData, onSave }: CaseCharacterizationFormProps) {
+export default function CaseCharacterizationForm({ caseData, onSave, isReadOnly }: CaseCharacterizationFormProps) {
   const { toast } = useToast();
   const form = useForm<CaseFormData>({
     resolver: zodResolver(caseSchema),
@@ -49,7 +50,6 @@ export default function CaseCharacterizationForm({ caseData, onSave }: CaseChara
         ...data,
         area: data.area as LegalArea,
         urgency: data.urgency as UrgencyLevel,
-        status: 'Triagem Jurídica' // Avança para a próxima etapa
     };
     onSave(updatedData);
     toast({
@@ -71,7 +71,7 @@ export default function CaseCharacterizationForm({ caseData, onSave }: CaseChara
               <FormField control={form.control} name="area" render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-2"><Gavel /> Área do Direito</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isReadOnly}>
                     <FormControl><SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger></FormControl>
                     <SelectContent>{ALL_LEGAL_AREAS.map(area => <SelectItem key={area} value={area}>{area}</SelectItem>)}</SelectContent>
                   </Select>
@@ -81,14 +81,14 @@ export default function CaseCharacterizationForm({ caseData, onSave }: CaseChara
                <FormField control={form.control} name="caseValue" render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-2"><DollarSign /> Valor Envolvido (R$)</FormLabel>
-                  <FormControl><Input type="number" {...field} /></FormControl>
+                  <FormControl><Input type="number" {...field} readOnly={isReadOnly}/></FormControl>
                   <FormMessage />
                 </FormItem>
               )}/>
                <FormField control={form.control} name="urgency" render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-2"><AlertTriangle /> Urgência</FormLabel>
-                   <Select onValueChange={field.onChange} defaultValue={field.value}>
+                   <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isReadOnly}>
                     <FormControl><SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger></FormControl>
                     <SelectContent>{urgencyLevels.map(level => <SelectItem key={level} value={level}>{level}</SelectItem>)}</SelectContent>
                   </Select>
@@ -99,14 +99,16 @@ export default function CaseCharacterizationForm({ caseData, onSave }: CaseChara
             <FormField control={form.control} name="summary" render={({ field }) => (
               <FormItem>
                 <FormLabel className="flex items-center gap-2"><FileText /> Resumo do Caso</FormLabel>
-                <FormControl><Textarea placeholder="Descreva o problema jurídico do lead..." className="min-h-[100px]" {...field} /></FormControl>
+                <FormControl><Textarea placeholder="Descreva o problema jurídico do lead..." className="min-h-[100px]" {...field} readOnly={isReadOnly} /></FormControl>
                 <FormMessage />
               </FormItem>
             )}/>
           </CardContent>
-          <CardFooter className="flex justify-end">
-            <Button type="submit">Salvar e Continuar para Triagem</Button>
-          </CardFooter>
+          {!isReadOnly && (
+            <CardFooter className="flex justify-end">
+                <Button type="submit">Salvar e Continuar para Triagem</Button>
+            </CardFooter>
+          )}
         </form>
       </Form>
     </Card>

@@ -83,6 +83,7 @@ export type CaseStatus =
 export type LegalArea = "Cível" | "Trabalhista" | "Tributário" | "Família e Sucessões" | "Empresarial";
 
 export type UrgencyLevel = "Normal" | "Alta" | "Emergência";
+export type ViabilityLevel = "Alta" | "Média" | "Baixa";
 
 export type Case = {
   id: string;
@@ -99,6 +100,9 @@ export type Case = {
   summary?: string;
   caseValue?: number;
   urgency?: UrgencyLevel;
+  viability?: ViabilityLevel;
+  triageAnalysis?: string;
+  requirements?: ChecklistItem[];
 };
 
 export type AppointmentType = 'Atendimento' | 'Reunião' | 'Audiência';

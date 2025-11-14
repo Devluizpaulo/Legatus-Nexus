@@ -1,5 +1,5 @@
 
-import { Tenant, User, Client, Case, CaseStatus, UserRole, Appointment, Deadline, TimeEntry, FinancialTransaction, Refund, RefundStatus, Invoice, InvoiceStatus, TimeEntryStatus, TransactionStatus, TransactionType, AppointmentStatus, AppointmentType, Subscription, Plan, BillingHistory, SubscriptionStatus, BillingStatus, AuditLog, AuditEventType, FaqItem, SupportTicket, SupportTicketStatus, Achievement, LegalArea } from "./types";
+import { Tenant, User, Client, Case, CaseStatus, UserRole, Appointment, Deadline, TimeEntry, FinancialTransaction, Refund, RefundStatus, Invoice, InvoiceStatus, TimeEntryStatus, TransactionStatus, TransactionType, AppointmentStatus, AppointmentType, Subscription, Plan, BillingHistory, SubscriptionStatus, BillingStatus, AuditLog, AuditEventType, FaqItem, SupportTicket, SupportTicketStatus, Achievement, LegalArea, ViabilityLevel } from "./types";
 import { PlaceHolderImages } from "./placeholder-images";
 import { format, addDays, subDays } from 'date-fns';
 
@@ -17,7 +17,7 @@ const clients: Client[] = [
 ];
 
 const cases: Case[] = [
-  { id: "case-0", tenantId: "tenant-1", title: "Análise de Viabilidade - Nova Ação", caseNumber: 'PROSP-001', clientId: "client-1", status: "Lead Inicial", area: "Empresarial", responsible: ["user-1"], deadline: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(), summary: "Analisar possibilidade de ação regressiva contra fornecedor.", caseValue: 500000, urgency: "Alta" },
+  { id: "case-0", tenantId: "tenant-1", title: "Análise de Viabilidade - Nova Ação", caseNumber: 'PROSP-001', clientId: "client-1", status: "Lead Inicial", area: "Empresarial", responsible: ["user-1"], deadline: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(), summary: "Analisar possibilidade de ação regressiva contra fornecedor.", caseValue: 500000, urgency: "Alta", viability: "Alta", requirements: [], triageAnalysis: "" },
   { id: "case-1", tenantId: "tenant-1", title: "Defesa em Litígio Contratual", caseNumber: '0012345-67.2023.8.26.0100', comarca: 'São Paulo', vara: '10ª Vara Cível', clientId: "client-1", status: "Análise Inicial", area: "Cível", responsible: ["user-1", "user-2"], deadline: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(), summary: "Contestação em ação de cobrança indevida.", caseValue: 120000, urgency: "Normal" },
   { id: "case-2", tenantId: "tenant-1", title: "Consultoria Tributária", caseNumber: '0098765-43.2023.8.26.0001', comarca: 'São Paulo', vara: '2ª Vara de Execuções Fiscais', clientId: "client-1", status: "Análise Inicial", area: "Tributário", responsible: ["user-2"], deadline: new Date(Date.now() + 12 * 24 * 60 * 60 * 1000).toISOString(), summary: "Análise de PIS/COFINS sobre importação.", caseValue: 75000, urgency: "Normal" },
   { id: "case-3", tenantId: "tenant-1", title: "Ação de Propriedade Intelectual", caseNumber: '0054321-98.2022.8.26.0500', comarca: 'Rio de Janeiro', vara: '5ª Vara Empresarial', clientId: "client-2", status: "Distribuição", area: "Empresarial", responsible: ["user-1"], summary: "Ação de infração de marca.", caseValue: 250000, urgency: "Alta" },
@@ -266,6 +266,7 @@ export const ALL_CASE_STATUSES: CaseStatus[] = [
     ...Object.values(CIVIL_FUNNEL).flat() as CaseStatus[]
 ];
 export const ALL_LEGAL_AREAS: LegalArea[] = ["Cível", "Trabalhista", "Tributário", "Família e Sucessões", "Empresarial"];
+export const ALL_VIABILITY_LEVELS: ViabilityLevel[] = ["Alta", "Média", "Baixa"];
 export const ALL_APPOINTMENT_TYPES: AppointmentType[] = ['Atendimento', 'Reunião', 'Audiência'];
 export const ALL_APPOINTED_STATUSES: AppointmentStatus[] = ['Agendado', 'Confirmado', 'Cancelado', 'Realizado'];
 export const ALL_DEADLINE_STATUSES: DeadlineStatus[] = ['Pendente', 'Cumprido'];

@@ -10,6 +10,7 @@ import LeadIdentificationForm from "@/components/cases/lead-identification-form"
 import { Client, Case } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import CaseCharacterizationForm from "@/components/cases/case-characterization-form";
+import LegalTriageForm from "@/components/cases/legal-triage-form";
 
 export default function CaseDetailPage() {
     const { id } = useParams();
@@ -40,12 +41,18 @@ export default function CaseDetailPage() {
     };
 
     const handleSaveQualification = (caseData: Case) => {
-        updateCase(caseData);
+        updateCase({ ...caseData, status: 'Triagem Jurídica'});
+        router.push('/cases?phase=Prospecção');
+    };
+
+    const handleSaveTriage = (caseData: Case) => {
+        updateCase({ ...caseData, status: 'Reunião com Cliente' });
         router.push('/cases?phase=Prospecção');
     };
 
     const isProspectingPhase = caseData.status === 'Lead Inicial';
     const isQualificationPhase = caseData.status === 'Qualificação do Caso';
+    const isTriagePhase = caseData.status === 'Triagem Jurídica';
 
     return (
         <div className="grid gap-8 md:grid-cols-3">
@@ -59,7 +66,14 @@ export default function CaseDetailPage() {
                 {clientData && (
                     <>
                         <LeadIdentificationForm client={clientData} onSave={handleSaveLead} isReadOnly={!isProspectingPhase} />
-                        {isQualificationPhase && <CaseCharacterizationForm caseData={caseData} onSave={handleSaveQualification} />}
+                        {isQualificationPhase && <CaseCharacterizationForm caseData={caseData} onSave={handleSaveQualification} isReadOnly={false} />}
+                        {isTriagePhase && (
+                            <>
+                                <LeadIdentificationForm client={clientData} onSave={() => {}} isReadOnly={true} />
+                                <CaseCharacterizationForm caseData={caseData} onSave={() => {}} isReadOnly={true} />
+                                <LegalTriageForm caseData={caseData} onSave={handleSaveTriage} />
+                            </>
+                        )}
                     </>
                 )}
 
