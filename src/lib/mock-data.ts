@@ -220,8 +220,8 @@ export const PROSPECT_STATUSES: CaseStatus[] = [
     "Em Análise Jurídica",
     "Aguardando Documentos",
     "Proposta Enviada",
-    "Contrato Assinado",
     "Acordo Extrajudicial",
+    "Contrato Assinado",
     "Preparando Inicial",
 ];
 
@@ -271,7 +271,7 @@ export const ALL_TIME_ENTRY_STATUSES: TimeEntryStatus[] = ['Pendente', 'Faturado
 export const ALL_TRANSACTION_TYPES: TransactionType[] = ['Ganho', 'Despesa'];
 export const ALL_TRANSACTION_STATUSES: TransactionStatus[] = ['Pendente', 'Aprovada', 'Liquidada', 'Reprovada'];
 export const ALL_REFUND_STATUSES: RefundStatus[] = ['Pendente', 'Aprovado', 'Reprovado', 'Pago'];
-export const ALL_INVOICE_STATUSES: InvoiceStatus[] = ['Pendente', 'Paga'];
+export const ALL_INVOICE_STATUSES: InvoiceStatus[] = ['Pendente', 'Paga']; // "Atrasada" is a computed status in the UI
 export const ALL_SUBSCRIPTION_STATUSES: SubscriptionStatus[] = ['Ativa', 'Inativa', 'Pendente'];
 export const ALL_BILLING_STATUSES: BillingStatus[] = ['Pago', 'Pendente', 'Atrasado'];
 export const ALL_AUDIT_EVENT_TYPES: AuditEventType[] = ['USER_LOGIN', 'CLIENT_CREATED', 'CASE_STATUS_UPDATED', 'DEADLINE_COMPLETED', 'INVOICE_PAID', 'USER_DELETED'];
