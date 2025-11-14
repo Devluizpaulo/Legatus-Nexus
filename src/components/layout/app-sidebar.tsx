@@ -32,7 +32,8 @@ import {
   FileSignature,
   History,
   Info,
-  FolderKanban
+  FolderKanban,
+  Archive
 } from 'lucide-react';
 import { Logo } from './logo';
 import { usePathname } from 'next/navigation';
@@ -60,7 +61,6 @@ const masterMenuItems = [
                 { href: '/cases?area=Cível&instance=1', label: '1ª Instância' },
                 { href: '/cases?area=Cível&instance=2', label: '2ª Instância' },
                 { href: '/cases?area=Cível&instance=superior', label: 'Tribunais Superiores' },
-                { href: '/cases?area=Cível&status=Arquivo', label: 'Arquivo' },
             ]
         },
         {
@@ -70,7 +70,6 @@ const masterMenuItems = [
                 { href: '/cases?area=Trabalhista&instance=2', label: '2ª Instância' },
                 { href: '/cases?area=Trabalhista&instance=superior', label: 'Tribunais Superiores' },
                 { href: '/cases?area=Trabalhista&status=Execução', label: 'Execução Trabalhista' },
-                { href: '/cases?area=Trabalhista&status=Arquivo', label: 'Arquivo' },
             ]
         },
         {
@@ -80,9 +79,9 @@ const masterMenuItems = [
                 { href: '/cases?area=Família&instance=2', label: '2ª Instância' },
                 { href: '/cases?area=Família&instance=superior', label: 'Tribunais Superiores' },
                 { href: '/cases?area=Família&status=Execução', label: 'Cumprimento de Sentença' },
-                { href: '/cases?area=Família&status=Arquivo', label: 'Arquivo' },
             ]
-        }
+        },
+        { href: '/cases?status=Arquivo', label: 'Arquivo Geral', icon: Archive },
     ]
   },
   { href: '/financial', label: 'Financeiro', icon: Landmark },
@@ -146,7 +145,10 @@ function SidebarCollapsibleItem({ item, pathname }: { item: any, pathname: strin
                 ) : (
                     <Link href={subItem.href}>
                         <SidebarMenuSubButton asChild isActive={pathname === subItem.href}>
-                           <span>{subItem.label}</span>
+                           <div className="flex items-center gap-2">
+                             {subItem.icon && <subItem.icon className="h-4 w-4"/>}
+                             <span>{subItem.label}</span>
+                           </div>
                         </SidebarMenuSubButton>
                     </Link>
                 )}
