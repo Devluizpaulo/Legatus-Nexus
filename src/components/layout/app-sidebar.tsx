@@ -54,34 +54,65 @@ const masterMenuItems = [
     label: 'Processos', 
     icon: FolderKanban,
     subItems: [
-        { href: '/cases?phase=Prospecção', label: 'Prospecção' },
-        { 
-            label: 'Cível',
+      { href: '/cases?phase=Prospecção', label: 'Prospecção' },
+      { 
+        label: 'Cível',
+        subItems: [
+          { href: '/cases?area=Cível&instance=1', label: '1ª Instância' },
+          { href: '/cases?area=Cível&instance=2', label: '2ª Instância' },
+          { 
+            label: 'Tribunais Superiores',
             subItems: [
-                { href: '/cases?area=Cível&instance=1', label: '1ª Instância' },
-                { href: '/cases?area=Cível&instance=2', label: '2ª Instância' },
-                { href: '/cases?area=Cível&instance=superior', label: 'Tribunais Superiores' },
+              { href: '/cases?area=Cível&tribunal=STJ', label: 'STJ' },
+              { href: '/cases?area=Cível&tribunal=STF', label: 'STF' },
             ]
-        },
-        {
-            label: 'Trabalhista',
+          },
+          { href: '/cases?area=Cível&status=Execução', label: 'Cumprimento de Sentença / Execução' },
+          { href: '/cases?area=Cível&status=Arquivo', label: 'Arquivo Cível' },
+        ]
+      },
+      {
+        label: 'Trabalhista',
+        subItems: [
+          { href: '/cases?area=Trabalhista&instance=1', label: '1ª Instância' },
+          { href: '/cases?area=Trabalhista&instance=2', label: '2ª Instância' },
+          { 
+            label: 'Tribunais Superiores',
             subItems: [
-                { href: '/cases?area=Trabalhista&instance=1', label: '1ª Instância' },
-                { href: '/cases?area=Trabalhista&instance=2', label: '2ª Instância' },
-                { href: '/cases?area=Trabalhista&instance=superior', label: 'Tribunais Superiores' },
-                { href: '/cases?area=Trabalhista&status=Execução', label: 'Execução Trabalhista' },
+              { href: '/cases?area=Trabalhista&tribunal=TST', label: 'TST' },
+              { href: '/cases?area=Trabalhista&tribunal=STF', label: 'STF' },
             ]
-        },
-        {
-            label: 'Direito de Família e Sucessões',
+          },
+          { href: '/cases?area=Trabalhista&status=Execução', label: 'Execução Trabalhista' },
+          { href: '/cases?area=Trabalhista&status=Arquivo', label: 'Arquivo Trabalhista' },
+        ]
+      },
+      {
+        label: 'Direito de Família e Sucessões',
+        subItems: [
+          { href: '/cases?area=Família&instance=1', label: '1ª Instância' },
+          { href: '/cases?area=Família&instance=2', label: '2ª Instância' },
+          { 
+            label: 'Tribunais Superiores',
             subItems: [
-                { href: '/cases?area=Família&instance=1', label: '1ª Instância' },
-                { href: '/cases?area=Família&instance=2', label: '2ª Instância' },
-                { href: '/cases?area=Família&instance=superior', label: 'Tribunais Superiores' },
-                { href: '/cases?area=Família&status=Execução', label: 'Cumprimento de Sentença' },
+              { href: '/cases?area=Família&tribunal=STJ', label: 'STJ' },
+              { href: '/cases?area=Família&tribunal=STF', label: 'STF' },
             ]
-        },
-        { href: '/cases?status=Arquivo', label: 'Arquivo Geral', icon: Archive },
+          },
+          { href: '/cases?area=Família&status=Execução', label: 'Cumprimento de Sentença / Execução' },
+          { href: '/cases?area=Família&status=Arquivo', label: 'Arquivo Família' },
+        ]
+      },
+      {
+        label: 'Outros Processos',
+        subItems: [
+           { href: '/cases?area=Outros&instance=1', label: '1ª Instância' },
+           { href: '/cases?area=Outros&instance=2', label: '2ª Instância' },
+           { href: '/cases?area=Outros&instance=superior', label: 'Tribunais Superiores' },
+           { href: '/cases?area=Outros&status=Arquivo', label: 'Arquivo' },
+        ]
+      },
+      { href: '/cases?status=Arquivo', label: 'Arquivo Geral', icon: Archive },
     ]
   },
   { href: '/financial', label: 'Financeiro', icon: Landmark },
