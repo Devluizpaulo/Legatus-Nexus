@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, Calendar, Briefcase, Wallet, AreaChart, FileText, Award, Handshake, Key } from "lucide-react";
+import { CheckCircle, Calendar, Briefcase, Wallet, AreaChart, FileText, Award, Handshake, Key, FolderKanban, Workflow, GitBranch, Search, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
@@ -38,6 +38,29 @@ const features = [
     description: "Monitore ações, conquistas e métricas de desempenho da equipe.",
   }
 ];
+
+const implementedFeatures = [
+    {
+        icon: <Search className="h-8 w-8 text-primary"/>,
+        title: "Funil de Prospecção Completo",
+        description: "Transformamos a gestão de novos negócios com um pipeline detalhado, desde 'Novo Lead' até a 'Preparação da Inicial', oferecendo uma visão clara do progresso de cada cliente potencial."
+    },
+    {
+        icon: <Workflow className="h-8 w-8 text-primary"/>,
+        title: "Funis Jurídicos Estruturados",
+        description: "Definimos a base para funis processuais específicos por área do direito, começando com um funil detalhado para Direito Civil, cobrindo todas as fases, desde a pré-processual até os tribunais superiores."
+    },
+    {
+        icon: <GitBranch className="h-8 w-8 text-primary"/>,
+        title: "Dados de Processos Enriquecidos",
+        description: "Aprimoramos a estrutura de dados para incluir 'Área Jurídica', 'Comarca' e 'Vara', permitindo uma categorização precisa e a transição inteligente entre os funis de prospecção e jurídico."
+    },
+    {
+        icon: <FolderKanban className="h-8 w-8 text-primary"/>,
+        title: "Navegação e UI Aprimoradas",
+        description: "O menu 'Processos' agora é um grupo expansível com sub-itens granulares ('Prospecção', 'Cível - 1ª Instância', etc.) e um novo ícone, tornando a navegação mais rápida e intuitiva."
+    }
+]
 
 const plans = [
     {
@@ -146,36 +169,19 @@ export default function HomePage() {
         <section id="about" className="py-20 bg-secondary/50 dark:bg-card">
           <div className="container mx-auto px-4 md:px-6">
             <div className="text-center">
-              <h2 className="font-headline text-3xl md:text-4xl font-bold">O futuro da advocacia é digital.</h2>
+              <h2 className="font-headline text-3xl md:text-4xl font-bold">Uma plataforma construída para a advocacia moderna</h2>
               <p className="mt-4 max-w-3xl mx-auto text-lg text-muted-foreground">
-                O <strong>Legatus Nexus</strong> é uma plataforma completa de <strong>gestão jurídica e administrativa</strong> para escritórios de advocacia. Cada profissional tem seu próprio ambiente com permissões personalizadas, garantindo produtividade e controle.
+                O <strong>Legatus Nexus</strong> evoluiu para refletir os fluxos de trabalho do seu escritório, desde a captação de clientes até as instâncias superiores da justiça.
               </p>
             </div>
-            <div className="mt-12 grid gap-x-8 gap-y-4 md:grid-cols-2 lg:grid-cols-3">
-              <div className="flex items-center gap-3">
-                <CheckCircle className="h-5 w-5 text-primary shrink-0"/>
-                <p>Multiusuário e Multi-escritório</p>
-              </div>
-               <div className="flex items-center gap-3">
-                <CheckCircle className="h-5 w-5 text-primary shrink-0"/>
-                <p>Painéis independentes e seguros</p>
-              </div>
-               <div className="flex items-center gap-3">
-                <CheckCircle className="h-5 w-5 text-primary shrink-0"/>
-                <p>Controle de prazos e audiências</p>
-              </div>
-               <div className="flex items-center gap-3">
-                <CheckCircle className="h-5 w-5 text-primary shrink-0"/>
-                <p>Gestão financeira integrada</p>
-              </div>
-               <div className="flex items-center gap-3">
-                <CheckCircle className="h-5 w-5 text-primary shrink-0"/>
-                <p>Relatórios em tempo real</p>
-              </div>
-               <div className="flex items-center gap-3">
-                <CheckCircle className="h-5 w-5 text-primary shrink-0"/>
-                <p>Interface moderna e intuitiva</p>
-              </div>
+             <div className="mt-12 grid gap-8 md:grid-cols-2">
+                {implementedFeatures.map((feature) => (
+                    <Card key={feature.title} className="flex flex-col text-center items-center p-6 rounded-lg transition-all hover:shadow-lg hover:-translate-y-1 border-transparent hover:border-primary/20 bg-card">
+                        <div className="flex-shrink-0">{feature.icon}</div>
+                        <h3 className="mt-4 text-xl font-semibold">{feature.title}</h3>
+                        <p className="mt-2 text-muted-foreground flex-grow">{feature.description}</p>
+                    </Card>
+                ))}
             </div>
           </div>
         </section>
