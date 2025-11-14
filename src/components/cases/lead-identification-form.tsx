@@ -4,7 +4,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Client } from '@/lib/types';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -55,17 +55,19 @@ export default function LeadIdentificationForm({ client, onSave }: LeadIdentific
       title: "Lead atualizado!",
       description: "As informações do lead foram salvas com sucesso.",
     });
+    // Here you would typically navigate to the next step or update the case status
+    console.log("Proceeding to qualification step...");
   };
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Identificação do Cliente (Lead)</CardTitle>
-        <CardDescription>Informações básicas sobre o cliente em potencial.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <CardHeader>
+            <CardTitle>Identificação do Cliente (Lead)</CardTitle>
+            <CardDescription>Informações básicas sobre o cliente em potencial.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField control={form.control} name="name" render={({ field }) => (
                     <FormItem>
@@ -129,9 +131,12 @@ export default function LeadIdentificationForm({ client, onSave }: LeadIdentific
                 <FormMessage />
               </FormItem>
             )}/>
-          </form>
-        </Form>
-      </CardContent>
+          </CardContent>
+          <CardFooter className="flex justify-end">
+            <Button type="submit">Salvar e Continuar para Qualificação</Button>
+          </CardFooter>
+        </form>
+      </Form>
     </Card>
   );
 }
