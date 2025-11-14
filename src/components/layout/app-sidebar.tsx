@@ -133,7 +133,7 @@ function SidebarCollapsibleItem({ item, pathname }: { item: any, pathname: strin
                      <Collapsible>
                         <CollapsibleTrigger className="w-full">
                              <SidebarMenuSubButton>
-                               <span>{subItem.label}</span>
+                               <span className="whitespace-normal">{subItem.label}</span>
                             </SidebarMenuSubButton>
                         </CollapsibleTrigger>
                         <CollapsibleContent>
@@ -147,7 +147,7 @@ function SidebarCollapsibleItem({ item, pathname }: { item: any, pathname: strin
                         <SidebarMenuSubButton asChild isActive={pathname === subItem.href}>
                            <div className="flex items-center gap-2">
                              {subItem.icon && <subItem.icon className="h-4 w-4"/>}
-                             <span>{subItem.label}</span>
+                             <span className="whitespace-normal">{subItem.label}</span>
                            </div>
                         </SidebarMenuSubButton>
                     </Link>
