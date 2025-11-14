@@ -1,4 +1,5 @@
 
+
 export type Tenant = {
   id: string;
   name: string;
@@ -44,7 +45,22 @@ export type Client = {
   notes?: string;
 };
 
-export type CaseStatus = "Prospecção" | "Negociação" | "Elaboração de Peças" | "Aguardando Protocolo" | "Análise Inicial" | "Fase de Instrução" | "Recursos" | "Finalizado";
+export type CaseStatus = 
+  // Fases de Prospecção
+  | "Novo Lead"
+  | "Em Atendimento"
+  | "Em Análise Jurídica"
+  | "Aguardando Documentos"
+  | "Proposta Enviada"
+  | "Contrato Assinado"
+  | "Acordo Extrajudicial"
+  | "Preparando Inicial"
+  // Fases Jurídicas
+  | "Análise Inicial" 
+  | "Fase de Instrução" 
+  | "Recursos" 
+  | "Finalizado";
+
 export type LegalArea = "Cível" | "Trabalhista" | "Tributário" | "Família e Sucessões" | "Empresarial";
 
 export type Case = {
