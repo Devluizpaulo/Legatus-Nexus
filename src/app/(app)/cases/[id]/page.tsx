@@ -4,7 +4,6 @@ import { useAuth } from "@/contexts/auth-context";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import AISummarizer from "@/components/cases/ai-summarizer";
 import { notFound, useParams } from "next/navigation";
 import LeadIdentificationForm from "@/components/cases/lead-identification-form";
 import CaseCharacterizationForm from "@/components/cases/case-characterization-form";
@@ -47,7 +46,6 @@ export default function CaseDetailPage() {
                    <CaseCharacterizationForm caseData={caseData} onSave={updateCase} />
                 </div>
 
-                <AISummarizer />
             </div>
             <div className="space-y-6">
                  <Card>
