@@ -7,9 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { notFound, useParams } from "next/navigation";
 import LeadIdentificationForm from "@/components/cases/lead-identification-form";
-import { Button } from "@/components/ui/button";
-import { Client } from "@/lib/types";
+import { Client, Case } from "@/lib/types";
 import { useRouter } from "next/navigation";
+import CaseCharacterizationForm from "@/components/cases/case-characterization-form";
 
 export default function CaseDetailPage() {
     const { id } = useParams();
@@ -33,11 +33,19 @@ export default function CaseDetailPage() {
         return name.substring(0, 2).toUpperCase();
     }
 
-    const handleSaveAndQualify = (clientData: Client) => {
+    const handleSaveLead = (clientData: Client) => {
         updateClient(clientData);
         updateCase({ ...caseData, status: 'Qualificação do Caso' });
         router.push('/cases?phase=Prospecção');
     };
+
+    const handleSaveQualification = (caseData: Case) => {
+        updateCase(caseData);
+        router.push('/cases?phase=Prospecção');
+    };
+
+    const isProspectingPhase = caseData.status === 'Lead Inicial';
+    const isQualificationPhase = caseData.status === 'Qualificação do Caso';
 
     return (
         <div className="grid gap-8 md:grid-cols-3">
@@ -49,7 +57,10 @@ export default function CaseDetailPage() {
                 </div>
                 
                 {clientData && (
-                    <LeadIdentificationForm client={clientData} onSave={handleSaveAndQualify} />
+                    <>
+                        <LeadIdentificationForm client={clientData} onSave={handleSaveLead} isReadOnly={!isProspectingPhase} />
+                        {isQualificationPhase && <CaseCharacterizationForm caseData={caseData} onSave={handleSaveQualification} />}
+                    </>
                 )}
 
             </div>

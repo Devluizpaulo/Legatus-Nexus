@@ -30,11 +30,12 @@ type LeadFormData = z.infer<typeof leadSchema>;
 interface LeadIdentificationFormProps {
   client: Client;
   onSave: (data: Client) => void;
+  isReadOnly?: boolean;
 }
 
 const originOptions = ["Indicação", "Website", "Redes Sociais", "Evento", "Outro"];
 
-export default function LeadIdentificationForm({ client, onSave }: LeadIdentificationFormProps) {
+export default function LeadIdentificationForm({ client, onSave, isReadOnly = false }: LeadIdentificationFormProps) {
   const { toast } = useToast();
   const form = useForm<LeadFormData>({
     resolver: zodResolver(leadSchema),
@@ -51,6 +52,7 @@ export default function LeadIdentificationForm({ client, onSave }: LeadIdentific
   });
 
   const onSubmit: SubmitHandler<LeadFormData> = (data) => {
+    if(isReadOnly) return;
     onSave({ ...client, ...data });
     toast({
       title: "Lead atualizado!",
@@ -71,42 +73,42 @@ export default function LeadIdentificationForm({ client, onSave }: LeadIdentific
                 <FormField control={form.control} name="name" render={({ field }) => (
                     <FormItem>
                         <FormLabel className="flex items-center gap-2"><User /> Nome Completo</FormLabel>
-                        <FormControl><Input {...field} /></FormControl>
+                        <FormControl><Input {...field} readOnly={isReadOnly} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                  <FormField control={form.control} name="document" render={({ field }) => (
                     <FormItem>
                         <FormLabel className="flex items-center gap-2"><Building /> CPF / CNPJ</FormLabel>
-                        <FormControl><Input {...field} /></FormControl>
+                        <FormControl><Input {...field} readOnly={isReadOnly} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="email" render={({ field }) => (
                     <FormItem>
                         <FormLabel className="flex items-center gap-2"><Mail /> E-mail</FormLabel>
-                        <FormControl><Input type="email" {...field} /></FormControl>
+                        <FormControl><Input type="email" {...field} readOnly={isReadOnly} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="phone" render={({ field }) => (
                     <FormItem>
                         <FormLabel className="flex items-center gap-2"><Phone /> Telefone / WhatsApp</FormLabel>
-                        <FormControl><Input {...field} /></FormControl>
+                        <FormControl><Input {...field} readOnly={isReadOnly} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                  <FormField control={form.control} name="address" render={({ field }) => (
                     <FormItem className="md:col-span-2">
                         <FormLabel className="flex items-center gap-2"><MapPin /> Endereço Completo</FormLabel>
-                        <FormControl><Input placeholder="Rua, Número, Bairro, Cidade - Estado, CEP" {...field} /></FormControl>
+                        <FormControl><Input placeholder="Rua, Número, Bairro, Cidade - Estado, CEP" {...field} readOnly={isReadOnly} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="origin" render={({ field }) => (
                     <FormItem>
                         <FormLabel className="flex items-center gap-2"><Star /> Origem do Lead</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isReadOnly}>
                             <FormControl><SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger></FormControl>
                             <SelectContent>
                                 {originOptions.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
@@ -118,7 +120,7 @@ export default function LeadIdentificationForm({ client, onSave }: LeadIdentific
                 <FormField control={form.control} name="defendant" render={({ field }) => (
                     <FormItem>
                         <FormLabel className="flex items-center gap-2"><Target /> Contra quem pretende mover a ação?</FormLabel>
-                        <FormControl><Input placeholder="Nome da pessoa ou empresa" {...field} /></FormControl>
+                        <FormControl><Input placeholder="Nome da pessoa ou empresa" {...field} readOnly={isReadOnly} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
@@ -126,14 +128,16 @@ export default function LeadIdentificationForm({ client, onSave }: LeadIdentific
              <FormField control={form.control} name="initialSummary" render={({ field }) => (
               <FormItem>
                 <FormLabel className="flex items-center gap-2"><FileText /> Observações gerais do caso (resumo inicial)</FormLabel>
-                <FormControl><Textarea placeholder="Descreva brevemente o problema relatado pelo cliente..." className="min-h-[100px]" {...field} /></FormControl>
+                <FormControl><Textarea placeholder="Descreva brevemente o problema relatado pelo cliente..." className="min-h-[100px]" {...field} readOnly={isReadOnly} /></FormControl>
                 <FormMessage />
               </FormItem>
             )}/>
           </CardContent>
-          <CardFooter className="flex justify-end">
-            <Button type="submit">Salvar e Continuar para Qualificação</Button>
-          </CardFooter>
+          {!isReadOnly && (
+            <CardFooter className="flex justify-end">
+                <Button type="submit">Salvar e Continuar para Qualificação</Button>
+            </CardFooter>
+          )}
         </form>
       </Form>
     </Card>

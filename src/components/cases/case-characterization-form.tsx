@@ -5,7 +5,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Case, UrgencyLevel, LegalArea } from '@/lib/types';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -48,24 +48,25 @@ export default function CaseCharacterizationForm({ caseData, onSave }: CaseChara
         ...caseData, 
         ...data,
         area: data.area as LegalArea,
-        urgency: data.urgency as UrgencyLevel
+        urgency: data.urgency as UrgencyLevel,
+        status: 'Triagem Jurídica' // Avança para a próxima etapa
     };
     onSave(updatedData);
     toast({
-      title: "Caso atualizado!",
-      description: "A caracterização do caso foi salva com sucesso.",
+      title: "Qualificação salva!",
+      description: "O caso foi caracterizado e avançou para a Triagem Jurídica.",
     });
   };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Caracterização do Caso</CardTitle>
-        <CardDescription>Detalhes sobre o problema jurídico para qualificação.</CardDescription>
+        <CardTitle>Qualificação do Caso</CardTitle>
+        <CardDescription>Defina a área, urgência e detalhes financeiros para análise de viabilidade.</CardDescription>
       </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <FormField control={form.control} name="area" render={({ field }) => (
                 <FormItem>
@@ -102,12 +103,12 @@ export default function CaseCharacterizationForm({ caseData, onSave }: CaseChara
                 <FormMessage />
               </FormItem>
             )}/>
-            <div className="flex justify-end">
-              <Button type="submit">Salvar Caracterização</Button>
-            </div>
-          </form>
-        </Form>
-      </CardContent>
+          </CardContent>
+          <CardFooter className="flex justify-end">
+            <Button type="submit">Salvar e Continuar para Triagem</Button>
+          </CardFooter>
+        </form>
+      </Form>
     </Card>
   );
 }
