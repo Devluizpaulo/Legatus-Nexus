@@ -7,8 +7,9 @@ import { ALL_CASE_STATUSES } from '@/lib/mock-data';
 import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Clock, Users } from 'lucide-react';
+import { Clock, Users, FolderKanban } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Badge } from '../ui/badge';
 
 interface KanbanBoardProps {
     cases: Case[];
@@ -88,6 +89,11 @@ export default function KanbanBoard({ cases, clients, users }: KanbanBoardProps)
                         <p className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
                            <Users className='h-3 w-3'/> {clients.find(c => c.id === _case.clientId)?.name}
                         </p>
+                        {_case.status === 'Distribuição' && (
+                            <p className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
+                               <FolderKanban className='h-3 w-3'/> {_case.area}
+                            </p>
+                        )}
                          {_case.deadline && (
                             <p className={cn("text-sm mt-2 flex items-center gap-2", new Date(_case.deadline) < new Date() ? "text-destructive" : "text-muted-foreground")}>
                                 <Clock className='h-3 w-3'/> Vence em {new Date(_case.deadline).toLocaleDateString('pt-BR')}
