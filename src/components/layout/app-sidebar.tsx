@@ -31,7 +31,8 @@ import {
   Receipt,
   FileSignature,
   History,
-  Info
+  Info,
+  FolderKanban
 } from 'lucide-react';
 import { Logo } from './logo';
 import { usePathname } from 'next/navigation';
@@ -50,7 +51,7 @@ const masterMenuItems = [
   { href: '/clients', label: 'Clientes', icon: Users },
   { 
     label: 'Processos', 
-    icon: Briefcase,
+    icon: FolderKanban,
     subItems: [
         { href: '/cases?phase=Prospecção', label: 'Prospecção' },
         { href: '/cases?area=Cível&instance=1', label: 'Cível - 1ª Instância' },
@@ -72,7 +73,7 @@ const masterMenuItems = [
 
 const advogadoMenu = [
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { href: '/cases', label: 'Processos', icon: Briefcase },
+    { href: '/cases', label: 'Processos', icon: FolderKanban },
     { href: '/clients', label: 'Clientes', icon: Users },
     { href: '/agenda', label: 'Agenda', icon: Calendar },
     { href: '/deadlines', label: 'Prazos', icon: GanttChartSquare },
