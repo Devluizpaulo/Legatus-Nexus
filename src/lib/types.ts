@@ -41,9 +41,12 @@ export type Client = {
   document?: string;
   email: string;
   phone: string;
+  address?: string;
   caseIds: string[];
   notes?: string;
-  origin?: string; // "Como conheceu o escritório"
+  origin?: string;
+  defendant?: string; // Contra quem pretende mover a ação
+  initialSummary?: string; // Resumo inicial do caso
 };
 
 export type CaseStatus = 

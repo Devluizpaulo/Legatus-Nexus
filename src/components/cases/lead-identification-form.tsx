@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useForm, SubmitHandler } from 'react-hook-form';
@@ -9,8 +8,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { User, Mail, Phone, Building, Star } from 'lucide-react';
+import { User, Mail, Phone, Building, Star, Target, FileText, MapPin } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 const leadSchema = z.object({
@@ -18,7 +18,10 @@ const leadSchema = z.object({
   email: z.string().email("E-mail inválido").optional().or(z.literal('')),
   phone: z.string().optional(),
   document: z.string().optional(),
+  address: z.string().optional(),
   origin: z.string().optional(),
+  defendant: z.string().optional(),
+  initialSummary: z.string().optional(),
 });
 
 type LeadFormData = z.infer<typeof leadSchema>;
@@ -39,7 +42,10 @@ export default function LeadIdentificationForm({ client, onSave }: LeadIdentific
       email: client.email || '',
       phone: client.phone || '',
       document: client.document || '',
+      address: client.address || '',
       origin: client.origin || '',
+      defendant: client.defendant || '',
+      initialSummary: client.initialSummary || '',
     },
   });
 
@@ -54,7 +60,7 @@ export default function LeadIdentificationForm({ client, onSave }: LeadIdentific
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Identificação do Lead</CardTitle>
+        <CardTitle>Identificação do Cliente (Lead)</CardTitle>
         <CardDescription>Informações básicas sobre o cliente em potencial.</CardDescription>
       </CardHeader>
       <CardContent>
@@ -68,7 +74,14 @@ export default function LeadIdentificationForm({ client, onSave }: LeadIdentific
                         <FormMessage />
                     </FormItem>
                 )}/>
-                 <FormField control={form.control} name="email" render={({ field }) => (
+                 <FormField control={form.control} name="document" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel className="flex items-center gap-2"><Building /> CPF / CNPJ</FormLabel>
+                        <FormControl><Input {...field} /></FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}/>
+                <FormField control={form.control} name="email" render={({ field }) => (
                     <FormItem>
                         <FormLabel className="flex items-center gap-2"><Mail /> E-mail</FormLabel>
                         <FormControl><Input type="email" {...field} /></FormControl>
@@ -82,10 +95,10 @@ export default function LeadIdentificationForm({ client, onSave }: LeadIdentific
                         <FormMessage />
                     </FormItem>
                 )}/>
-                <FormField control={form.control} name="document" render={({ field }) => (
-                    <FormItem>
-                        <FormLabel className="flex items-center gap-2"><Building /> CPF / CNPJ</FormLabel>
-                        <FormControl><Input {...field} /></FormControl>
+                 <FormField control={form.control} name="address" render={({ field }) => (
+                    <FormItem className="md:col-span-2">
+                        <FormLabel className="flex items-center gap-2"><MapPin /> Endereço Completo</FormLabel>
+                        <FormControl><Input placeholder="Rua, Número, Bairro, Cidade - Estado, CEP" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
@@ -101,9 +114,23 @@ export default function LeadIdentificationForm({ client, onSave }: LeadIdentific
                         <FormMessage />
                     </FormItem>
                 )}/>
+                <FormField control={form.control} name="defendant" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel className="flex items-center gap-2"><Target /> Contra quem pretende mover a ação?</FormLabel>
+                        <FormControl><Input placeholder="Nome da pessoa ou empresa" {...field} /></FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}/>
             </div>
-            <div className="flex justify-end">
-                <Button type="submit">Salvar Informações do Lead</Button>
+             <FormField control={form.control} name="initialSummary" render={({ field }) => (
+              <FormItem>
+                <FormLabel className="flex items-center gap-2"><FileText /> Observações gerais do caso (resumo inicial)</FormLabel>
+                <FormControl><Textarea placeholder="Descreva brevemente o problema relatado pelo cliente..." className="min-h-[100px]" {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )}/>
+            <div className="flex justify-end pt-4">
+                <Button type="submit">Salvar e Ir para Qualificação do Caso</Button>
             </div>
           </form>
         </Form>

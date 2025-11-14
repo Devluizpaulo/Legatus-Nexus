@@ -12,8 +12,8 @@ const users: User[] = [
 ];
 
 const clients: Client[] = [
-  { id: "client-1", tenantId: "tenant-1", name: "Indústrias Stark", document: "12.345.678/0001-99", email: "contato@stark.com", phone: "11 98765-4321", caseIds: ["case-1", "case-2"], notes: "Cliente prioritário. Contato principal: Pepper Potts.", origin: "Indicação" },
-  { id: "client-2", tenantId: "tenant-1", name: "Wayne Enterprises", document: "98.765.432/0001-11", email: "financeiro@wayne.com", phone: "21 91234-5678", caseIds: ["case-3"], origin: "Website" },
+  { id: "client-1", tenantId: "tenant-1", name: "Indústrias Stark", document: "12.345.678/0001-99", email: "contato@stark.com", phone: "11 98765-4321", caseIds: ["case-1", "case-2"], notes: "Cliente prioritário. Contato principal: Pepper Potts.", origin: "Indicação", address: "Stark Tower, New York, NY", defendant: "Hammer Industries", initialSummary: "Disputa sobre patente de reator arc." },
+  { id: "client-2", tenantId: "tenant-1", name: "Wayne Enterprises", document: "98.765.432/0001-11", email: "financeiro@wayne.com", phone: "21 91234-5678", caseIds: ["case-3"], origin: "Website", address: "Wayne Tower, Gotham, NJ" },
 ];
 
 const cases: Case[] = [
