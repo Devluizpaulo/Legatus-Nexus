@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useAuth } from '@/contexts/auth-context';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
@@ -8,11 +8,34 @@ import { DollarSign, Briefcase, Users, AlertTriangle, CheckCircle, XCircle } fro
 import { addDays, isBefore } from 'date-fns';
 import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
-import { Refund, FinancialTransaction, RefundStatus, TransactionStatus } from '@/lib/types';
+import { Refund, FinancialTransaction, RefundStatus, TransactionStatus, Deadline } from '@/lib/types';
 import Link from 'next/link';
+import DeadlineForm from '../deadlines/deadline-form';
 
 export default function MasterDashboard() {
-    const { tenantData, updateRefund, updateFinancialTransaction } = useAuth();
+    const { tenantData, currentUser, updateRefund, updateFinancialTransaction, updateDeadline, deleteDeadline } = useAuth();
+    const [selectedDeadline, setSelectedDeadline] = useState<Deadline | null>(null);
+    const [isDeadlineModalOpen, setIsDeadlineModalOpen] = useState(false);
+
+    const handleOpenDeadlineModal = (deadline: Deadline) => {
+      setSelectedDeadline(deadline);
+      setIsDeadlineModalOpen(true);
+    }
+
+    const handleCloseDeadlineModal = () => {
+      setSelectedDeadline(null);
+      setIsDeadlineModalOpen(false);
+    }
+    
+    const handleSaveDeadline = (deadline: Deadline) => {
+        updateDeadline(deadline);
+        handleCloseDeadlineModal();
+    }
+
+    const handleDeleteDeadline = (id: string) => {
+        deleteDeadline(id);
+        handleCloseDeadlineModal();
+    }
 
     const {
         activeCasesCount,
@@ -83,7 +106,7 @@ export default function MasterDashboard() {
     
     const COLORS = ["hsl(var(--chart-1))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))"];
 
-    if (!tenantData) return null;
+    if (!tenantData || !currentUser) return null;
 
     return (
         <div className="grid gap-6 lg:grid-cols-3">
@@ -212,7 +235,11 @@ export default function MasterDashboard() {
                              {urgentDeadlines.slice(0,5).map(deadline => {
                                 const responsible = tenantData.users.find(u => u.id === deadline.responsibleId);
                                 return (
-                                    <div key={deadline.id} className="flex justify-between items-center text-sm p-2 rounded-md bg-secondary/50">
+                                    <button 
+                                        key={deadline.id} 
+                                        onClick={() => handleOpenDeadlineModal(deadline)}
+                                        className="w-full flex justify-between items-center text-sm p-2 rounded-md bg-secondary/50 hover:bg-secondary/80 transition-colors text-left"
+                                    >
                                         <div>
                                             <p className="font-semibold">{deadline.title}</p>
                                             <p className="text-xs text-muted-foreground">{responsible?.name}</p>
@@ -220,7 +247,7 @@ export default function MasterDashboard() {
                                         <p className={cn("font-medium", new Date(deadline.dueDate) < new Date() ? 'text-destructive' : 'text-amber-600' )}>
                                             Vence em {new Date(deadline.dueDate).toLocaleDateString('pt-BR')}
                                         </p>
-                                    </div>
+                                    </button>
                                 )
                              })}
                              {urgentDeadlines.length === 0 && <p className="text-sm text-center text-muted-foreground py-4">Nenhum prazo urgente!</p>}
@@ -228,6 +255,18 @@ export default function MasterDashboard() {
                     </CardContent>
                 </Card>
             </div>
+            {isDeadlineModalOpen && selectedDeadline && currentUser && (
+                <DeadlineForm 
+                    isOpen={isDeadlineModalOpen}
+                    onClose={handleCloseDeadlineModal}
+                    deadline={selectedDeadline}
+                    onSave={handleSaveDeadline}
+                    onDelete={handleDeleteDeadline}
+                    currentUser={currentUser}
+                    users={tenantData.users}
+                    clients={tenantData.clients}
+                />
+            )}
         </div>
     )
 }
