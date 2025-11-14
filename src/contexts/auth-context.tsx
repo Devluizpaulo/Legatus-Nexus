@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
@@ -32,6 +33,7 @@ interface AuthContextType {
   login: (email: string, pass: string) => boolean;
   logout: () => void;
   updateCases: (updatedCases: Case[]) => void;
+  updateCase: (updatedCase: Case) => void;
   addAppointment: (newAppointment: Omit<Appointment, 'id' | 'tenantId'>) => void;
   updateAppointment: (updatedAppointment: Appointment) => void;
   deleteAppointment: (appointmentId: string) => void;
@@ -118,6 +120,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const updateCases = (updatedCases: Case[]) => {
     if (tenantData) {
       setTenantData({ ...tenantData, cases: updatedCases });
+    }
+  };
+
+  const updateCase = (updatedCase: Case) => {
+    if (tenantData) {
+      setTenantData({
+        ...tenantData,
+        cases: tenantData.cases.map(c => c.id === updatedCase.id ? updatedCase : c),
+      });
     }
   };
 
@@ -371,7 +382,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         isAuthenticated, 
         login, 
         logout, 
-        updateCases, 
+        updateCases,
+        updateCase, 
         addAppointment, 
         updateAppointment, 
         deleteAppointment, 

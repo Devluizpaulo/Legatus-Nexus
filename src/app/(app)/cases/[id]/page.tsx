@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useAuth } from "@/contexts/auth-context";
@@ -7,10 +8,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { notFound, useParams } from "next/navigation";
 import LeadIdentificationForm from "@/components/cases/lead-identification-form";
 import { Button } from "@/components/ui/button";
+import { Client } from "@/lib/types";
+import { useRouter } from "next/navigation";
 
 export default function CaseDetailPage() {
     const { id } = useParams();
-    const { tenantData, updateClient } = useAuth();
+    const router = useRouter();
+    const { tenantData, updateClient, updateCase } = useAuth();
     
     if (!tenantData) return <div>Carregando...</div>
 
@@ -29,6 +33,12 @@ export default function CaseDetailPage() {
         return name.substring(0, 2).toUpperCase();
     }
 
+    const handleSaveAndQualify = (clientData: Client) => {
+        updateClient(clientData);
+        updateCase({ ...caseData, status: 'Qualificação do Caso' });
+        router.push('/cases?phase=Prospecção');
+    };
+
     return (
         <div className="grid gap-8 md:grid-cols-3">
             <div className="md:col-span-2 space-y-8">
@@ -39,7 +49,7 @@ export default function CaseDetailPage() {
                 </div>
                 
                 {clientData && (
-                    <LeadIdentificationForm client={clientData} onSave={updateClient} />
+                    <LeadIdentificationForm client={clientData} onSave={handleSaveAndQualify} />
                 )}
 
             </div>
