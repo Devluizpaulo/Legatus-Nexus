@@ -43,7 +43,7 @@ export type Client = {
   notes?: string;
 };
 
-export type CaseStatus = "Análise Inicial" | "Fase de Instrução" | "Recursos" | "Finalizado";
+export type CaseStatus = "Prospecção" | "Negociação" | "Elaboração de Peças" | "Aguardando Protocolo" | "Análise Inicial" | "Fase de Instrução" | "Recursos" | "Finalizado";
 
 export type Case = {
   id: string;
