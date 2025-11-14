@@ -54,12 +54,35 @@ const masterMenuItems = [
     icon: FolderKanban,
     subItems: [
         { href: '/cases?phase=Prospecção', label: 'Prospecção' },
-        { href: '/cases?area=Cível&instance=1', label: 'Cível - 1ª Instância' },
-        { href: '/cases?area=Cível&instance=2', label: 'Cível - 2ª Instância' },
-        ...ALL_LEGAL_AREAS.filter(area => area !== "Cível").map(area => ({
-             href: `/cases?area=${encodeURIComponent(area)}`,
-             label: area
-        }))
+        { 
+            label: 'Cível',
+            subItems: [
+                { href: '/cases?area=Cível&instance=1', label: '1ª Instância' },
+                { href: '/cases?area=Cível&instance=2', label: '2ª Instância' },
+                { href: '/cases?area=Cível&instance=superior', label: 'Tribunais Superiores' },
+                { href: '/cases?area=Cível&status=Arquivo', label: 'Arquivo' },
+            ]
+        },
+        {
+            label: 'Trabalhista',
+            subItems: [
+                { href: '/cases?area=Trabalhista&instance=1', label: '1ª Instância' },
+                { href: '/cases?area=Trabalhista&instance=2', label: '2ª Instância' },
+                { href: '/cases?area=Trabalhista&instance=superior', label: 'Tribunais Superiores' },
+                { href: '/cases?area=Trabalhista&status=Execução', label: 'Execução Trabalhista' },
+                { href: '/cases?area=Trabalhista&status=Arquivo', label: 'Arquivo' },
+            ]
+        },
+        {
+            label: 'Direito de Família e Sucessões',
+            subItems: [
+                { href: '/cases?area=Família&instance=1', label: '1ª Instância' },
+                { href: '/cases?area=Família&instance=2', label: '2ª Instância' },
+                { href: '/cases?area=Família&instance=superior', label: 'Tribunais Superiores' },
+                { href: '/cases?area=Família&status=Execução', label: 'Cumprimento de Sentença' },
+                { href: '/cases?area=Família&status=Arquivo', label: 'Arquivo' },
+            ]
+        }
     ]
   },
   { href: '/financial', label: 'Financeiro', icon: Landmark },
@@ -104,6 +127,33 @@ function SidebarCollapsibleItem({ item, pathname }: { item: any, pathname: strin
     const { state } = useSidebar();
     const [isOpen, setIsOpen] = useState(pathname.startsWith('/cases'));
 
+    const renderSubItems = (subItems: any[], level = 0) => {
+        return subItems.map((subItem) => (
+            <SidebarMenuSubItem key={subItem.label}>
+                {subItem.subItems ? (
+                    <Collapsible>
+                        <CollapsibleTrigger className="w-full">
+                            <SidebarMenuSubButton asChild>
+                               <span>{subItem.label}</span>
+                            </SidebarMenuSubButton>
+                        </CollapsibleTrigger>
+                        <CollapsibleContent>
+                            <SidebarMenuSub className="ml-4">
+                                {renderSubItems(subItem.subItems, level + 1)}
+                            </SidebarMenuSub>
+                        </CollapsibleContent>
+                    </Collapsible>
+                ) : (
+                    <Link href={subItem.href}>
+                        <SidebarMenuSubButton asChild isActive={pathname === subItem.href}>
+                           <span>{subItem.label}</span>
+                        </SidebarMenuSubButton>
+                    </Link>
+                )}
+            </SidebarMenuSubItem>
+        ));
+    };
+
     if (state === 'collapsed') {
       return (
         <Link href="/cases">
@@ -129,15 +179,7 @@ function SidebarCollapsibleItem({ item, pathname }: { item: any, pathname: strin
             </CollapsibleTrigger>
             <CollapsibleContent>
                 <SidebarMenuSub>
-                    {item.subItems.map((subItem: any) => (
-                        <SidebarMenuSubItem key={subItem.href}>
-                             <Link href={subItem.href}>
-                                <SidebarMenuSubButton asChild isActive={pathname === subItem.href}>
-                                   <span>{subItem.label}</span>
-                                </SidebarMenuSubButton>
-                            </Link>
-                        </SidebarMenuSubItem>
-                    ))}
+                    {renderSubItems(item.subItems)}
                 </SidebarMenuSub>
             </CollapsibleContent>
         </Collapsible>
