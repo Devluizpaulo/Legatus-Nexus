@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { format, add, sub, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, getDay, isToday } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useAuth } from '@/contexts/auth-context';
@@ -20,6 +21,7 @@ type CalendarEvent = (Appointment & { eventType: 'appointment' }) | (Deadline & 
 
 export default function AgendaPage() {
   const { tenantData, addAppointment, updateAppointment, deleteAppointment, addDeadline, updateDeadline, deleteDeadline, currentUser } = useAuth();
+  const router = useRouter();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [viewMode, setViewMode] = useState<ViewMode>('Mês');
   const [eventFilter, setEventFilter] = useState<EventTypeFilter>('Todos');
