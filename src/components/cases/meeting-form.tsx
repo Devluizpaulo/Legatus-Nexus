@@ -24,7 +24,7 @@ const meetingSchema = z.object({
   meetingLink: z.string().url("URL da gravação inválida").optional(),
 });
 
-type MeetingFormData = z-infer<typeof meetingSchema>;
+type MeetingFormData = z.infer<typeof meetingSchema>;
 
 interface MeetingFormProps {
   caseData: Case;

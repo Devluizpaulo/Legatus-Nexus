@@ -28,7 +28,7 @@ const proposalSchema = z.object({
   signedAt: z.date().optional(),
 });
 
-type ProposalFormData = z-infer<typeof proposalSchema>;
+type ProposalFormData = z.infer<typeof proposalSchema>;
 
 interface ProposalFormProps {
   caseData: Case;
