@@ -302,7 +302,7 @@ export default function HomePage() {
                     <h4 className="font-semibold mb-3">Contato</h4>
                     <ul className="space-y-2 text-primary-foreground/80">
                         <li><a href="mailto:contato@nexusstudiosp.com.br" className="hover:underline">contato@nexusstudiosp.com.br</a></li>
-                        <li>Rua Contos Gauchescos, 165<br/>Vila Santa Catarina, São Paulo/SP</li>
+                        <li>Av Nelson Mandela, 591<br/>São Bernardo do Campo</li>
                     </ul>
                 </div>
             </div>
@@ -314,5 +314,7 @@ export default function HomePage() {
     </div>
   );
 }
+
+    
 
     
