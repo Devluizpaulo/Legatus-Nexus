@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, Calendar, Briefcase, Wallet, AreaChart, FileText, Award, Handshake, Key, FolderKanban, Workflow, GitBranch, Search, Star } from "lucide-react";
@@ -275,24 +276,43 @@ export default function HomePage() {
       </main>
 
       <footer className="bg-primary text-primary-foreground">
-        <div className="container mx-auto py-8 px-4 md:px-6 text-center md:text-left">
-            <div className="flex flex-col md:flex-row justify-between items-center">
-                <div className="mb-4 md:mb-0">
+        <div className="container mx-auto px-4 md:px-6 py-12">
+            <div className="grid gap-8 md:grid-cols-4">
+                <div className="col-span-1 md:col-span-2 lg:col-span-1">
                     <Logo />
+                    <p className="mt-4 text-sm text-primary-foreground/80">Solução Jurídica Integrada</p>
                 </div>
-                <p className="text-sm text-primary-foreground/80">&copy; {new Date().getFullYear()} Legatus Nexus — Solução Jurídica Integrada</p>
+                <div className="text-sm">
+                    <h4 className="font-semibold mb-3">Navegação</h4>
+                    <ul className="space-y-2 text-primary-foreground/80">
+                        <li><Link href="#about" className="hover:underline">Sobre</Link></li>
+                        <li><Link href="#modules" className="hover:underline">Módulos</Link></li>
+                        <li><Link href="#pricing" className="hover:underline">Planos</Link></li>
+                        <li><Link href="/login" className="hover:underline">Acessar</Link></li>
+                    </ul>
+                </div>
+                <div className="text-sm">
+                    <h4 className="font-semibold mb-3">Legal</h4>
+                    <ul className="space-y-2 text-primary-foreground/80">
+                        <li><Link href="#" className="hover:underline">Termos de Serviço</Link></li>
+                        <li><Link href="#" className="hover:underline">Política de Privacidade</Link></li>
+                    </ul>
+                </div>
+                <div className="text-sm">
+                    <h4 className="font-semibold mb-3">Contato</h4>
+                    <ul className="space-y-2 text-primary-foreground/80">
+                        <li><a href="mailto:contato@nexusstudiosp.com.br" className="hover:underline">contato@nexusstudiosp.com.br</a></li>
+                        <li>Rua Contos Gauchescos, 165<br/>Vila Santa Catarina, São Paulo/SP</li>
+                    </ul>
+                </div>
             </div>
-            <div className="mt-6 text-center text-xs text-primary-foreground/60 space-y-1">
-                <p>Desenvolvido por <strong>Nexus Studio SP</strong></p>
-                <p>Rua Contos Gauchescos, 165 — Vila Santa Catarina — São Paulo/SP</p>
-                <p>
-                    <a href="mailto:contato@nexusstudiosp.com.br" className="hover:underline">contato@nexusstudiosp.com.br</a>
-                    <span className="mx-2">|</span>
-                    <a href="http://www.nexusstudiosp.com.br" target="_blank" rel="noopener noreferrer" className="hover:underline">www.nexusstudiosp.com.br</a>
-                </p>
+            <div className="mt-10 pt-8 border-t border-primary-foreground/20 text-center text-xs text-primary-foreground/60">
+                <p>&copy; {new Date().getFullYear()} Legatus Nexus. Todos os direitos reservados. Desenvolvido por <strong>Nexus Studio SP</strong>.</p>
             </div>
         </div>
       </footer>
     </div>
   );
 }
+
+    
