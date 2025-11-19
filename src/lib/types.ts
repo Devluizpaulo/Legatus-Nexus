@@ -78,6 +78,22 @@ export type CaseStatus =
   | 'Recursos Superiores'
   | 'Cumprimento de Sentença / Execução'
   | 'Encerramento / Arquivamento'
+  // Fases - Direito Criminal
+  | 'Inquérito Policial'
+  | 'Diligências'
+  | 'Relatório Final'
+  | 'Denúncia / Queixa-Crime'
+  | 'Resposta à Acusação'
+  | 'Audiência de Instrução e Julgamento'
+  | 'Alegações Finais'
+  | 'Apelação'
+  | 'Embargos'
+  | 'Recurso Especial / Extraordinário'
+  | 'Execução da Pena'
+  | 'Progressão de Regime'
+  | 'Livramento Condicional'
+  | 'Extinção da Punibilidade'
+  | 'Arquivamento'
   ;
 
 export type LegalArea = "Cível" | "Trabalhista" | "Tributário" | "Família e Sucessões" | "Empresarial" | "Criminal";

@@ -340,7 +340,8 @@ export const ALL_CASE_STATUSES: CaseStatus[] = [
     ...PROSPECT_STATUSES,
     "Análise Inicial", 
     "Distribuição",
-    ...Object.values(CIVIL_FUNNEL).flat() as CaseStatus[]
+    ...Object.values(CIVIL_FUNNEL).flat() as CaseStatus[],
+    ...Object.values(CRIMINAL_FUNNEL).flat() as CaseStatus[]
 ];
 export const ALL_LEGAL_AREAS: LegalArea[] = ["Cível", "Trabalhista", "Tributário", "Família e Sucessões", "Empresarial", "Criminal"];
 export const ALL_VIABILITY_LEVELS: ViabilityLevel[] = ["Alta", "Média", "Baixa"];

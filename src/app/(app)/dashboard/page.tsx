@@ -18,7 +18,7 @@ export default function DashboardPage() {
     }
 
     const renderDashboard = () => {
-        if (!currentUser || !tenantData) {
+        if (!currentUser || !tenantData && currentUser.role !== 'SuperAdmin') {
             return (
                 <div className="space-y-4">
                     <Skeleton className="h-8 w-1/4" />
