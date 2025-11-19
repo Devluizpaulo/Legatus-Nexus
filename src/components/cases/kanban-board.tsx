@@ -69,7 +69,13 @@ export default function KanbanBoard({ cases, clients, users }: KanbanBoardProps)
     }
     
     setStatuses(relevantStatuses);
-    setActiveStatus(relevantStatuses[0] || null);
+    // Set the initial active status only if it's not already set or not in the new relevant statuses
+    setActiveStatus(prevStatus => {
+        if (prevStatus && relevantStatuses.includes(prevStatus)) {
+            return prevStatus;
+        }
+        return relevantStatuses[0] || null;
+    });
 
   }, [searchParams]);
 
@@ -80,6 +86,8 @@ export default function KanbanBoard({ cases, clients, users }: KanbanBoardProps)
 
         let casesToFilter = cases;
 
+        // This logic seems a bit redundant with the status filtering, but let's keep it for now.
+        // It pre-filters cases based on the broader phase/area before filtering by specific status.
         if (phase === 'Prospecção') {
             casesToFilter = cases.filter(c => PROSPECT_STATUSES.includes(c.status));
         } else if (area) {
@@ -97,6 +105,7 @@ export default function KanbanBoard({ cases, clients, users }: KanbanBoardProps)
     const area = searchParams.get('area');
     let casesToCount = cases;
 
+    // Ensure counting respects the broader context (Prospecção, Cível, etc.)
     if (phase === 'Prospecção') {
         casesToCount = cases.filter(c => PROSPECT_STATUSES.includes(c.status));
     } else if (area) {
