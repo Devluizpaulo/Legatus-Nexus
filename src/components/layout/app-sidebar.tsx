@@ -8,6 +8,7 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarTrigger,
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
@@ -224,7 +225,7 @@ function SidebarCollapsibleItem({ item, pathname }: { item: any; pathname: strin
 
 export default function AppSidebar() {
   const { currentUser, currentTenant, logout } = useAuth();
-  const { toggleSidebar } = useSidebar();
+  const { toggleSidebar, state } = useSidebar();
   const pathname = usePathname();
   
   if (!currentUser || (currentUser.role !== 'SuperAdmin' && !currentTenant)) return <SidebarMenuSkeleton showIcon />;
@@ -267,6 +268,10 @@ export default function AppSidebar() {
                 </SidebarMenuButton>
             </SidebarMenuItem>
          </SidebarMenu>
+          <SidebarTrigger className={cn("hidden md:flex justify-start w-full", state === 'collapsed' && "justify-center")}>
+            <PanelLeft className={cn(state === 'collapsed' && "rotate-180")}/>
+            <span className="sr-only">Recolher menu</span>
+          </SidebarTrigger>
       </SidebarFooter>
     </>
   );
