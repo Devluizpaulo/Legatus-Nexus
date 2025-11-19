@@ -34,7 +34,12 @@ import {
   Info,
   FolderKanban,
   Archive,
-  ChevronDown
+  ChevronDown,
+  Folder,
+  ClipboardList,
+  Library,
+  Truck,
+  UserCheck
 } from 'lucide-react';
 import { Logo } from './logo';
 import { usePathname } from 'next/navigation';
@@ -48,13 +53,10 @@ import { ALL_LEGAL_AREAS } from '@/lib/mock-data';
 
 const masterMenuItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/agenda', label: 'Agenda', icon: Calendar },
-  { href: '/deadlines', label: 'Prazos', icon: GanttChartSquare },
-  { href: '/clients', label: 'Clientes', icon: Users },
   { 
     label: 'Processos', 
     icon: FolderKanban,
-    href: '/cases', // Adicionado para o estado colapsado
+    href: '/cases', 
     subItems: [
       { href: '/cases/dashboard', label: 'Dashboard', icon: LayoutDashboard },
       { href: '/cases?phase=Prospecção', label: 'Prospecção' },
@@ -63,66 +65,58 @@ const masterMenuItems = [
         subItems: [
           { href: '/cases?area=Cível&instance=1', label: '1ª Instância' },
           { href: '/cases?area=Cível&instance=2', label: '2ª Instância' },
-          { 
-            label: 'Tribunais Superiores',
-            subItems: [
-              { href: '/cases?area=Cível&tribunal=STJ', label: 'STJ' },
-              { href: '/cases?area=Cível&tribunal=STF', label: 'STF' },
-            ]
-          },
-          { href: '/cases?area=Cível&status=Execução', label: 'Cumprimento de Sentença / Execução' },
-          { href: '/cases?area=Cível&status=Arquivo', label: 'Arquivo Cível' },
+          { href: '/cases?area=Cível&tribunal=STJ', label: 'STJ' },
+          { href: '/cases?area=Cível&tribunal=STF', label: 'STF' },
+          { href: '/cases?area=Cível&status=Execução', label: 'Cumprimento / Execução' },
         ]
       },
       {
         label: 'Trabalhista',
         subItems: [
           { href: '/cases?area=Trabalhista&instance=1', label: '1ª Instância' },
-          { href: '/cases?area=Trabalhista&instance=2', label: '2ª Instância' },
-          { 
-            label: 'Tribunais Superiores',
-            subItems: [
-              { href: '/cases?area=Trabalhista&tribunal=TST', label: 'TST' },
-              { href: '/cases?area=Trabalhista&tribunal=STF', label: 'STF' },
-            ]
-          },
-          { href: '/cases?area=Trabalhista&status=Execução', label: 'Execução Trabalhista' },
-          { href: '/cases?area=Trabalhista&status=Arquivo', label: 'Arquivo Trabalhista' },
-        ]
-      },
-      {
-        label: 'Direito de Família e Sucessões',
-        subItems: [
-          { href: '/cases?area=Família&instance=1', label: '1ª Instância' },
-          { href: '/cases?area=Família&instance=2', label: '2ª Instância' },
-          { 
-            label: 'Tribunais Superiores',
-            subItems: [
-              { href: '/cases?area=Família&tribunal=STJ', label: 'STJ' },
-              { href: '/cases?area=Família&tribunal=STF', label: 'STF' },
-            ]
-          },
-          { href: '/cases?area=Família&status=Execução', label: 'Cumprimento de Sentença / Execução' },
-          { href: '/cases?area=Família&status=Arquivo', label: 'Arquivo Família' },
-        ]
-      },
-      {
-        label: 'Outros Processos',
-        subItems: [
-           { href: '/cases?area=Outros&instance=1', label: '1ª Instância' },
-           { href: '/cases?area=Outros&instance=2', label: '2ª Instância' },
-           { href: '/cases?area=Outros&instance=superior', label: 'Tribunais Superiores' },
-           { href: '/cases?area=Outros&status=Arquivo', label: 'Arquivo' },
+          { href: '/cases?area=Trabalhista&instance=2', label: '2ª Instância (TRT)' },
+          { href: '/cases?area=Trabalhista&tribunal=TST', label: 'TST' },
         ]
       },
       { href: '/cases?status=Arquivo', label: 'Arquivo Geral', icon: Archive },
     ]
   },
-  { href: '/financial', label: 'Financeiro', icon: Landmark },
-  { href: '/refunds', label: 'Reembolsos', icon: Receipt },
-  { href: '/billing', label: 'Faturamento', icon: FileText },
+  { 
+    label: 'Agenda & Prazos', 
+    icon: Calendar,
+    href: '/agenda',
+    subItems: [
+        { href: '/agenda', label: 'Agenda Geral', icon: Calendar },
+        { href: '/deadlines', label: 'Controle de Prazos', icon: GanttChartSquare },
+    ]
+  },
+  { href: '/clients', label: 'Clientes', icon: Users },
+  { href: '/documents', label: 'Documentos (GED)', icon: Folder },
+  { href: '/tasks', label: 'Tarefas Internas', icon: ClipboardList },
+  { 
+    label: 'Gestão Financeira', 
+    icon: Landmark,
+    href: '/financial',
+    subItems: [
+        { href: '/financial', label: 'Controle de Horas', icon: Clock },
+        { href: '/financial?tab=transacoes', label: 'Despesas e Ganhos', icon: Landmark },
+        { href: '/billing', label: 'Faturamento', icon: FileText },
+        { href: '/refunds', label: 'Reembolsos', icon: Receipt },
+        { href: '/financial?tab=fluxo', label: 'Fluxo de Caixa', icon: BarChart3 },
+    ]
+  },
+  { 
+    label: 'Recursos', 
+    icon: Library,
+    href: '/library',
+    subItems: [
+        { href: '/library/templates', label: 'Biblioteca de Modelos', icon: Library },
+        { href: '/correspondents', label: 'Correspondentes', icon: Truck },
+    ]
+  },
   { href: '/reports', label: 'Relatórios', icon: BarChart3 },
   { href: '/team', label: 'Equipe', icon: Users },
+  { href: '/client-portal', label: 'Portal do Cliente', icon: UserCheck },
   { href: '/audit', label: 'Auditoria', icon: History },
   { href: '/support', label: 'Suporte', icon: Info },
 ];
@@ -198,11 +192,10 @@ function SidebarCollapsibleItem({ item, pathname }: { item: any; pathname: strin
 }
 
 
-function SidebarProcessosItem({ item, pathname }: { item: any, pathname: string }) {
+function SidebarComplexItem({ item, pathname }: { item: any, pathname: string }) {
     const { state } = useSidebar();
-    const [isOpen, setIsOpen] = useState(pathname.startsWith('/cases'));
+    const [isOpen, setIsOpen] = useState(pathname.startsWith(item.href));
 
-    // No modo colapsado, o ícone de Processos é um link direto para a página principal de casos.
     if (state === 'collapsed') {
       return (
         <Link href={item.href}>
@@ -216,7 +209,6 @@ function SidebarProcessosItem({ item, pathname }: { item: any, pathname: string 
       )
     }
 
-    // No modo expandido, é um menu colapsável com sub-itens.
     return (
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
             <CollapsibleTrigger asChild>
@@ -277,8 +269,8 @@ export default function AppSidebar() {
         <SidebarMenu>
           {menuItems.map((item) => (
             <SidebarMenuItem key={item.label}>
-              {item.label === 'Processos' && item.subItems ? (
-                  <SidebarProcessosItem item={item} pathname={pathname} />
+              {item.subItems ? (
+                  <SidebarComplexItem item={item} pathname={pathname} />
               ) : (
                 <Link href={item.href!}>
                   <SidebarMenuButton asChild isActive={pathname.startsWith(item.href!)} tooltip={item.label}>
