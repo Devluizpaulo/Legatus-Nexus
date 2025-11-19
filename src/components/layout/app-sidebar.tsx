@@ -120,7 +120,7 @@ const masterMenuItems = [
     ]
   },
   {
-    label: 'Recursos', 
+    label: 'Recursos',
     icon: Library,
     href: '/library',
     subItems: [
@@ -168,7 +168,7 @@ const getMenuItems = (role: string) => {
 function SidebarCollapsibleItem({ item, pathname }: { item: any; pathname: string; }) {
   const { state } = useSidebar();
   const hasSubItems = item.subItems && item.subItems.length > 0;
-  const isParentActive = hasSubItems && (item.href ? pathname.startsWith(item.href) : item.subItems.some((sub: any) => pathname.startsWith(sub.href)));
+  const isParentActive = hasSubItems && (item.href ? pathname.startsWith(item.href) : item.subItems.some((sub: any) => sub.href && pathname.startsWith(sub.href)));
   const [isOpen, setIsOpen] = useState(isParentActive);
 
   useEffect(() => {
@@ -192,21 +192,25 @@ function SidebarCollapsibleItem({ item, pathname }: { item: any; pathname: strin
     );
   }
   
-  const CollapsibleComponent = state === 'collapsed' ? 'div' : Collapsible;
-  const TriggerComponent = state === 'collapsed' ? 'div' : CollapsibleTrigger;
-  const ContentComponent = state === 'collapsed' ? 'div' : CollapsibleContent;
+  const isCollapsed = state === 'collapsed';
+  
+  const CollapsibleComponent = isCollapsed ? 'div' : Collapsible;
+  const TriggerComponent = isCollapsed ? 'div' : CollapsibleTrigger;
+  const ContentComponent = isCollapsed ? 'div' : CollapsibleContent;
+
+  const triggerProps = !isCollapsed ? { asChild: true } : {};
 
   return (
-    <CollapsibleComponent asChild open={isOpen} onOpenChange={setIsOpen}>
+    <CollapsibleComponent asChild={!isCollapsed} open={isOpen} onOpenChange={setIsOpen}>
       <SidebarMenuItem>
-        <TriggerComponent asChild>
+        <TriggerComponent {...triggerProps}>
           <SidebarMenuButton asChild isActive={isParentActive} tooltip={item.label}>
              <div className="flex items-center justify-between w-full">
                 <div className="flex items-center gap-2">
                     {item.icon && <item.icon />}
                     <span>{item.label}</span>
                 </div>
-                {state !== 'collapsed' && <ChevronDown className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")} />}
+                {!isCollapsed && <ChevronDown className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")} />}
              </div>
           </SidebarMenuButton>
         </TriggerComponent>
