@@ -199,9 +199,11 @@ function SidebarCollapsibleItem({ item, pathname }: { item: any; pathname: strin
   const ContentComponent = isCollapsed ? 'div' : CollapsibleContent;
 
   const triggerProps = !isCollapsed ? { asChild: true } : {};
+  const collapsibleProps = !isCollapsed ? {asChild: true, open: isOpen, onOpenChange: setIsOpen} : {};
+
 
   return (
-    <CollapsibleComponent asChild={!isCollapsed} open={isOpen} onOpenChange={setIsOpen}>
+    <CollapsibleComponent {...collapsibleProps}>
       <SidebarMenuItem>
         <TriggerComponent {...triggerProps}>
           <SidebarMenuButton asChild isActive={isParentActive} tooltip={item.label}>
@@ -265,7 +267,7 @@ export default function AppSidebar() {
                 </SidebarMenuButton>
             </SidebarMenuItem>
          </SidebarMenu>
-          <SidebarTrigger className={cn("hidden md:flex justify-start w-full", state === 'collapsed' && "justify-center")}>
+          <SidebarTrigger className={cn("hidden md:flex justify-start w-full mt-2", state === 'collapsed' && "justify-center")}>
             <PanelLeft className={cn(state === 'collapsed' && "rotate-180")}/>
             <span className="sr-only">Recolher menu</span>
           </SidebarTrigger>
