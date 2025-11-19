@@ -267,10 +267,7 @@ export default function AppSidebar() {
                 </SidebarMenuButton>
             </SidebarMenuItem>
          </SidebarMenu>
-          <SidebarTrigger className={cn("hidden md:flex justify-start w-full mt-2", state === 'collapsed' && "justify-center")}>
-            <PanelLeft className={cn(state === 'collapsed' && "rotate-180")}/>
-            <span className="sr-only">Recolher menu</span>
-          </SidebarTrigger>
+          <SidebarTrigger className={cn("hidden md:flex justify-start w-full mt-2", state === 'collapsed' && "justify-center")}/>
       </SidebarFooter>
     </>
   );
