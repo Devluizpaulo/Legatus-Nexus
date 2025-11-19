@@ -40,7 +40,8 @@ import {
   Library,
   Truck,
   UserCheck,
-  Shield
+  Shield,
+  PanelLeft
 } from 'lucide-react';
 import { Logo } from './logo';
 import { usePathname } from 'next/navigation';
@@ -51,6 +52,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/colla
 import { useState, Fragment, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { ALL_LEGAL_AREAS } from '@/lib/mock-data';
+import { Button } from '../ui/button';
 
 const masterMenuItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -117,7 +119,7 @@ const masterMenuItems = [
         { href: '/financial?tab=fluxo', label: 'Fluxo de Caixa', icon: BarChart3 },
     ]
   },
-  { 
+  { _
     label: 'Recursos', 
     icon: Library,
     href: '/library',
@@ -195,7 +197,7 @@ function SidebarCollapsibleItem({ item, pathname }: { item: any; pathname: strin
   const ContentComponent = state === 'collapsed' ? 'div' : CollapsibleContent;
 
   return (
-    <CollapsibleComponent asChild>
+    <CollapsibleComponent asChild open={isOpen} onOpenChange={setIsOpen}>
       <SidebarMenuItem>
         <TriggerComponent asChild>
           <SidebarMenuButton asChild isActive={isParentActive} tooltip={item.label}>
@@ -222,6 +224,7 @@ function SidebarCollapsibleItem({ item, pathname }: { item: any; pathname: strin
 
 export default function AppSidebar() {
   const { currentUser, currentTenant, logout } = useAuth();
+  const { toggleSidebar } = useSidebar();
   const pathname = usePathname();
   
   if (!currentUser || !currentTenant) return <SidebarMenuSkeleton showIcon />;
@@ -230,8 +233,14 @@ export default function AppSidebar() {
 
   return (
     <>
-      <SidebarHeader>
-        <Logo />
+      <SidebarHeader className="flex items-center justify-between">
+        <div className="md:hidden">
+            <Logo />
+        </div>
+        <Button variant="ghost" size="icon" className="md:hidden" onClick={toggleSidebar}>
+            <PanelLeft />
+            <span className="sr-only">Toggle Sidebar</span>
+        </Button>
       </SidebarHeader>
       <Separator />
       <SidebarContent className='p-2'>

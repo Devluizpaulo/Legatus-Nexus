@@ -39,17 +39,17 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <SidebarProvider>
-        <Sidebar collapsible='icon'>
-            <AppSidebar />
+      <div className="grid h-screen w-full md:grid-cols-[auto_1fr]">
+        <Sidebar collapsible="icon">
+          <AppSidebar />
         </Sidebar>
-        <div className="flex flex-col w-full">
-            <AppHeader />
-            <SidebarInset>
-                <main className="flex-1 p-4 md:p-6 lg:p-8">
-                    {children}
-                </main>
-            </SidebarInset>
+        <div className="flex flex-col">
+          <AppHeader />
+          <main className="flex-1 overflow-auto p-4 md:p-6 lg:p-8">
+            {children}
+          </main>
         </div>
+      </div>
     </SidebarProvider>
   );
 }
