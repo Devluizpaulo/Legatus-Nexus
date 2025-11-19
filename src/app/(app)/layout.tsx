@@ -39,7 +39,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <SidebarProvider>
-        <Sidebar>
+        <Sidebar collapsible='icon'>
             <AppSidebar />
         </Sidebar>
         <div className="flex flex-col w-full">
