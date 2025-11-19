@@ -48,17 +48,17 @@ export default function LoginPage() {
   };
 
   return (
-    <Tabs defaultValue="advogado" className="w-full">
+    <Tabs defaultValue="equipe" className="w-full">
       <CardHeader>
         <CardTitle>Acessar Plataforma</CardTitle>
         <CardDescription>Use suas credenciais para entrar no Legatus Nexus.</CardDescription>
       </CardHeader>
       <CardContent>
         <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="advogado">Escritório/Advogado</TabsTrigger>
-            <TabsTrigger value="cliente" disabled>Cliente</TabsTrigger>
+            <TabsTrigger value="equipe">Equipe do Escritório</TabsTrigger>
+            <TabsTrigger value="cliente" disabled>Portal do Cliente</TabsTrigger>
         </TabsList>
-        <TabsContent value="advogado">
+        <TabsContent value="equipe">
             <form onSubmit={handleLogin}>
                 <div className="space-y-4 pt-4">
                     {error && (
