@@ -80,7 +80,7 @@ export type CaseStatus =
   | 'Encerramento / Arquivamento'
   ;
 
-export type LegalArea = "Cível" | "Trabalhista" | "Tributário" | "Família e Sucessões" | "Empresarial";
+export type LegalArea = "Cível" | "Trabalhista" | "Tributário" | "Família e Sucessões" | "Empresarial" | "Criminal";
 
 export type UrgencyLevel = "Normal" | "Alta" | "Emergência";
 export type ViabilityLevel = "Alta" | "Média" | "Baixa";

@@ -39,7 +39,8 @@ import {
   ClipboardList,
   Library,
   Truck,
-  UserCheck
+  UserCheck,
+  Shield
 } from 'lucide-react';
 import { Logo } from './logo';
 import { usePathname } from 'next/navigation';
@@ -76,6 +77,17 @@ const masterMenuItems = [
           { href: '/cases?area=Trabalhista&instance=1', label: '1ª Instância' },
           { href: '/cases?area=Trabalhista&instance=2', label: '2ª Instância (TRT)' },
           { href: '/cases?area=Trabalhista&tribunal=TST', label: 'TST' },
+        ]
+      },
+       {
+        label: 'Criminal',
+        icon: Shield,
+        subItems: [
+          { href: '/cases?area=Criminal&phase=inquerito', label: 'Fase de Inquérito' },
+          { href: '/cases?area=Criminal&instance=1', label: '1ª Instância' },
+          { href: '/cases?area=Criminal&instance=2', label: '2ª Instância' },
+          { href: '/cases?area=Criminal&tribunal=superior', label: 'Tribunais Superiores' },
+          { href: '/cases?area=Criminal&phase=execucao', label: 'Execução Penal' },
         ]
       },
       { href: '/cases?status=Arquivo', label: 'Arquivo Geral', icon: Archive },

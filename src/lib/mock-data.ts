@@ -15,7 +15,8 @@ const users: User[] = [
 const clients: Client[] = [
   { id: "client-1", tenantId: "tenant-1", name: "Indústrias Stark", document: "12.345.678/0001-99", email: "contato@stark.com", phone: "11 98765-4321", caseIds: ["case-1", "case-2"], notes: "Cliente prioritário. Contato principal: Pepper Potts.", origin: "Indicação", address: "Stark Tower, New York, NY", defendant: "Hammer Industries", initialSummary: "Disputa sobre patente de reator arc." },
   { id: "client-2", tenantId: "tenant-1", name: "Wayne Enterprises", document: "98.765.432/0001-11", email: "financeiro@wayne.com", phone: "21 91234-5678", caseIds: ["case-3"], origin: "Website", address: "Wayne Tower, Gotham, NJ" },
-  { id: "client-3", tenantId: "tenant-1", name: "Cyberdyne Systems", document: "45.678.912/0001-34", email: "security@cyberdyne.com", phone: "11 98888-7777", caseIds: [], origin: "Website", address: "18144 El Camino Real, Sunnyvale, CA", defendant: "Consumidor" }
+  { id: "client-3", tenantId: "tenant-1", name: "Cyberdyne Systems", document: "45.678.912/0001-34", email: "security@cyberdyne.com", phone: "11 98888-7777", caseIds: [], origin: "Website", address: "18144 El Camino Real, Sunnyvale, CA", defendant: "Consumidor" },
+  { id: "client-4", tenantId: "tenant-1", name: "Pescador Paraguaio", document: "123.456.789-00", email: "pescador@email.com", phone: "11 91111-2222", caseIds: [], origin: "Indicação", address: "Rua Fictícia, 123", defendant: "Estado" },
 ];
 
 const cases: Case[] = [
@@ -61,6 +62,12 @@ const cases: Case[] = [
   { id: "familia-exec-1", tenantId: "tenant-1", title: "Execução de Alimentos", clientId: "client-3", status: "Cumprimento de Sentença / Execução", area: "Família e Sucessões", responsible: ["user-2"] },
   { id: "familia-arq-1", tenantId: "tenant-1", title: "Inventário - Finalizado", clientId: "client-1", status: "Encerramento / Arquivamento", area: "Família e Sucessões", responsible: ["user-1"] },
   
+  // Criminal
+  { id: "criminal-inq-1", tenantId: "tenant-1", title: "Acompanhamento de Inquérito Policial", clientId: "client-4", status: "Protocolo da petição inicial", area: "Criminal", responsible: ["user-1"] },
+  { id: "criminal-inst1-1", tenantId: "tenant-1", title: "Defesa em Ação Penal - Furto", clientId: "client-4", status: "Contestação", area: "Criminal", responsible: ["user-1", "user-2"] },
+  { id: "criminal-inst2-1", tenantId: "tenant-1", title: "Apelação Criminal - Dosimetria da Pena", clientId: "client-4", status: "Fase Recursal", area: "Criminal", responsible: ["user-1"] },
+  { id: "criminal-exec-1", tenantId: "tenant-1", title: "Pedido de Progressão de Regime", clientId: "client-4", status: "Cumprimento de Sentença / Execução", area: "Criminal", responsible: ["user-2"] },
+
   // Arquivo Geral
   { id: "geral-arq-1", tenantId: "tenant-1", title: "Processo Administrativo - Detran", clientId: "client-1", status: "Encerramento / Arquivamento", area: "Tributário", responsible: ["user-2"] },
 ];
@@ -291,8 +298,40 @@ export const CIVIL_FUNNEL = {
     ]
 };
 
+export const CRIMINAL_FUNNEL = {
+    'FASE DE INQUÉRITO': [
+        'Inquérito Policial',
+        'Diligências',
+        'Relatório Final',
+    ],
+    '1ª INSTÂNCIA': [
+        'Denúncia / Queixa-Crime',
+        'Resposta à Acusação',
+        'Audiência de Instrução e Julgamento',
+        'Alegações Finais',
+        'Sentença',
+    ],
+    '2ª INSTÂNCIA (Tribunal de Justiça)': [
+        'Apelação',
+        'Embargos',
+    ],
+    'TRIBUNAIS SUPERIORES (STJ e STF)': [
+        'Recurso Especial / Extraordinário',
+    ],
+    'EXECUÇÃO PENAL': [
+        'Execução da Pena',
+        'Progressão de Regime',
+        'Livramento Condicional',
+    ],
+    'FINAL': [
+        'Extinção da Punibilidade',
+        'Arquivamento',
+    ]
+};
+
 export const LEGAL_FUNNELS = {
     'Cível': CIVIL_FUNNEL,
+    'Criminal': CRIMINAL_FUNNEL,
     // Add other legal area funnels here
 };
 
@@ -303,7 +342,7 @@ export const ALL_CASE_STATUSES: CaseStatus[] = [
     "Distribuição",
     ...Object.values(CIVIL_FUNNEL).flat() as CaseStatus[]
 ];
-export const ALL_LEGAL_AREAS: LegalArea[] = ["Cível", "Trabalhista", "Tributário", "Família e Sucessões", "Empresarial"];
+export const ALL_LEGAL_AREAS: LegalArea[] = ["Cível", "Trabalhista", "Tributário", "Família e Sucessões", "Empresarial", "Criminal"];
 export const ALL_VIABILITY_LEVELS: ViabilityLevel[] = ["Alta", "Média", "Baixa"];
 export const ALL_APPOINTMENT_TYPES: AppointmentType[] = ['Atendimento', 'Reunião', 'Audiência'];
 export const ALL_APPOINTED_STATUSES: AppointmentStatus[] = ['Agendado', 'Confirmado', 'Cancelado', 'Realizado'];
