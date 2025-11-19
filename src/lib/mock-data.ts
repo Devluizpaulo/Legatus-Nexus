@@ -1,4 +1,5 @@
 
+
 import { Tenant, User, Client, Case, CaseStatus, UserRole, Appointment, Deadline, TimeEntry, FinancialTransaction, Refund, RefundStatus, Invoice, InvoiceStatus, TimeEntryStatus, TransactionStatus, TransactionType, AppointmentStatus, AppointmentType, Subscription, Plan, BillingHistory, SubscriptionStatus, BillingStatus, AuditLog, AuditEventType, FaqItem, SupportTicket, SupportTicketStatus, Achievement, LegalArea, ViabilityLevel } from "./types";
 import { PlaceHolderImages } from "./placeholder-images";
 import { format, addDays, subDays } from 'date-fns';
@@ -36,6 +37,32 @@ const cases: Case[] = [
   { id: "prospect-8", tenantId: "tenant-1", title: "Análise Final - Cyberdyne", clientId: "client-3", status: "Análise Jurídica Final", area: "Empresarial", responsible: ["user-1"], summary: "Contato inicial via website para consultoria.", caseValue: 150000, urgency: "Alta", triageAnalysis: "Análise preliminar positiva.", viability: "Alta", requirements: [] },
   { id: "prospect-9", tenantId: "tenant-1", title: "Redação - Cyberdyne", clientId: "client-3", status: "Redação da Inicial", area: "Empresarial", responsible: ["user-1"], summary: "Contato inicial via website para consultoria.", caseValue: 150000, urgency: "Alta", triageAnalysis: "Análise preliminar positiva.", viability: "Alta", requirements: [] },
   { id: "prospect-10", tenantId: "tenant-1", title: "Distribuição - Cyberdyne", clientId: "client-3", status: "Distribuição (Fim da Prospecção)", area: "Empresarial", responsible: ["user-1"], summary: "Contato inicial via website para consultoria.", caseValue: 150000, urgency: "Alta", triageAnalysis: "Análise preliminar positiva.", viability: "Alta", requirements: [] },
+  
+  // Funis Jurídicos - Exemplos
+  // Cível
+  { id: "civel-inst1-1", tenantId: "tenant-1", title: "Reparação de Danos Morais", clientId: "client-1", status: "Protocolo da petição inicial", area: "Cível", responsible: ["user-2"] },
+  { id: "civel-inst1-2", tenantId: "tenant-1", title: "Ação de Despejo", clientId: "client-2", status: "Contestação", area: "Cível", responsible: ["user-1"] },
+  { id: "civel-inst2-1", tenantId: "tenant-1", title: "Recurso Apelação - Contratual", clientId: "client-1", status: "Fase Recursal", area: "Cível", responsible: ["user-1"] },
+  { id: "civel-ts-1", tenantId: "tenant-1", title: "Recurso Especial - Consumidor", clientId: "client-2", status: "Recursos Superiores", area: "Cível", responsible: ["user-1"] },
+  { id: "civel-exec-1", tenantId: "tenant-1", title: "Execução de Título Extrajudicial", clientId: "client-1", status: "Cumprimento de Sentença / Execução", area: "Cível", responsible: ["user-2"] },
+  { id: "civel-arq-1", tenantId: "tenant-1", title: "Indenizatória - Trânsito em Julgado", clientId: "client-3", status: "Encerramento / Arquivamento", area: "Cível", responsible: ["user-2"] },
+
+  // Trabalhista
+  { id: "trab-inst1-1", tenantId: "tenant-1", title: "Reclamação Trabalhista - Horas Extras", clientId: "client-1", status: "Protocolo da petição inicial", area: "Trabalhista", responsible: ["user-2"] },
+  { id: "trab-inst2-1", tenantId: "tenant-1", title: "Recurso Ordinário - Equiparação", clientId: "client-2", status: "Fase Recursal", area: "Trabalhista", responsible: ["user-1"] },
+  { id: "trab-ts-1", tenantId: "tenant-1", title: "Recurso de Revista - TST", clientId: "client-1", status: "Recursos Superiores", area: "Trabalhista", responsible: ["user-1"] },
+  { id: "trab-exec-1", tenantId: "tenant-1", title: "Execução de Acordo", clientId: "client-3", status: "Cumprimento de Sentença / Execução", area: "Trabalhista", responsible: ["user-2"] },
+  { id: "trab-arq-1", tenantId: "tenant-1", title: "Consignação em Pagamento - Encerrado", clientId: "client-1", status: "Encerramento / Arquivamento", area: "Trabalhista", responsible: ["user-2"] },
+
+  // Família e Sucessões
+  { id: "familia-inst1-1", tenantId: "tenant-1", title: "Divórcio Consensual", clientId: "client-2", status: "Protocolo da petição inicial", area: "Família e Sucessões", responsible: ["user-2"] },
+  { id: "familia-inst2-1", tenantId: "tenant-1", title: "Apelação - Partilha de Bens", clientId: "client-3", status: "Fase Recursal", area: "Família e Sucessões", responsible: ["user-1"] },
+  { id: "familia-ts-1", tenantId: "tenant-1", title: "REsp - Guarda de Menor", clientId: "client-2", status: "Recursos Superiores", area: "Família e Sucessões", responsible: ["user-1"] },
+  { id: "familia-exec-1", tenantId: "tenant-1", title: "Execução de Alimentos", clientId: "client-3", status: "Cumprimento de Sentença / Execução", area: "Família e Sucessões", responsible: ["user-2"] },
+  { id: "familia-arq-1", tenantId: "tenant-1", title: "Inventário - Finalizado", clientId: "client-1", status: "Encerramento / Arquivamento", area: "Família e Sucessões", responsible: ["user-1"] },
+  
+  // Arquivo Geral
+  { id: "geral-arq-1", tenantId: "tenant-1", title: "Processo Administrativo - Detran", clientId: "client-1", status: "Encerramento / Arquivamento", area: "Tributário", responsible: ["user-2"] },
 ];
 
 const today = new Date();
