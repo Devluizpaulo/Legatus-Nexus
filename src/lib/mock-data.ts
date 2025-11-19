@@ -282,20 +282,20 @@ export const CIVIL_FUNNEL = {
         'Fase Saneadora',
         'Instrução Processual',
         'Sentença',
-    ],
+    ] as CaseStatus[],
     '2ª INSTÂNCIA (Tribunal de Justiça)': [
         'Fase Recursal',
         'Recursos Internos no Tribunal',
-    ],
+    ] as CaseStatus[],
     'TRIBUNAIS SUPERIORES (STJ e STF)': [
         'Recursos Superiores',
-    ],
+    ] as CaseStatus[],
     'EXECUÇÃO': [
         'Cumprimento de Sentença / Execução',
-    ],
+    ] as CaseStatus[],
     'FINAL': [
         'Encerramento / Arquivamento',
-    ]
+    ] as CaseStatus[]
 };
 
 export const CRIMINAL_FUNNEL = {
@@ -303,30 +303,30 @@ export const CRIMINAL_FUNNEL = {
         'Inquérito Policial',
         'Diligências',
         'Relatório Final',
-    ],
+    ] as CaseStatus[],
     '1ª INSTÂNCIA': [
         'Denúncia / Queixa-Crime',
         'Resposta à Acusação',
         'Audiência de Instrução e Julgamento',
         'Alegações Finais',
         'Sentença',
-    ],
+    ] as CaseStatus[],
     '2ª INSTÂNCIA (Tribunal de Justiça)': [
         'Apelação',
         'Embargos',
-    ],
+    ] as CaseStatus[],
     'TRIBUNAIS SUPERIORES (STJ e STF)': [
         'Recurso Especial / Extraordinário',
-    ],
+    ] as CaseStatus[],
     'EXECUÇÃO PENAL': [
         'Execução da Pena',
         'Progressão de Regime',
         'Livramento Condicional',
-    ],
+    ] as CaseStatus[],
     'FINAL': [
         'Extinção da Punibilidade',
         'Arquivamento',
-    ]
+    ] as CaseStatus[]
 };
 
 export const LEGAL_FUNNELS = {
@@ -340,9 +340,11 @@ export const ALL_CASE_STATUSES: CaseStatus[] = [
     ...PROSPECT_STATUSES,
     "Análise Inicial", 
     "Distribuição",
-    ...Object.values(CIVIL_FUNNEL).flat() as CaseStatus[],
-    ...Object.values(CRIMINAL_FUNNEL).flat() as CaseStatus[]
-];
+    ...Object.values(CIVIL_FUNNEL).flat(),
+    ...Object.values(CRIMINAL_FUNNEL).flat()
+].filter((value, index, self) => self.indexOf(value) === index) as CaseStatus[];
+
+
 export const ALL_LEGAL_AREAS: LegalArea[] = ["Cível", "Trabalhista", "Tributário", "Família e Sucessões", "Empresarial", "Criminal"];
 export const ALL_VIABILITY_LEVELS: ViabilityLevel[] = ["Alta", "Média", "Baixa"];
 export const ALL_APPOINTMENT_TYPES: AppointmentType[] = ['Atendimento', 'Reunião', 'Audiência'];

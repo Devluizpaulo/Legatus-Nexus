@@ -164,9 +164,9 @@ function TableView({ cases, clients, users }: KanbanBoardProps) {
   return (
     <div className="flex flex-col h-full">
       <div className="flex flex-wrap items-center gap-2 border-b pb-2 mb-4">
-        {statuses.map(status => (
+        {statuses.map((status, index) => (
           <Button
-            key={status}
+            key={`${status}-${index}`}
             variant={activeStatus === status ? 'secondary' : 'ghost'}
             size="sm"
             className="flex items-center gap-2"
