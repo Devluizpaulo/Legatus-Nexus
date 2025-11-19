@@ -11,7 +11,6 @@ import {
   SidebarTrigger,
   SidebarMenuSub,
   SidebarMenuSubButton,
-  SidebarMenuSubItem,
   SidebarMenuSkeleton,
   useSidebar
 } from "@/components/ui/sidebar";
@@ -225,7 +224,7 @@ function SidebarCollapsibleItem({ item, pathname }: { item: any; pathname: strin
 
 export default function AppSidebar() {
   const { currentUser, currentTenant, logout } = useAuth();
-  const { toggleSidebar, state } = useSidebar();
+  const { state } = useSidebar();
   const pathname = usePathname();
   
   if (!currentUser || (currentUser.role !== 'SuperAdmin' && !currentTenant)) return <SidebarMenuSkeleton showIcon />;
@@ -234,14 +233,8 @@ export default function AppSidebar() {
 
   return (
     <>
-      <SidebarHeader className="flex items-center justify-between">
-        <div className="md:hidden">
-            <Logo />
-        </div>
-        <Button variant="ghost" size="icon" className="md:hidden" onClick={toggleSidebar}>
-            <PanelLeft />
-            <span className="sr-only">Toggle Sidebar</span>
-        </Button>
+      <SidebarHeader>
+        <Logo />
       </SidebarHeader>
       <Separator />
       <SidebarContent className='p-2'>
