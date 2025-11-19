@@ -119,7 +119,7 @@ const masterMenuItems = [
         { href: '/financial?tab=fluxo', label: 'Fluxo de Caixa', icon: BarChart3 },
     ]
   },
-  { _
+  {
     label: 'Recursos', 
     icon: Library,
     href: '/library',
@@ -227,7 +227,7 @@ export default function AppSidebar() {
   const { toggleSidebar } = useSidebar();
   const pathname = usePathname();
   
-  if (!currentUser || !currentTenant) return <SidebarMenuSkeleton showIcon />;
+  if (!currentUser || (currentUser.role !== 'SuperAdmin' && !currentTenant)) return <SidebarMenuSkeleton showIcon />;
 
   const menuItems = getMenuItems(currentUser.role);
 
