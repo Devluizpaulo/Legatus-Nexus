@@ -47,7 +47,10 @@ export default function DistributionForm({ caseData, onSave, isReadOnly }: Distr
   });
 
   const onSubmit: SubmitHandler<DistributionFormData> = (data) => {
-    onSave(data);
+    onSave({
+      ...data,
+      distributionDate: format(data.distributionDate, 'yyyy-MM-dd'),
+    });
     toast({
       title: "Processo Distribuído com Sucesso!",
       description: "O Lead foi convertido em Processo e movido para o funil jurídico correspondente.",

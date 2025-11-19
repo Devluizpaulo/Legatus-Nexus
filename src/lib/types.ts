@@ -103,6 +103,20 @@ export type Case = {
   viability?: ViabilityLevel;
   triageAnalysis?: string;
   requirements?: ChecklistItem[];
+  distributionDate?: string;
+  feeType?: "fixo" | "exito" | "misto" | "mensalidade";
+  feeValue?: number;
+  feePercentage?: number;
+  installments?: number;
+  contractUrl?: string;
+  signedAt?: Date;
+  finalFacts?: string;
+  finalStrategy?: string;
+  draftContent?: string;
+  meetingDate?: Date;
+  meetingNotes?: string;
+  meetingLink?: string;
+  proofUrl?: string;
 };
 
 export type AppointmentType = 'Atendimento' | 'Reunião' | 'Audiência';

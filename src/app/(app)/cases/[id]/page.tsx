@@ -5,7 +5,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { notFound, useParams } from "next/navigation";
-import { Client, Case } from "@/lib/types";
+import { Client, Case, CaseStatus } from "@/lib/types";
 import { useRouter } from "next/navigation";
 
 import LeadIdentificationForm from "@/components/cases/lead-identification-form";
@@ -17,7 +17,7 @@ import DocumentCollectionForm from "@/components/cases/document-collection-form"
 import FinalAnalysisForm from "@/components/cases/final-analysis-form";
 import DraftingForm from "@/components/cases/drafting-form";
 import DistributionForm from "@/components/cases/distribution-form";
-import { PROSPECT_STATUSES } from "@/lib/mock-data";
+import { PROSPECT_STATUSES, LEGAL_FUNNELS } from "@/lib/mock-data";
 
 
 export default function CaseDetailPage() {
@@ -42,15 +42,15 @@ export default function CaseDetailPage() {
         return name.substring(0, 2).toUpperCase();
     }
 
-    const handleNextStep = (currentStatus: string, updatedData: Partial<Case> = {}) => {
+    const handleNextStep = (currentStatus: string, updatedData: Partial<Case> = {}, redirectTo?: string) => {
         const currentIndex = PROSPECT_STATUSES.indexOf(currentStatus as any);
         if (currentIndex < PROSPECT_STATUSES.length - 1) {
             const nextStatus = PROSPECT_STATUSES[currentIndex + 1];
             updateCase({ ...caseData, ...updatedData, status: nextStatus });
-            router.push('/cases?phase=Prospecção');
+             router.push(redirectTo || '/cases?phase=Prospecção');
         } else {
             console.error("No next step defined for status:", currentStatus);
-            router.push('/cases?phase=Prospecção');
+            router.push(redirectTo ||'/cases?phase=Prospecção');
         }
     };
     
@@ -88,8 +88,14 @@ export default function CaseDetailPage() {
         handleNextStep("Redação da Inicial", caseData);
     };
 
-    const handleSaveDistribution = (caseData: Partial<Case>) => {
-        handleNextStep("Distribuição (Fim da Prospecção)", caseData);
+    const handleSaveDistribution = (data: Partial<Case>) => {
+      // Find the first status of the corresponding legal funnel
+      const area = caseData.area;
+      const legalFunnel = (LEGAL_FUNNELS as any)[area];
+      const firstLegalStatus = legalFunnel ? (Object.values(legalFunnel)[0] as CaseStatus[])[0] : "Análise Inicial";
+
+      updateCase({ ...caseData, ...data, status: firstLegalStatus });
+      router.push(`/cases?area=${area}&instance=1`);
     };
 
 
