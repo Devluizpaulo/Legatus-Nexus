@@ -2,11 +2,11 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/auth-context';
 import type { Case, CaseStatus, Client, User } from '@/lib/types';
 import { PROSPECT_STATUSES, CIVIL_FUNNEL, ALL_CASE_STATUSES } from '@/lib/mock-data';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Clock, Briefcase, Gavel } from 'lucide-react';
@@ -22,6 +22,7 @@ interface KanbanBoardProps {
 }
 
 const getInitials = (name: string) => {
+    if (!name) return '';
     const names = name.split(' ');
     if (names.length > 1) {
         return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
@@ -30,7 +31,73 @@ const getInitials = (name: string) => {
 }
 
 
-export default function KanbanBoard({ cases, clients, users }: KanbanBoardProps) {
+function KanbanView({ cases, clients, users }: KanbanBoardProps) {
+    const router = useRouter();
+    const { updateCase } = useAuth();
+
+    const handleCardClick = (caseId: string) => {
+        router.push(`/cases/${caseId}`);
+    };
+
+    const columns = PROSPECT_STATUSES.map(status => ({
+        id: status,
+        title: status,
+        cases: cases.filter(c => c.status === status)
+    }));
+
+    return (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 h-full pb-4">
+            {columns.map(column => (
+                <div key={column.id} className="flex flex-col">
+                    <h2 className="text-lg font-semibold tracking-tight px-2 py-1 flex justify-between items-center">
+                        {column.title}
+                        <Badge variant="secondary" className="rounded-full">{column.cases.length}</Badge>
+                    </h2>
+                    <div className="flex-1 rounded-lg bg-secondary/50 p-2 space-y-3 min-h-[200px]">
+                        {column.cases.map(_case => {
+                            const client = clients.find(c => c.id === _case.clientId);
+                            return (
+                                <Card key={_case.id} onClick={() => handleCardClick(_case.id)} className="cursor-pointer hover:shadow-lg transition-shadow">
+                                    <CardHeader className="p-3 pb-2">
+                                        <CardTitle className="text-base">{_case.title}</CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="p-3 pt-0 text-sm space-y-2">
+                                        <p className="text-muted-foreground flex items-center gap-2"><Briefcase className='h-3 w-3 shrink-0' /> {client?.name}</p>
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex -space-x-2">
+                                                {_case.responsible.map(userId => {
+                                                    const user = users.find(u => u.id === userId);
+                                                    return user ? (
+                                                        <Avatar key={user.id} className="h-7 w-7 border-2 border-card">
+                                                            <AvatarImage src={user.avatarUrl} alt={user.name} />
+                                                            <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+                                                        </Avatar>
+                                                    ) : null;
+                                                })}
+                                            </div>
+                                            {_case.deadline && (
+                                                <p className={cn("text-xs flex items-center gap-1", new Date(_case.deadline) < new Date() ? "text-destructive" : "text-muted-foreground")}>
+                                                    <Clock className='h-3 w-3 shrink-0' /> {new Date(_case.deadline).toLocaleDateString('pt-BR')}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            )
+                        })}
+                        {column.cases.length === 0 && (
+                             <div className="flex items-center justify-center h-full text-sm text-muted-foreground">
+                                Nenhum caso aqui.
+                            </div>
+                        )}
+                    </div>
+                </div>
+            ))}
+        </div>
+    )
+}
+
+function TableView({ cases, clients, users }: KanbanBoardProps) {
   const searchParams = useSearchParams();
   const [activeStatus, setActiveStatus] = useState<CaseStatus | null>(null);
   const [statuses, setStatuses] = useState<CaseStatus[]>([]);
@@ -65,11 +132,10 @@ export default function KanbanBoard({ cases, clients, users }: KanbanBoardProps)
         relevantStatuses = ['Encerramento / Arquivamento'];
     }
     else {
-        relevantStatuses = ALL_CASE_STATUSES;
+        relevantStatuses = ALL_CASE_STATUSES.filter(s => !PROSPECT_STATUSES.includes(s));
     }
     
     setStatuses(relevantStatuses);
-    // Set the initial active status only if it's not already set or not in the new relevant statuses
     setActiveStatus(prevStatus => {
         if (prevStatus && relevantStatuses.includes(prevStatus)) {
             return prevStatus;
@@ -81,19 +147,8 @@ export default function KanbanBoard({ cases, clients, users }: KanbanBoardProps)
 
   useEffect(() => {
     if (activeStatus) {
-        const phase = searchParams.get('phase');
         const area = searchParams.get('area');
-
-        let casesToFilter = cases;
-
-        // This logic seems a bit redundant with the status filtering, but let's keep it for now.
-        // It pre-filters cases based on the broader phase/area before filtering by specific status.
-        if (phase === 'Prospecção') {
-            casesToFilter = cases.filter(c => PROSPECT_STATUSES.includes(c.status));
-        } else if (area) {
-            casesToFilter = cases.filter(c => c.area === area);
-        }
-
+        let casesToFilter = area ? cases.filter(c => c.area === area) : cases;
         setFilteredCases(casesToFilter.filter(c => c.status === activeStatus));
     } else {
         setFilteredCases([]);
@@ -101,17 +156,8 @@ export default function KanbanBoard({ cases, clients, users }: KanbanBoardProps)
   }, [activeStatus, cases, searchParams]);
 
   const getCaseCountForStatus = (status: CaseStatus) => {
-    const phase = searchParams.get('phase');
     const area = searchParams.get('area');
-    let casesToCount = cases;
-
-    // Ensure counting respects the broader context (Prospecção, Cível, etc.)
-    if (phase === 'Prospecção') {
-        casesToCount = cases.filter(c => PROSPECT_STATUSES.includes(c.status));
-    } else if (area) {
-        casesToCount = cases.filter(c => c.area === area);
-    }
-    
+    let casesToCount = area ? cases.filter(c => c.area === area) : cases;
     return casesToCount.filter(c => c.status === status).length;
   }
 
@@ -203,4 +249,16 @@ export default function KanbanBoard({ cases, clients, users }: KanbanBoardProps)
         </Card>
     </div>
   );
+}
+
+export default function KanbanBoard(props: KanbanBoardProps) {
+    const searchParams = useSearchParams();
+    const phase = searchParams.get('phase');
+
+    if (phase === 'Prospecção') {
+        const prospectCases = props.cases.filter(c => PROSPECT_STATUSES.includes(c.status));
+        return <KanbanView {...props} cases={prospectCases} />;
+    }
+
+    return <TableView {...props} />;
 }
