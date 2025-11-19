@@ -12,64 +12,52 @@ import Link from "next/link";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-export default function LoginPage() {
-  const [email, setEmail] = useState("artur.morgan@example.com");
-  const [password, setPassword] = useState("password");
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
-  const { login } = useAuth();
-  const { toast } = useToast();
+function LoginForm({ role }: { role: 'escritorio' | 'advogado' }) {
+    const [email, setEmail] = useState(role === 'escritorio' ? "artur.morgan@example.com" : "joana.marston@example.com");
+    const [password, setPassword] = useState("password");
+    const [error, setError] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const router = useRouter();
+    const { login } = useAuth();
+    const { toast } = useToast();
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setIsLoading(true);
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError("");
+        setIsLoading(true);
 
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      const success = login(email, password);
+        try {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            const success = login(email, password);
 
-      if (success) {
-        toast({
-          title: "Login bem-sucedido!",
-          description: "Redirecionando para o seu dashboard.",
-        });
-        router.push("/dashboard");
-      } else {
-        setError("Credenciais inválidas. Tente novamente.");
-      }
-    } catch (err) {
-      setError("Ocorreu um erro. Tente novamente mais tarde.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+            if (success) {
+                toast({
+                    title: "Login bem-sucedido!",
+                    description: "Redirecionando para o seu dashboard.",
+                });
+                router.push("/dashboard");
+            } else {
+                setError("Credenciais inválidas. Tente novamente.");
+            }
+        } catch (err) {
+            setError("Ocorreu um erro. Tente novamente mais tarde.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-  return (
-    <Tabs defaultValue="equipe" className="w-full">
-      <CardHeader>
-        <CardTitle>Acessar Plataforma</CardTitle>
-        <CardDescription>Use suas credenciais para entrar no Legatus Nexus.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="equipe">Equipe do Escritório</TabsTrigger>
-            <TabsTrigger value="cliente" disabled>Portal do Cliente</TabsTrigger>
-        </TabsList>
-        <TabsContent value="equipe">
-            <form onSubmit={handleLogin}>
-                <div className="space-y-4 pt-4">
-                    {error && (
-                        <Alert variant="destructive">
-                            <AlertDescription>{error}</AlertDescription>
-                        </Alert>
-                    )}
-                    <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
+    return (
+        <form onSubmit={handleLogin}>
+            <div className="space-y-4 pt-4">
+                {error && (
+                    <Alert variant="destructive">
+                        <AlertDescription>{error}</AlertDescription>
+                    </Alert>
+                )}
+                <div className="space-y-2">
+                    <Label htmlFor={`email-${role}`}>Email</Label>
                     <Input
-                        id="email"
+                        id={`email-${role}`}
                         type="email"
                         placeholder="seu@email.com"
                         value={email}
@@ -77,33 +65,49 @@ export default function LoginPage() {
                         required
                         disabled={isLoading}
                     />
-                    </div>
-                    <div className="space-y-2">
-                    <Label htmlFor="password">Senha</Label>
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor={`password-${role}`}>Senha</Label>
                     <Input
-                        id="password"
+                        id={`password-${role}`}
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
                         disabled={isLoading}
                     />
-                    </div>
                 </div>
-                 <CardFooter className="flex flex-col gap-4 px-0 pt-6 pb-0">
-                    <Button className="w-full" type="submit" disabled={isLoading}>
-                    {isLoading ? "Entrando..." : "Entrar"}
-                    </Button>
-                    <p className="text-sm text-center text-muted-foreground">
-                        Não tem uma conta? <Link href="/register" className="text-primary hover:underline">Cadastre-se</Link>
-                    </p>
-                </CardFooter>
-            </form>
-        </TabsContent>
-         <TabsContent value="cliente">
-            <div className="space-y-4 pt-4">
-                <p className="text-sm text-center text-muted-foreground">O portal do cliente está em desenvolvimento. Em breve você poderá acessar seus processos por aqui.</p>
             </div>
+            <CardFooter className="flex flex-col gap-4 px-0 pt-6 pb-0">
+                <Button className="w-full" type="submit" disabled={isLoading}>
+                    {isLoading ? "Entrando..." : "Entrar"}
+                </Button>
+                <p className="text-sm text-center text-muted-foreground">
+                    Não tem uma conta? <Link href="/register" className="text-primary hover:underline">Cadastre-se</Link>
+                </p>
+            </CardFooter>
+        </form>
+    );
+}
+
+
+export default function LoginPage() {
+  return (
+    <Tabs defaultValue="escritorio" className="w-full">
+      <CardHeader>
+        <CardTitle>Acessar Plataforma</CardTitle>
+        <CardDescription>Use suas credenciais para entrar no Legatus Nexus.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="escritorio">Escritório</TabsTrigger>
+            <TabsTrigger value="advogado">Advogado</TabsTrigger>
+        </TabsList>
+        <TabsContent value="escritorio">
+           <LoginForm role="escritorio" />
+        </TabsContent>
+         <TabsContent value="advogado">
+           <LoginForm role="advogado" />
         </TabsContent>
       </CardContent>
     </Tabs>
