@@ -48,7 +48,7 @@ import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible';
-import { useState, Fragment } from 'react';
+import { useState, Fragment, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { ALL_LEGAL_AREAS } from '@/lib/mock-data';
 
@@ -164,104 +164,61 @@ const getMenuItems = (role: string) => {
 
 // Componente recursivo para renderizar itens de menu aninhados
 function SidebarCollapsibleItem({ item, pathname }: { item: any; pathname: string; }) {
-  const initialOpen = item.subItems?.some((sub: any) => pathname.startsWith(sub.href || ''));
-  const [isOpen, setIsOpen] = useState(initialOpen);
+  const { state } = useSidebar();
+  const hasSubItems = item.subItems && item.subItems.length > 0;
+  const isParentActive = hasSubItems && (item.href ? pathname.startsWith(item.href) : item.subItems.some((sub: any) => pathname.startsWith(sub.href)));
+  const [isOpen, setIsOpen] = useState(isParentActive);
+
+  useEffect(() => {
+    if (isParentActive) {
+      setIsOpen(true);
+    }
+  }, [pathname, isParentActive]);
+
+  if (!hasSubItems) {
+    return (
+        <SidebarMenuItem>
+            <Link href={item.href!}>
+                <SidebarMenuButton asChild isActive={pathname === item.href} tooltip={item.label}>
+                    <span>
+                        {item.icon && <item.icon />}
+                        <span>{item.label}</span>
+                    </span>
+                </SidebarMenuButton>
+            </Link>
+        </SidebarMenuItem>
+    );
+  }
+  
+  const CollapsibleComponent = state === 'collapsed' ? 'div' : Collapsible;
+  const TriggerComponent = state === 'collapsed' ? 'div' : CollapsibleTrigger;
+  const ContentComponent = state === 'collapsed' ? 'div' : CollapsibleContent;
 
   return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <CollapsibleTrigger className="w-full">
-        <SidebarMenuSubButton className="w-full justify-between pr-2">
-            <span className="whitespace-normal text-left flex-1">{item.label}</span>
-            <ChevronDown className={cn("h-4 w-4 shrink-0 transition-transform", isOpen && "rotate-180")} />
-        </SidebarMenuSubButton>
-      </CollapsibleTrigger>
-      <CollapsibleContent>
-        <SidebarMenuSub>
-          {item.subItems.map((subItem: any, index: number) => (
-            <Fragment key={subItem.label + index}>
-              {subItem.subItems ? (
-                  <SidebarMenuSubItem>
-                    <SidebarCollapsibleItem item={subItem} pathname={pathname} />
-                  </SidebarMenuSubItem>
-              ) : (
-                <SidebarMenuSubItem>
-                  <Link href={subItem.href}>
-                    <SidebarMenuSubButton asChild isActive={pathname === subItem.href}>
-                      <div className="flex items-center gap-2">
-                        {subItem.icon && <subItem.icon className="h-4 w-4" />}
-                        <span className="whitespace-normal">{subItem.label}</span>
-                      </div>
-                    </SidebarMenuSubButton>
-                  </Link>
-                </SidebarMenuSubItem>
-              )}
-            </Fragment>
-          ))}
-        </SidebarMenuSub>
-      </CollapsibleContent>
-    </Collapsible>
-  );
-}
-
-
-function SidebarComplexItem({ item, pathname }: { item: any, pathname: string }) {
-    const { state } = useSidebar();
-    const [isOpen, setIsOpen] = useState(pathname.startsWith(item.href));
-
-    if (state === 'collapsed') {
-      return (
-        <Link href={item.href}>
-            <SidebarMenuButton asChild isActive={pathname.startsWith(item.href)} tooltip={item.label}>
-                <span>
-                    <item.icon />
+    <CollapsibleComponent asChild>
+      <SidebarMenuItem>
+        <TriggerComponent asChild>
+          <SidebarMenuButton asChild isActive={isParentActive} tooltip={item.label}>
+             <div className="flex items-center justify-between w-full">
+                <div className="flex items-center gap-2">
+                    {item.icon && <item.icon />}
                     <span>{item.label}</span>
-                </span>
-            </SidebarMenuButton>
-        </Link>
-      )
-    }
-
-    return (
-        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-            <CollapsibleTrigger asChild>
-                <SidebarMenuButton>
-                    <div className="flex items-center justify-between w-full">
-                         <div className="flex items-center gap-2">
-                             <item.icon />
-                            <span>{item.label}</span>
-                         </div>
-                        <ChevronDown className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")} />
-                    </div>
-                </SidebarMenuButton>
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-                <SidebarMenuSub>
-                    {item.subItems.map((subItem: any, index: number) => (
-                       <Fragment key={subItem.label + index}>
-                         {subItem.subItems ? (
-                             <SidebarMenuSubItem>
-                               <SidebarCollapsibleItem item={subItem} pathname={pathname} />
-                             </SidebarMenuSubItem>
-                         ) : (
-                           <SidebarMenuSubItem>
-                             <Link href={subItem.href}>
-                               <SidebarMenuSubButton asChild isActive={pathname === subItem.href}>
-                                 <div className="flex items-center gap-2">
-                                   {subItem.icon && <subItem.icon className="h-4 w-4" />}
-                                   <span className="whitespace-normal">{subItem.label}</span>
-                                 </div>
-                               </SidebarMenuSubButton>
-                             </Link>
-                           </SidebarMenuSubItem>
-                         )}
-                       </Fragment>
-                    ))}
-                </SidebarMenuSub>
-            </CollapsibleContent>
-        </Collapsible>
-    )
+                </div>
+                {state !== 'collapsed' && <ChevronDown className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")} />}
+             </div>
+          </SidebarMenuButton>
+        </TriggerComponent>
+        <ContentComponent>
+          <SidebarMenuSub>
+            {item.subItems.map((subItem: any, index: number) => (
+               <SidebarCollapsibleItem key={index} item={subItem} pathname={pathname} />
+            ))}
+          </SidebarMenuSub>
+        </ContentComponent>
+      </SidebarMenuItem>
+    </CollapsibleComponent>
+  )
 }
-
 
 export default function AppSidebar() {
   const { currentUser, currentTenant, logout } = useAuth();
@@ -279,22 +236,9 @@ export default function AppSidebar() {
       <Separator />
       <SidebarContent className='p-2'>
         <SidebarMenu>
-          {menuItems.map((item) => (
-            <SidebarMenuItem key={item.label}>
-              {item.subItems ? (
-                  <SidebarComplexItem item={item} pathname={pathname} />
-              ) : (
-                <Link href={item.href!}>
-                  <SidebarMenuButton asChild isActive={pathname.startsWith(item.href!)} tooltip={item.label}>
-                    <span>
-                      <item.icon />
-                      <span>{item.label}</span>
-                    </span>
-                  </SidebarMenuButton>
-                </Link>
-              )}
-            </SidebarMenuItem>
-          ))}
+           {menuItems.map((item, index) => (
+             <SidebarCollapsibleItem key={index} item={item} pathname={pathname} />
+           ))}
         </SidebarMenu>
       </SidebarContent>
       <Separator />
