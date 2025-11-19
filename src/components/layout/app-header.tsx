@@ -12,12 +12,10 @@ export default function AppHeader() {
   const { toggleSidebar } = useSidebar();
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:px-6">
-        <SidebarTrigger asChild className="md:hidden">
-            <Button size="icon" variant="outline">
-                <PanelLeft />
-                <span className="sr-only">Toggle Sidebar</span>
-            </Button>
-        </SidebarTrigger>
+        <Button size="icon" variant="outline" onClick={toggleSidebar} className="md:hidden">
+            <PanelLeft />
+            <span className="sr-only">Toggle Sidebar</span>
+        </Button>
         <div className='hidden md:block'>
             <Logo />
         </div>
