@@ -169,7 +169,7 @@ function SidebarCollapsibleItem({ item, pathname }: { item: any; pathname: strin
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <CollapsibleTrigger asChild>
+      <CollapsibleTrigger className="w-full">
         <SidebarMenuSubButton className="w-full justify-between pr-2">
             <span className="whitespace-normal text-left flex-1">{item.label}</span>
             <ChevronDown className={cn("h-4 w-4 shrink-0 transition-transform", isOpen && "rotate-180")} />
