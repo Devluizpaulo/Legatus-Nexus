@@ -240,7 +240,10 @@ export default function AppSidebar() {
   return (
     <>
       <SidebarHeader>
-        <Logo />
+        <div className="flex items-center justify-between gap-2">
+          <Logo />
+          <SidebarTrigger className={cn("hidden md:flex", state === 'collapsed' && "justify-center")} />
+        </div>
       </SidebarHeader>
       <Separator />
       <SidebarContent className='p-2'>
@@ -267,7 +270,6 @@ export default function AppSidebar() {
                 </SidebarMenuButton>
             </SidebarMenuItem>
          </SidebarMenu>
-          <SidebarTrigger className={cn("hidden md:flex justify-start w-full mt-2", state === 'collapsed' && "justify-center")}/>
       </SidebarFooter>
     </>
   );
